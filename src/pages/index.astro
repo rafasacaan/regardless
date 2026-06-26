@@ -105,7 +105,7 @@ const postCount = allPosts.length;
       const SPACING = 28;
       const RADIUS = 0.8;
       const AMPLITUDE = 10;
-      const SPEED = 0.04;
+      const SPEED = 0.012;
 
       function resize(){
         canvas.width = window.innerWidth;
@@ -117,7 +117,7 @@ const postCount = allPosts.length;
       let t = 0;
       function draw(){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'rgba(14,14,12,0.18)';
+        ctx.fillStyle = 'rgba(14,14,12,0.1)';
         const cols = Math.ceil(canvas.width / SPACING) + 2;
         const rows = Math.ceil(canvas.height / SPACING) + 2;
         for(let r = 0; r < rows; r++){
