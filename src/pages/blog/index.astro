@@ -1,0 +1,83 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf(),
+);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<Base title="blog — regardless" description="Notas técnicas y no técnicas desde el lab.">
+  <main class="wrap">
+    <nav class="crumb">
+      <a href="/">regardless</a> / blog
+    </nav>
+
+    <h1 class="section-head">blog</h1>
+    <p class="section-sub">Notas y registros de lo que construyo y lo que pienso.</p>
+
+    <div class="filters" role="group" aria-label="filtrar por tipo">
+      <button class="filter" data-filter="todos" aria-pressed="true">todos</button>
+      <button class="filter" data-filter="técnico" aria-pressed="false">técnico</button>
+      <button class="filter" data-filter="no-técnico" aria-pressed="false">no-técnico</button>
+    </div>
+
+    {
+      posts.length === 0 ? (
+        <p class="empty">todavía no hay nada escrito. pronto.</p>
+      ) : (
+        <ul class="posts">
+          {posts.map((post) => (
+            <li class="post-item" data-tipo={post.data.tipo}>
+              <a href={`/blog/${post.id}/`}>
+                <div class="post-meta">
+                  <span class="post-tipo">{post.data.tipo}</span>
+                  <time datetime={post.data.fecha.toISOString().slice(0, 10)}>
+                    {fmt(post.data.fecha)}
+                  </time>
+                </div>
+                <h2 class="post-title">{post.data.title}</h2>
+                {post.data.resumen && <p class="post-resumen">{post.data.resumen}</p>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <p class="empty" data-empty-filter hidden>nada en esta categoría… por ahora.</p>
+  </main>
+
+  <footer class="foot">
+    <a class="foot-link" href="mailto:rafasacaan@gmail.com">un lab de rafa sacaan</a>
+    <a class="foot-link" href="/">← volver</a>
+  </footer>
+
+  <script is:inline>
+    (function () {
+      const buttons = Array.from(document.querySelectorAll('.filter'));
+      const items = Array.from(document.querySelectorAll('.post-item'));
+      const emptyMsg = document.querySelector('[data-empty-filter]');
+
+      function apply(filter) {
+        let visible = 0;
+        items.forEach((item) => {
+          const match = filter === 'todos' || item.dataset.tipo === filter;
+          item.hidden = !match;
+          if (match) visible++;
+        });
+        buttons.forEach((b) =>
+          b.setAttribute('aria-pressed', String(b.dataset.filter === filter)),
+        );
+        if (emptyMsg) emptyMsg.hidden = visible !== 0;
+      }
+
+      buttons.forEach((b) =>
+        b.addEventListener('click', () => apply(b.dataset.filter)),
+      );
+    })();
+  </script>
+</Base>

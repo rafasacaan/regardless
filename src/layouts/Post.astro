@@ -1,0 +1,44 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  fecha: Date;
+  tipo: 'técnico' | 'no-técnico';
+  resumen?: string;
+}
+
+const { title, fecha, tipo, resumen } = Astro.props;
+
+const fechaLegible = fecha.toLocaleDateString('es-CL', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const fechaISO = fecha.toISOString().slice(0, 10);
+---
+
+<Base title={`${title} — regardless`} description={resumen}>
+  <main class="wrap">
+    <nav class="crumb">
+      <a href="/">regardless</a> / <a href="/blog/">blog</a>
+    </nav>
+
+    <header class="post-header">
+      <div class="post-meta">
+        <span class="post-tipo">{tipo}</span>
+        <time datetime={fechaISO}>{fechaLegible}</time>
+      </div>
+      <h1 class="post-h1">{title}</h1>
+    </header>
+
+    <article class="prose">
+      <slot />
+    </article>
+  </main>
+
+  <footer class="foot">
+    <a class="foot-link" href="mailto:rafasacaan@gmail.com">un lab de rafa sacaan</a>
+    <a class="foot-link" href="/blog/">← volver al blog</a>
+  </footer>
+</Base>

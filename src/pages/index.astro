@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base>
+  <main class="hero">
+    <article class="entry">
+      <h1 class="head anim d2"><span class="ghost" aria-hidden="true">regard<span class="mid">·</span>less</span><span class="ghost" aria-hidden="true">regard<span class="mid">·</span>less</span><span class="solid">regard<span class="mid">·</span>less</span></h1>
+      <p class="pron anim d3"><span class="pos">(adv.)</span><span class="ipa">/rɪˈgɑːrdləs/</span></p>
+      <p class="def anim d3"><span class="num">(def.)</span> Cuando algo se hace o es cierto independiente de los obstáculos o de lo que piensen los demás.</p>
+      <p class="def anim d4"><span class="num">(lab.)</span> Un laboratorio personal y experimental que construye artefactos para sacar afuera las ideas que ya llevas adentro.</p>
+      <p class="def def-last anim d4"><span class="num">(n.b.)</span> La atención es un recurso limitado, úsalo bien.</p>
+    </article>
+
+    <section class="instruments">
+      <div class="cols">
+        <div class="col-group anim d4">
+          <div class="eyebrow">artefactos</div>
+          <div class="stack">
+            <a class="link" href="https://munra.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">munra</span>munra<span class="arrow">↗</span></a>
+            <a class="link" href="https://heyfrank.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">heyfrank</span>heyfrank<span class="arrow">↗</span></a>
+            <a class="link" href="https://yoescritor.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">yoescritor</span>yoescritor<span class="arrow">↗</span></a>
+          </div>
+        </div>
+        <div class="col-group anim d5">
+          <div class="eyebrow">notas</div>
+          <div class="stack">
+            <a class="link" href="/blog/"><span class="g" aria-hidden="true">blog</span>blog<span class="arrow">→</span></a>
+          </div>
+        </div>
+        <div class="col-group anim d5">
+          <div class="eyebrow">contacto</div>
+          <div class="stack">
+            <a class="link" href="mailto:rafasacaan@gmail.com"><span class="g" aria-hidden="true">email</span>email<span class="arrow">↗</span></a>
+            <a class="link" href="https://www.linkedin.com/in/rafaelsacaanamunategui/" target="_blank" rel="noopener"><span class="g" aria-hidden="true">linkedin</span>linkedin<span class="arrow">↗</span></a>
+            <a class="link" href="https://github.com/rafasacaan" target="_blank" rel="noopener"><span class="g" aria-hidden="true">github</span>github<span class="arrow">↗</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot anim d5">
+    <a class="foot-link" href="mailto:rafasacaan@gmail.com">un lab de rafa sacaan</a>
+    <span>actualizado junio 2026</span>
+  </footer>
+
+  <script is:inline>
+    (function(){
+      const head = document.querySelector('.head');
+      if(!head || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      function glitch(){
+        head.classList.add('glitching');
+        setTimeout(() => head.classList.remove('glitching'), 420);
+        setTimeout(glitch, 4000 + Math.random() * 8000);
+      }
+
+      setTimeout(glitch, 3000 + Math.random() * 4000);
+    })();
+  </script>
+</Base>
