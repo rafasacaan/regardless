@@ -21,6 +21,15 @@ body{
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
+#dot-canvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:0;
+}
+body > *:not(#dot-canvas){ position:relative; z-index:1; }
 
 /* ---- top bar ---- */
 .top{
@@ -357,6 +366,48 @@ body{
   text-transform:uppercase;
   opacity:.35;
 }
+
+/* ---- contact form ---- */
+.contact-form{
+  display:flex;
+  flex-direction:column;
+  gap:.5em;
+  margin-top:.3em;
+  width:100%;
+  max-width:22ch;
+}
+.contact-input{
+  font-family:var(--blonded);
+  font-size:clamp(10px,1.2vw,12px);
+  font-weight:400;
+  color:var(--ink);
+  background:transparent;
+  border:none;
+  border-bottom:1px solid var(--ink);
+  padding:.4em 0;
+  resize:none;
+  outline:none;
+  line-height:1.4;
+  opacity:.8;
+  transition:opacity .2s ease;
+}
+.contact-input::placeholder{ opacity:.4; }
+.contact-input:focus{ opacity:1; }
+.contact-btn{
+  font-family:var(--blonded);
+  font-size:clamp(10px,1.2vw,12px);
+  font-weight:400;
+  color:var(--ink);
+  background:transparent;
+  border:none;
+  padding:0;
+  cursor:pointer;
+  text-align:left;
+  opacity:.5;
+  transition:opacity .2s ease;
+  letter-spacing:.04em;
+}
+.contact-btn:hover{ opacity:1; }
 
 /* ---- footer ---- */
 .foot{
