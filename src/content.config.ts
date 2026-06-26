@@ -8,7 +8,7 @@ const blog = defineCollection({
     // fecha de publicación
     fecha: z.coerce.date(),
     // clasificación: define en qué pestaña aparece y la etiqueta visible
-    tipo: z.enum(['técnico', 'no-técnico']),
+    tipo: z.enum(['tech', 'nota']),
     // bajada breve que se muestra en el listado
     resumen: z.string().optional(),
     // ocúltalo del listado mientras lo escribes

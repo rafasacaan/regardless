@@ -1,7 +1,7 @@
 ---
-title: "Receta 04 — Agentes y streaming: el cerebro de la app"
+title: "Recipe Book #4 — Agentes y streaming: el cerebro de la app"
 fecha: 2026-06-25
-tipo: técnico
+tipo: tech
 resumen: "Un agente real conectado a la API: respuestas token a token por SSE, memoria en Postgres, tools y registro de costos."
 draft: false
 ---

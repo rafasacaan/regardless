@@ -1,5 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const latest = allPosts.find(p => p.id === '00-apertura');
+const pinned2 = allPosts.find(p => p.id === '01-foundations');
+const postCount = allPosts.length;
 ---
 
 <Base>
@@ -8,7 +14,7 @@ import Base from '../layouts/Base.astro';
       <h1 class="head anim d2"><span class="ghost" aria-hidden="true">regard<span class="mid">·</span>less</span><span class="ghost" aria-hidden="true">regard<span class="mid">·</span>less</span><span class="solid">regard<span class="mid">·</span>less</span></h1>
       <p class="pron anim d3"><span class="pos">(adv.)</span><span class="ipa">/rɪˈgɑːrdləs/</span></p>
       <p class="def anim d3"><span class="num">(def.)</span> Cuando algo se hace o es cierto independiente de los obstáculos o de lo que piensen los demás.</p>
-      <p class="def anim d4"><span class="num">(lab.)</span> Un laboratorio personal y experimental que construye artefactos para sacar afuera las ideas que ya llevas adentro.</p>
+      <p class="def def-lab anim d4"><span class="num">(lab.)</span> <span class="lab-text"></span><span class="lab-cursor" aria-hidden="true">|</span></p>
       <p class="def def-last anim d4"><span class="num">(n.b.)</span> La atención es un recurso limitado, úsalo bien.</p>
     </article>
 
@@ -17,15 +23,52 @@ import Base from '../layouts/Base.astro';
         <div class="col-group anim d4">
           <div class="eyebrow">artefactos</div>
           <div class="stack">
-            <a class="link" href="https://munra.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">munra</span>munra<span class="arrow">↗</span></a>
-            <a class="link" href="https://heyfrank.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">heyfrank</span>heyfrank<span class="arrow">↗</span></a>
-            <a class="link" href="https://yoescritor.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">yoescritor</span>yoescritor<span class="arrow">↗</span></a>
+            <span class="artifact-row"><a class="link" href="https://munra.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">munra</span>munra<span class="arrow">↗</span></a><span class="soon">coming soon</span></span>
+            <span class="artifact-desc">Pequeños modelos que generan tracks instrumentales.</span>
+            <span class="artifact-row"><a class="link" href="https://heyfrank.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">heyfrank</span>heyfrank<span class="arrow">↗</span></a><span class="soon">coming soon</span></span>
+            <span class="artifact-desc">Recetas para crear música desde el mood, no desde las perillas.</span>
+            <span class="artifact-row"><a class="link" href="https://yoescritor.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">yoescritor</span>yoescritor<span class="arrow">↗</span></a><span class="soon">coming soon</span></span>
+            <span class="artifact-desc">Encuentra al escritor que ya vive en ti.</span>
           </div>
         </div>
         <div class="col-group anim d5">
           <div class="eyebrow">notas</div>
           <div class="stack">
             <a class="link" href="/blog/"><span class="g" aria-hidden="true">blog</span>blog<span class="arrow">→</span></a>
+            <span class="post-count">{postCount} posts</span>
+            {pinned2 && (
+              <a class="latest-post" href={`/blog/${pinned2.id}/`}>
+                <div class="latest-meta">
+                  <span class="live-dot" aria-hidden="true"></span>
+                  <span>{pinned2.data.fecha.toLocaleDateString('es-CL', { day:'numeric', month:'short', year:'numeric' })}</span>
+                  <span class="latest-tipo">{pinned2.data.tipo}</span>
+                </div>
+                <span class="latest-title">{pinned2.data.title}</span>
+              </a>
+            )}
+            {latest && (
+              <a class="latest-post" href={`/blog/${latest.id}/`}>
+                <div class="latest-meta">
+                  <span class="live-dot" aria-hidden="true"></span>
+                  <span>{latest.data.fecha.toLocaleDateString('es-CL', { day:'numeric', month:'short', year:'numeric' })}</span>
+                  <span class="latest-tipo">{latest.data.tipo}</span>
+                </div>
+                <span class="latest-title">{latest.data.title}</span>
+              </a>
+            )}
+          </div>
+        </div>
+        <div class="col-group anim d5">
+          <div class="eyebrow">música</div>
+          <div class="stack">
+            <a class="link" href="https://munra.bandcamp.com" target="_blank" rel="noopener"><span class="g" aria-hidden="true">bandcamp</span>bandcamp<span class="arrow">↗</span></a>
+            <span class="latest-post" style="margin-top:.5em;">
+              <span class="latest-meta">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span class="latest-tipo">latest</span>
+              </span>
+              <span class="latest-title">Primeros samples a mano de un 808</span>
+            </span>
           </div>
         </div>
         <div class="col-group anim d5">
@@ -51,12 +94,55 @@ import Base from '../layouts/Base.astro';
       if(!head || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       function glitch(){
-        head.classList.add('glitching');
-        setTimeout(() => head.classList.remove('glitching'), 420);
-        setTimeout(glitch, 4000 + Math.random() * 8000);
+        const isStatic = Math.random() < 0.35;
+        const cls = isStatic ? 'glitching-static' : 'glitching';
+        const dur = isStatic ? 200 : 420;
+        head.classList.add(cls);
+        setTimeout(() => head.classList.remove(cls), dur);
+
+        // a veces el glitch estático dispara un segundo pequeño
+        if(isStatic && Math.random() < 0.5){
+          setTimeout(() => {
+            head.classList.add('glitching-static');
+            setTimeout(() => head.classList.remove('glitching-static'), 180);
+          }, 280);
+        }
+
+        setTimeout(glitch, 3500 + Math.random() * 7000);
       }
 
-      setTimeout(glitch, 3000 + Math.random() * 4000);
+      setTimeout(glitch, 2500 + Math.random() * 3000);
+
+      // typewriter (lab.)
+      const labText = document.querySelector('.lab-text');
+      const labCursor = document.querySelector('.lab-cursor');
+      const labFull = 'Un laboratorio experimental que construye artefactos para sacar afuera las ideas que ya llevas adentro.';
+      if(labText && labCursor){
+        const entranceEnd = 560 + 900; // d4 delay + duration
+        setTimeout(() => {
+          labCursor.classList.add('typing');
+          let i = 0;
+          const iv = setInterval(() => {
+            labText.textContent = labFull.slice(0, ++i);
+            if(i >= labFull.length){
+              clearInterval(iv);
+              labCursor.classList.remove('typing');
+              labCursor.classList.add('done');
+            }
+          }, 32);
+        }, entranceEnd);
+      }
+
+      // efecto atención perdida en (n.b.)
+      const nb = document.querySelector('.def-last');
+      if(nb){
+        function loseAttention(){
+          nb.classList.add('losing');
+          nb.addEventListener('animationend', () => nb.classList.remove('losing'), { once:true });
+          setTimeout(loseAttention, 12000 + Math.random() * 20000);
+        }
+        setTimeout(loseAttention, 6000 + Math.random() * 10000);
+      }
     })();
   </script>
 </Base>

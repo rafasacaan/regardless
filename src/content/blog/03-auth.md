@@ -1,7 +1,7 @@
 ---
-title: "Receta 03 — Auth: Auth0, JWT, PKCE y la cookie firmada para SSE"
+title: "Recipe Book #3 — Auth: Auth0, JWT, PKCE y la cookie firmada para SSE"
 fecha: 2026-06-18
-tipo: técnico
+tipo: tech
 resumen: "Autenticación de punta a punta: login con Auth0, verificación de JWT y el truco de la cookie firmada para el streaming."
 draft: false
 ---

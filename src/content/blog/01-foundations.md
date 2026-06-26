@@ -1,7 +1,7 @@
 ---
-title: "Receta 01 — Foundation: el esqueleto de tu app desde cero"
+title: "Recipe Book #1 — Foundation: el esqueleto de tu app desde cero"
 fecha: 2026-06-04
-tipo: técnico
+tipo: tech
 resumen: "Los cimientos: Docker Compose, FastAPI con /health, config centralizada, logging estructurado y un make dev que levanta todo."
 draft: false
 ---

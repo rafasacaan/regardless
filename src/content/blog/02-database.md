@@ -1,7 +1,7 @@
 ---
-title: "Receta 02 — Database: modelos, migraciones, repositorios y endpoints"
+title: "Recipe Book #2 — Database: modelos, migraciones, repositorios y endpoints"
 fecha: 2026-06-11
-tipo: técnico
+tipo: tech
 resumen: "La capa de datos completa: Postgres, migraciones con Alembic, patrón repository, services, DTOs y endpoints REST."
 draft: false
 ---
