@@ -489,7 +489,7 @@ body > *:not(#dot-canvas){ position:relative; z-index:1; }
 .head{ isolation:isolate; }
 
 .head.glitching .solid{
-  animation: glitch-main .5s steps(1) forwards;
+  animation: glitch-main 1.2s steps(1) forwards;
 }
 .head.glitching .ghost,
 .head.glitching-static .ghost{
@@ -498,10 +498,10 @@ body > *:not(#dot-canvas){ position:relative; z-index:1; }
   mix-blend-mode: screen;
 }
 .head.glitching .ghost:nth-child(1){
-  animation: glitch-red .5s steps(1) forwards;
+  animation: glitch-red 1.2s steps(1) forwards;
 }
 .head.glitching .ghost:nth-child(2){
-  animation: glitch-cyan .5s steps(1) forwards;
+  animation: glitch-cyan 1.2s steps(1) forwards;
   opacity:0;
 }
 
