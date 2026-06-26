@@ -15,7 +15,7 @@ const postCount = allPosts.length;
       <p class="pron anim d3"><span class="pos">(adv.)</span><span class="ipa">/rɪˈgɑːrdləs/</span></p>
       <p class="def anim d3"><span class="num">(def.)</span> Cuando algo se hace o es cierto independiente de los obstáculos o de lo que piensen los demás.</p>
       <p class="def def-lab anim d4"><span class="num">(lab.)</span> <span class="lab-text"></span><span class="lab-cursor" aria-hidden="true">|</span></p>
-      <p class="def def-last anim d4"><span class="num">(n.b.)</span> La atención es un recurso limitado, úsalo bien.</p>
+      <p class="def def-last anim d4"><span class="num">(n.b.)</span> Tu atención es un recurso limitado, úsala bien.</p>
     </article>
 
     <section class="instruments">
@@ -62,13 +62,13 @@ const postCount = allPosts.length;
           <div class="eyebrow">música</div>
           <div class="stack">
             <a class="link" href="https://munra.bandcamp.com" target="_blank" rel="noopener"><span class="g" aria-hidden="true">bandcamp</span>bandcamp<span class="arrow">↗</span></a>
-            <span class="latest-post" style="margin-top:.5em;">
+            <a class="latest-post" href="https://munra.bandcamp.com" target="_blank" rel="noopener" style="margin-top:.5em;">
               <span class="latest-meta">
                 <span class="live-dot" aria-hidden="true"></span>
                 <span class="latest-tipo">latest</span>
               </span>
               <span class="latest-title">Primeros samples a mano de un 808</span>
-            </span>
+            </a>
           </div>
         </div>
         <div class="col-group anim d5">
@@ -116,15 +116,18 @@ const postCount = allPosts.length;
       // typewriter (lab.)
       const labText = document.querySelector('.lab-text');
       const labCursor = document.querySelector('.lab-cursor');
-      const labFull = 'Un laboratorio experimental que construye artefactos para sacar afuera las ideas que ya llevas adentro.';
+      const labPlain = 'Un laboratorio experimental que construye artefactos digitales para que personas normales saquen afuera las ideas que llevan dentro.';
+      const labHighlight = 'personas normales';
+      const labFull = labPlain.replace(labHighlight, `<em class="lab-em">${labHighlight}</em>`);
       if(labText && labCursor){
-        const entranceEnd = 560 + 900; // d4 delay + duration
+        const entranceEnd = 560 + 900;
         setTimeout(() => {
           labCursor.classList.add('typing');
           let i = 0;
           const iv = setInterval(() => {
-            labText.textContent = labFull.slice(0, ++i);
-            if(i >= labFull.length){
+            const slice = labPlain.slice(0, ++i);
+            labText.innerHTML = slice.replace(labHighlight, `<em class="lab-em">${labHighlight}</em>`);
+            if(i >= labPlain.length){
               clearInterval(iv);
               labCursor.classList.remove('typing');
               labCursor.classList.add('done');
@@ -141,7 +144,7 @@ const postCount = allPosts.length;
           nb.addEventListener('animationend', () => nb.classList.remove('losing'), { once:true });
           setTimeout(loseAttention, 12000 + Math.random() * 20000);
         }
-        setTimeout(loseAttention, 6000 + Math.random() * 10000);
+        setTimeout(loseAttention, 2000 + Math.random() * 1000);
       }
     })();
   </script>

@@ -1,5 +1,5 @@
 ---
-title: "Regardless"
+title: "Regardless — ¿qué es?"
 fecha: 2026-06-26
 tipo: nota
 resumen: "No matter what. Pase lo que pase, lo vamos a hacer."

@@ -503,6 +503,7 @@ body{
 }
 .lab-cursor.typing{ opacity:1; animation: blink .7s step-end infinite; }
 .lab-cursor.done{ animation: blink 1.1s step-end infinite; opacity:1; }
+.lab-em{ font-style:italic; font-weight:500; }
 .def-lab{ min-height:calc(clamp(.85rem,1.4vw,1.05rem) * 1.4 * 3); }
 
 /* ---- atención perdida ---- */
@@ -519,7 +520,7 @@ body{
   90%  { filter:blur(0.1px);  opacity:.9; }
   100% { filter:blur(0px);    opacity:1; }
 }
-.def-last.losing{ animation: lose-focus 9s ease-in-out forwards; }
+.def-last.losing{ animation: lose-focus 26s ease-in-out forwards; }
 
 @media (prefers-reduced-motion: reduce){
   .def-last.losing{ animation:none; }
