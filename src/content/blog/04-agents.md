@@ -1,102 +1,104 @@
 ---
-title: "Recipe Book #4 — Agentes y streaming: el cerebro de la app"
+title: "Construyendo a hey-frank #4 — Agents y streaming con Google ADK"
 fecha: 2026-06-25
-tipo: tech
-resumen: "Un agente real conectado a la API: respuestas token a token por SSE, memoria en Postgres, tools y registro de costos."
+tipo: "hey frank"
+resumen: "El agente con Google ADK y Gemini: streaming SSE, tools, memoria y tracking de uso."
 draft: false
 ---
 
-> **Qué consigues al terminar:** un agente de IA real conectado a tu API — responde **token a
-> token** por SSE, recuerda la conversación (memoria persistida en Postgres), puede llamar
-> *tools* (funciones tuyas), y registra los tokens consumidos para calcular costos.
+> Hoy, cuarta receta del set para construir una app agéntica.
 >
-> 🙏 **Gracias, Bedir.** Esta serie está fuertemente basada en los excelentes posts de [Bedir Tapkan](https://bedirtapkan.com/). Gracias por compartir tu trabajo con tanta generosidad.
+> **Crédito:** estas notas están fuertemente basadas en la serie *Building a Production-Ready Agent
+> Stack* de **Bedir Tapkan** ([bedirtapkan.com](https://bedirtapkan.com)). Gracias por el material
+> original; acá lo adapté a mi stack (Gemini/ADK + Firebase).
 
----
 
-## Los 5 conceptos del SDK (en 30 segundos)
 
-- **Agent** = una *configuración* reutilizable de un LLM (su modelo, su system prompt, sus tools).
-  No tiene estado; se define una vez y se usa muchas veces.
-- **Session** = la *memoria* de una conversación, persistida en Postgres. El SDK recupera el
-  historial antes de cada run y guarda la respuesta después, solo.
-- **Tools** = funciones Python que el agente puede decidir llamar (ej. "qué hora es"). El SDK genera
-  el *schema* (la descripción de la función para el LLM) automáticamente desde tus type hints.
-- **Streaming** = el agente emite *eventos* mientras trabaja (un token, una tool llamada…). Nosotros
-  los traducimos a eventos SSE con nombre para el frontend.
-- **Usage** = cada run reporta cuántos tokens gastó (input/output), para tracking de costos.
+Partamos sin más preámbulos!
 
-> El paquete se importa como **`agents`**, NO `openai_agents`.
+## El mapa mental: las piezas de Google ADK
 
----
+Antes de escribir código, conviene entender las **5 piezas** con las que ADK arma un agente. Son
+pocas y encajan limpio:
+
+- **`Agent`** — la *definición* del agente: un modelo (Gemini) + sus instrucciones (el system prompt)
+  + sus tools. Es el "quién es y qué sabe hacer". No corre nada por sí solo; es la receta.
+- **Tools** — funciones Python normales que el agente *puede llamar* (ej. "dame la hora"). ADK las
+  envuelve solas a partir de su firma y su docstring; no hay decorador obligatorio.
+- **`SessionService`** — la **memoria**. Administra las conversaciones, cada una identificada por la
+  tripleta `(app_name, user_id, session_id)`. Importante: **la sesión de ADK ya lleva el `user_id`
+  adentro**, así que ADK sabe de quién es cada conversación. Hay dos versiones: `InMemory...` (se
+  pierde al reiniciar, sirve para probar) y `Database...` (persiste en Postgres).
+- **`Runner`** — el **motor** que corre el agente. Le das un mensaje y él ejecuta el loop: llama al
+  modelo, si el modelo pide una tool la ejecuta, vuelve a llamar al modelo, y así hasta tener la
+  respuesta. Tú no escribes ese loop — ADK lo maneja.
+- **`Event`** — cada cosa que ocurre *durante* un run llega como un objeto `Event`: un pedacito de
+  texto, una llamada a tool, su resultado, el conteo de tokens. El `Runner` te entrega un **stream de
+  Events** que tú vas leyendo.
+
+Cómo se conectan, en una frase:
+```
+Agent (modelo + prompt + tools)  +  SessionService (memoria)  →  Runner  →  stream de Events
+```
+
+Y una distinción que ordena toda la receta: **unas piezas son de ADK, otras son tuyas.**
+- **De ADK:** `Agent`, `Runner`, `SessionService`, los `Event` (el cerebro y su loop).
+- **Tuyo:** el endpoint SSE que expone todo eso por HTTP — auth por cookie, query params, y el
+  contrato de eventos `token`/`tool_call`/`usage`/`done` que tu frontend espera. Eso lo decides tú,
+  ADK no se mete.
+
+
 
 ## Paso 1 — Dependencias
 
 **📋 Comando — desde `backend/`:**
 ```bash
-uv add "openai-agents[sqlalchemy]" openai tenacity
+uv add google-adk
 ```
-- **openai-agents[sqlalchemy]** → el SDK de agentes + soporte para guardar la memoria en SQL.
-- **openai** → el cliente base (lo usa el SDK; también nos da el tipo `RateLimitError`).
-- **tenacity** → reintentos automáticos (para los rate limits del LLM).
 
-> ⚠️ Como en la receta 02, recuerda `uv lock` antes de `make dev` (el Dockerfile usa `--frozen`).
 
----
+## Paso 2 — Config de Gemini
 
-## Paso 2 — Config de OpenAI
+**Por qué una sola fuente de config:** no creamos un `core/config.py` aparte para el agente — eso
+sería duplicar config. Sumamos los dos campos del agente a la clase `Settings` que ya existe en
+`core/settings.py`. Una sola fuente de verdad, importada igual en todo el backend.
 
-**Por qué:** el agente necesita la API key y el modelo. En la app real esto vive en un archivo
-**aparte**, `core/config.py`, con nombres en MAYÚSCULA.
-
-**📋 Código a copiar — `backend/app/core/config.py`:**
+**📋 Agregar a `core/settings.py`** (junto al resto de campos, en minúsculas como el resto):
 ```python
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
-class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8",
-        case_sensitive=False, extra="ignore",   # ignora vars del .env que no declara
-    )
-
-    DATABASE_URL: str
-    AUTH0_DOMAIN: str
-    AUTH0_AUDIENCE: str
-    COOKIE_SECRET: str
-
-    OPENAI_API_KEY: str
-    OPENAI_MODEL: str = "gpt-5-nano"
-    OPENAI_MAX_TOKENS: int = 4096
-    OPENAI_TEMPERATURE: float = 0.7
-
-    AGENT_MAX_TURNS: int = 10            # evita loops infinitos
-    AGENT_ENABLE_TRACING: bool = True
-
-settings = Settings()
+# Agente (Gemini / ADK)
+gemini_model: str = "gemini-2.5-flash"
+agent_max_turns: int = 10
+# Nota: GOOGLE_API_KEY NO va acá. ADK la lee del entorno del SO directamente,
+# no del objeto settings (ver el ⚠️ de abajo).
 ```
 
-**📋 Agregar a `backend/.env`:**
+**📋 `backend/.env`:**
 ```bash
-OPENAI_API_KEY=sk-...tu-key...
-OPENAI_MODEL=gpt-5-nano
+GOOGLE_API_KEY=...tu-key-de-google-ai-studio...
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
----
+> ⚠️ **Gotcha — modelo y cuota (verificado jun 2026):**
+> - **`gemini-2.0-flash` está retirado** → da `404 NOT_FOUND` ("model is no longer available"). Usa un
+>   modelo actual: **`gemini-2.5-flash`** (o `gemini-2.5-flash-lite` / `gemini-flash-latest`).
+> - **429 RESOURCE_EXHAUSTED con `limit: 0`** al primer run = tu proyecto **no tiene free tier** para
+>   ese modelo. No es un rate limit pasajero (esperar no ayuda). Fix: genera la key en
+>   [Google AI Studio](https://aistudio.google.com/apikey) (auto-provisiona free tier) y/o **habilita
+>   billing** en el proyecto. El 429 desaparece cuando la cuota deja de ser 0.
 
-## Paso 3 — Ampliar el modelo `Message` (desglose de tokens)
 
-**Por qué:** input y output cuestan distinto (el output, que incluye el "razonamiento" del modelo,
-cuesta ~3× el input). Para calcular costo real necesitamos guardarlos por separado.
+## Paso 3 — Modelo `Message`, migración y repo
+
+**Por qué:** input y output cuestan distinto; para calcular costo real los guardamos por separado.
 
 **📋 Agregar al modelo `Message` en `persistence/models.py`** (junto al `tokens` que ya existe):
 ```python
-tokens: Mapped[int] = mapped_column(Integer, default=0)                               # total
-input_tokens: Mapped[int] = mapped_column(Integer, default=0, server_default="0")     # costo input
-output_tokens: Mapped[int] = mapped_column(Integer, default=0, server_default="0")    # costo output (~3x)
+tokens: Mapped[int] = mapped_column(Integer, default=0)                            # total
+input_tokens: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+output_tokens: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
 ```
 
-**📋 Actualizar `message_repo.create()`** para que acepte y guarde los nuevos campos (la receta 02
-lo dejó sin ellos). En `persistence/repositories/message_repo.py`:
+**📋 Actualizar `repositories/message_repo.create()`** :
 ```python
 async def create(self, db, session_id, role, content,
                  tool_name=None, trace_id=None, span_id=None,
@@ -107,164 +109,186 @@ async def create(self, db, session_id, role, content,
     db.add(message); await db.flush(); await db.refresh(message)
     return message
 ```
-> ⚠️ **No olvides este paso.** El endpoint de streaming (Paso 8) llama
-> `message_repo.create(..., input_tokens=..., output_tokens=...)`. Si el repo no acepta esos
-> argumentos, el stream **funciona hasta el final pero revienta al guardar** con
-> `TypeError: create() got an unexpected keyword argument 'input_tokens'` — y pierdes la respuesta.
-> *(Bug encontrado y corregido al verificar esta receta en el test-app.)*
 
-**📋 Generar y aplicar la migración:**
+**📋 Migración:**
 ```bash
 make migrate-create msg="add input_tokens and output_tokens to messages"
 # revisa el archivo generado, luego:
 make migrate
 ```
 
----
 
 ## Paso 4 — Las tools (`agents/agent_assistant/tools.py`)
 
-**Por qué:** una *tool* es una función Python que el agente puede llamar cuando la necesita. El
-decorador `@function_tool` le dice al SDK "exponé esto al agente"; el SDK arma el schema desde el
-nombre, los type hints y el docstring. **El docstring importa**: es lo que el LLM lee para decidir
-cuándo usar la tool.
+**Por qué:** en ADK una tool es una **función Python normal** con type hints y docstring; el SDK la
+envuelve sola. No hay decorador obligatorio.
 
-**📋 Código a copiar — `backend/app/agents/agent_assistant/tools.py`:**
+**📋 Código:**
 ```python
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from agents import function_tool
+DEFAULT_TZ = ZoneInfo("America/Santiago")
 
-DEFAULT_TZ = ZoneInfo("America/Santiago")   # zona de presentación (el server vive en UTC)
 
-@function_tool
-def get_current_time() -> str:
+def get_current_time() -> dict:
     """Get the current time in HH:MM:SS format, in America/Santiago timezone."""
-    return datetime.now(DEFAULT_TZ).strftime("%H:%M:%S (%Z)")
+    return {"time": datetime.now(DEFAULT_TZ).strftime("%H:%M:%S (%Z)")}
 
-@function_tool
-def get_current_date() -> str:
+
+def get_current_date() -> dict:
     """Get the current date in YYYY-MM-DD format, in America/Santiago timezone."""
-    return datetime.now(DEFAULT_TZ).strftime("%Y-%m-%d")
+    return {"date": datetime.now(DEFAULT_TZ).strftime("%Y-%m-%d")}
 ```
+> 💡 ADK recomienda que las tools **devuelvan un `dict`** (no un string), con una clave
+> descriptiva. El docstring sigue siendo lo que el modelo lee para decidir cuándo usarla.
 
----
 
-## Paso 5 — El system prompt (`prompts/system.md`)
+## Paso 5 — El system prompt
 
-**Por qué:** las *instructions* del agente (quién es, cómo se comporta). Lo guardamos en un `.md`
-aparte para editarlo sin tocar código.
+**Por qué:** el system prompt es el "carácter" del agente — define quién es, cómo responde, y cuándo
+usar sus tools. El `agent.py` (Paso 6) lo lee con `load_system_prompt()`, así que **este archivo tiene
+que existir** o el agente se cae al construirse. En ADK se pasa como `instruction` (singular).
 
-**📋 Código a copiar — `backend/app/agents/agent_assistant/prompts/system.md`:**
+**📋 Código — `backend/app/agents/agent_assistant/prompts/system.md`:**
 ```markdown
-You are a helpful AI assistant built on the OpenAI Agents SDK.
+Eres "hey-frank", un asistente conversacional útil, directo y amable.
 
-Your capabilities:
-- Answer questions accurately and concisely
-- Call tools when needed to provide current information
-- Remember conversation context across messages
-- Maintain a friendly, professional tone
+## Cómo respondes
+- Responde en el idioma del usuario (español por defecto).
+- Sé conciso: ve al grano, sin relleno ni disculpas innecesarias.
+- Si no sabes algo o no tienes una tool para resolverlo, dilo con honestidad.
 
-Guidelines:
-- Be concise but thorough
-- If you don't know something, say so
-- Use tools when they would provide better answers
-- Always prioritize user privacy and safety
+## Tus herramientas
+- `get_current_time`: úsala cuando el usuario pregunte la hora actual.
+- `get_current_date`: úsala cuando el usuario pregunte la fecha de hoy.
+
+No inventes la hora ni la fecha: para eso usa siempre las tools. La zona horaria de referencia es
+America/Santiago.
 ```
+> El docstring de cada tool (Paso 4) es lo que el modelo lee para decidir *cuándo* llamarla; este
+> prompt le da el *contexto general*. Ajústalo a gusto — es lo más fácil de iterar.
 
----
 
 ## Paso 6 — Construir el agente (`agents/agent_assistant/agent.py`)
 
-**Por qué:** acá se arma el `Agent` con su modelo, prompt y tools.
-
-**📋 Código a copiar — `backend/app/agents/agent_assistant/agent.py`:**
+**📋 Código:**
 ```python
 from pathlib import Path
 
-from agents import Agent, set_default_openai_key
+from google.adk.agents import Agent   # en algunas versiones se importa como LlmAgent
 
-from app.core.config import settings
-
-# El SDK lee la key del environment; la inyectamos desde settings (.env)
-set_default_openai_key(settings.OPENAI_API_KEY)
-
+from app.core.settings import settings
 from .tools import get_current_date, get_current_time
 
+
 def load_system_prompt() -> str:
-    prompt_path = Path(__file__).parent / "prompts" / "system.md"
-    return prompt_path.read_text()
+    return (Path(__file__).parent / "prompts" / "system.md").read_text()
+
 
 def build_agent() -> Agent:
     return Agent(
         name="assistant",
-        model=settings.OPENAI_MODEL,
-        instructions=load_system_prompt(),
+        model=settings.gemini_model,          # "gemini-2.5-flash"
+        instruction=load_system_prompt(),     # ojo: "instruction", no "instructions"
         tools=[get_current_time, get_current_date],
     )
 ```
+> 💡 Ojo con tres detalles según tu versión de ADK: `Agent` (alias de `LlmAgent`), el parámetro
+> `instruction` (singular), y que el modelo se pase como string. La key se toma del entorno
+> (`GOOGLE_API_KEY`), no se inyecta a mano.
 
 ---
 
-## Paso 7 — La memoria del SDK (`core/agents.py`)
+## Paso 7 — Session service + runner (`core/agents.py`)
 
-**Por qué:** `SQLAlchemySession` es la memoria de conversación del SDK, guardada en **tu** Postgres.
+**Por qué:** ADK no maneja "una sesión por conversación" como un objeto suelto que tú creas y pasas;
+usa un **SessionService** central que administra todas las conversaciones, cada una identificada por
+la tripleta `(app_name, user_id, session_id)`. Como el `user_id` va dentro de esa identidad, **ADK
+sabe a qué usuario pertenece cada sesión** sin que tú lleves el scoping por fuera. El **Runner** se
+apoya en este servicio para recuperar el historial en cada turno.
 
-**📋 Código a copiar — `backend/app/core/agents.py`:**
+> **En puertos y adaptadores:** el agente (Gemini/ADK) es un **adaptador de salida** detrás de un
+> "puerto de LLM" — por eso vive aislado en `app/agents/` y es swappable. El endpoint de streaming
+> (Paso 8) es un **adaptador de entrada**.
+
+**📋 Código:**
 ```python
-from agents import RunConfig, Runner
-from agents.extensions.memory import SQLAlchemySession   # ← ruta real del SDK
-from openai import RateLimitError
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+from google.adk.runners import Runner
+from google.adk.sessions import DatabaseSessionService
 
-from app.core.database import engine
+from app.core.settings import settings
 
-def get_agent_session(session_id: int) -> SQLAlchemySession:
-    """La sesión del SDK para una conversación. Reutiliza nuestro engine de Postgres."""
-    return SQLAlchemySession(
-        str(session_id),          # el SDK espera el id como string
-        engine=engine,
-        create_tables=True,       # crea agent_sessions/agent_messages la 1ª vez (idempotente)
-    )
+APP_NAME = "agent_stack"
 
-@retry(
-    retry=retry_if_exception_type(RateLimitError),
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=2, max=10),
-    reraise=True,                 # tras agotar reintentos, propaga el RateLimitError real
-)
-async def run_agent_with_retry(agent, message, session, config: RunConfig | None = None):
-    """Corre el agente (NO streaming) con reintentos ante rate limits."""
-    return await Runner.run(agent, message, session=session, config=config)
+# ADK crea sus propias tablas (sessions, events, app_states...) y la suya `sessions`
+# COLISIONA con la tabla `sessions` de la app. Por eso le damos una BD aparte (misma
+# instancia de Postgres, otra base: `adk`). Derivamos la URL de la principal.
+_adk_db_url = str(settings.database_url).rsplit("/", 1)[0] + "/adk"
+_session_service = DatabaseSessionService(db_url=_adk_db_url)
+
+
+def get_session_service() -> DatabaseSessionService:
+    return _session_service
+
+
+def build_runner(agent) -> Runner:
+    return Runner(agent=agent, app_name=APP_NAME, session_service=get_session_service())
 ```
 
-> ⚠️ Ese `@retry` **solo sirve para `Runner.run`** (no streaming), porque ahí el `RateLimitError`
-> se levanta dentro del `await`. Para **streaming** hay que atraparlo dentro del loop (ver Paso 8).
+> ⚠️ **Gotcha importante — colisión de tablas.** Si apuntas `DatabaseSessionService` a **tu misma
+> base** (`settings.database_url`), revienta al primer run con algo como:
+> `column "app_name" referenced in foreign key constraint does not exist` (al crear la tabla
+> `events`). La razón: ADK quiere crear sus propias tablas `sessions`/`events`/`app_states`, pero ya
+> existe **tu** tabla `sessions` (con otra forma), y los FK de ADK chocan. **Fix:** darle a ADK una
+> **BD separada**. Créala una vez:
+> ```bash
+> docker compose exec db psql -U postgres -c "CREATE DATABASE adk;"
+> ```
+> y apunta el service a ella (el código de arriba ya lo hace, derivando `.../adk` de tu
+> `database_url`). Así las tablas de ADK viven aisladas de las tuyas.
+
+> `DatabaseSessionService` construye su engine con `create_async_engine` y un `async_sessionmaker` —
+> es **async nativo**. Le pasas la URL con `+asyncpg` tal cual; **no** hay que convertirla a sync.
+> Para una primera prueba sin persistencia (y sin crear la BD `adk`) sirve
+> `from google.adk.sessions import InMemorySessionService` → `InMemorySessionService()`, que no crea
+> tablas.
 
 ---
 
 ## Paso 8 — El endpoint de streaming (`api/stream.py`)
 
-**Por qué:** este es el corazón. Corre el agente en modo *streaming* y traduce los eventos del SDK
-a eventos SSE con nombre. Recuerda (receta 03): **auth por cookie, no JWT** (EventSource no manda
-headers), y `session_id`/`message` van como query params (EventSource solo hace GET).
+**Por qué:** este es el paso donde **todo se junta**. El usuario escribe algo y necesitamos: 
+- (1) correr el agente, y 
+- (2) que la respuesta llegue al navegador **palabra por palabra** en vez de esperar el bloque completo. Eso se hace con **SSE** (Server-Sent Events): una respuesta HTTP que se mantiene abierta y va empujando líneas de a poco.
 
-**📋 Código a copiar — `backend/app/api/stream.py`:**
+El archivo tiene **dos mitades**, y conviene verlas separadas:
+
+1. **El endpoint HTTP** (`@router.get("/")`) — la parte *tuya*, no de ADK. Se encarga de la auth (por
+   **cookie** de stream, no JWT — recuerda que `EventSource` no manda headers),
+   chequear el `Origin` (anti-CSRF), confirmar que la sesión es del usuario, guardar el mensaje del
+   usuario, y abrir el `StreamingResponse`.
+2. **`generate_agent_events`** — la parte que habla con **ADK**. Es un *generador async*: corre el
+   `Runner`, va recibiendo el **stream de `Event`** del agente, y **traduce** cada `Event` de ADK al
+   formato de eventos SSE que tu frontend entiende (`token`, `tool_call`, `usage`, `done`...).
+
+> **La idea clave**: ADK te da el loop y los `Event`; tu trabajo acá es **mapear esos `Event` a tu
+contrato SSE** y manejar la conexión HTTP. Vamos a leer el código por esas dos mitades.
+
+**📋 Código — `backend/app/api/stream.py` (completo, versión ADK):**
 ```python
 import json
 import logging
 from typing import AsyncGenerator
 
-from agents import RunConfig, Runner, gen_trace_id
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
-from openai import RateLimitError
-from openai.types.responses import ResponseTextDeltaEvent
 from sqlalchemy.ext.asyncio import AsyncSession
+from google.genai import types
+from google.adk.agents.run_config import RunConfig, StreamingMode   # la ruta puede variar según la versión
 
 from app.agents.agent_assistant.agent import build_agent
-from app.core.agents import get_agent_session
+from app.core.agents import APP_NAME, build_runner, get_session_service
 from app.core.auth import get_user_from_stream_cookie
 from app.core.database import get_db
 from app.core.settings import settings
@@ -275,104 +299,155 @@ from app.persistence.repositories.session_repo import session_repo
 logger = logging.getLogger("agent")
 router = APIRouter(prefix="/stream", tags=["streaming"])
 
+
 def _sse(event: str, data: dict) -> str:
-    """Formatea un evento SSE con nombre."""
     return f"event: {event}\ndata: {json.dumps(data)}\n\n"
 
-async def generate_agent_events(
-    session_id: int, message_content: str, user_id: int, db: AsyncSession,
-) -> AsyncGenerator[str, None]:
-    """Corre el agente y mapea sus eventos a SSE."""
-    trace_id = gen_trace_id()   # lo generamos nosotros para poder linkear con el trace (lo usamos en una receta futura)
+
+async def generate_agent_events(session_id, message_content, user_id, db):
     try:
-        agent = build_agent()
-        agent_session = get_agent_session(session_id)
+        runner = build_runner(build_agent())
+        svc = get_session_service()
+        uid, sid = str(user_id), str(session_id)
 
-        result = Runner.run_streamed(
-            agent, message_content, session=agent_session,
-            max_turns=10,   # red de seguridad contra loops (param de run_streamed)
-            run_config=RunConfig(
-                workflow_name="agent_assistant",
-                group_id=str(session_id),
-                trace_id=trace_id,
-                trace_metadata={"user_id": str(user_id), "session_id": str(session_id)},
-            ),
+        # ADK exige que la sesión exista antes de correr
+        existing = await svc.get_session(app_name=APP_NAME, user_id=uid, session_id=sid)
+        if not existing:
+            await svc.create_session(app_name=APP_NAME, user_id=uid, session_id=sid)
+
+        new_message = types.Content(role="user", parts=[types.Part(text=message_content)])
+
+        final_text, usage = "", None
+        async for event in runner.run_async(
+            user_id=uid, session_id=sid, new_message=new_message,
+            run_config=RunConfig(streaming_mode=StreamingMode.SSE),
+        ):
+            # 1) texto (los chunks parciales traen event.partial = True)
+            if event.content and event.content.parts:
+                text = "".join(p.text or "" for p in event.content.parts)
+                if text:
+                    if getattr(event, "partial", False):
+                        yield _sse("token", {"delta": text})
+                    else:
+                        final_text = text
+
+            # 2) tool calls / resultados
+            for fc in event.get_function_calls():
+                yield _sse("tool_call", {"name": fc.name, "args": json.dumps(fc.args)})
+            for fr in event.get_function_responses():
+                yield _sse("tool_result", {"result": str(fr.response)})
+
+            # 3) usage (viene en el/los eventos del modelo)
+            if getattr(event, "usage_metadata", None):
+                usage = event.usage_metadata
+
+        in_tok = getattr(usage, "prompt_token_count", 0) or 0
+        out_tok = getattr(usage, "candidates_token_count", 0) or 0
+        total = getattr(usage, "total_token_count", 0) or 0
+
+        msg = await message_repo.create(
+            db, session_id=session_id, role="assistant", content=final_text,
+            tokens=total, input_tokens=in_tok, output_tokens=out_tok,
         )
+        yield _sse("usage", {"input_tokens": in_tok, "output_tokens": out_tok, "total_tokens": total})
+        yield _sse("done", {"message_id": msg.id, "session_id": session_id})
 
-        # El RateLimitError se levanta DENTRO de este loop (al consumir el stream).
-        async for event in result.stream_events():
-            if event.type == "raw_response_event":
-                if isinstance(event.data, ResponseTextDeltaEvent):
-                    yield _sse("token", {"delta": event.data.delta})          # texto token a token
-            elif event.type == "run_item_stream_event":
-                if event.name == "tool_called":
-                    raw = event.item.raw_item
-                    yield _sse("tool_call", {"name": getattr(raw, "name", None),
-                                             "args": getattr(raw, "arguments", None)})
-                elif event.name == "tool_output":
-                    yield _sse("tool_result", {"result": str(event.item.output)})
-            elif event.type == "agent_updated_stream_event":
-                yield _sse("agent_handoff", {"to": event.new_agent.name})
-
-        # Tras el loop, los datos finales ya están (NO se hace `await result`).
-        usage = result.context_wrapper.usage
-
-        assistant_message = await message_repo.create(
-            db, session_id=session_id, role="assistant", content=result.final_output,
-            tokens=usage.total_tokens, input_tokens=usage.input_tokens,
-            output_tokens=usage.output_tokens, trace_id=trace_id,
-        )
-
-        yield _sse("usage", {"input_tokens": usage.input_tokens,
-                             "output_tokens": usage.output_tokens,
-                             "total_tokens": usage.total_tokens})
-        yield _sse("done", {"message_id": assistant_message.id,
-                            "session_id": session_id, "trace_id": trace_id})
-
-    except RateLimitError:
-        yield _sse("error", {"code": "rate_limit",
-                             "message": "OpenAI rate limit. Intenta de nuevo en unos segundos."})
     except Exception as e:
         logger.exception("agent_run_failed")
         yield _sse("error", {"code": type(e).__name__, "message": str(e)})
+
 
 @router.get("/")
 async def stream_agent_response(
     request: Request,
     session_id: int,
     message: str,
-    auth0_id: str = Depends(get_user_from_stream_cookie),   # cookie, no JWT
+    subject: str = Depends(get_user_from_stream_cookie),   # cookie, no JWT
     db: AsyncSession = Depends(get_db),
 ):
     """SSE endpoint. Requiere la cookie de stream (llamar POST /auth/session antes)."""
-    # CSRF barato: verificar Origin
     origin = request.headers.get("origin")
     if origin not in (settings.cors_origins or []):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Origin not allowed")
 
-    # Bridge auth0_id -> user.id + autorización de la sesión
-    user = await user_service.get_or_create_from_auth0_id(db, auth0_id)
+    user = await user_service.get_or_create_from_subject(db, subject)
     session = await session_repo.get_by_id(db, session_id)
     if not session or session.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Session not found")
 
-    # Persistir el mensaje del usuario antes de correr el agente
     await message_repo.create(db, session_id=session_id, role="user", content=message)
 
     return StreamingResponse(
         generate_agent_events(session_id, message, user.id, db),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "Connection": "keep-alive",
-                 "X-Accel-Buffering": "no"},   # desactiva el buffering de nginx
+                 "X-Accel-Buffering": "no"},
     )
 ```
+Los eventos SSE que recibe el frontend: `token`, `tool_call`/`tool_result`, `usage`, `done`, `error`.
 
-Los eventos SSE que el frontend recibe: `token` (texto), `tool_call`/`tool_result`,
-`agent_handoff`, `usage` (tokens), `done` (fin, trae `message_id`), `error`.
+El endpoint `@router.get("/")` (arriba) es agnóstico del proveedor: auth por cookie, CSRF por
+Origin, autorización de sesión, persistir el mensaje del usuario y `StreamingResponse`. Lo único
+específico de ADK es `generate_agent_events`.
 
----
 
-## Paso 9 — Registrar el router y el de usage
+## Paso 8.5 — Resiliencia: retry ante rate limits (429/503)
+
+**Por qué:** los modelos fallan a veces por **rate limit** (429) o por estar **sobrecargados** (503).
+Son errores **transitorios**: reintentar un par de veces con espera suele resolverlos. Pero hay una
+trampa con el streaming: **una vez que empezaste a mandar tokens, no puedes reintentar** sin duplicar
+la salida. Así que la regla es **reintentar solo si el error pega *antes* del primer token**.
+
+**📋 Helper en `core/agents.py`** (qué error vale la pena reintentar):
+```python
+AGENT_MAX_RETRIES = 3          # nº de reintentos antes de rendirse
+AGENT_RETRY_BASE_DELAY = 2.0   # segundos; backoff exponencial: 2, 4, 8...
+
+
+def is_retryable_error(e: Exception) -> bool:
+    """Transitorio = rate limit (429) o sobrecarga (503). ADK envuelve el rate limit en
+    `_ResourceExhaustedError`, que no siempre trae `.code`; de ahí el fallback por nombre/mensaje."""
+    if getattr(e, "code", None) in (429, 503):
+        return True
+    return "ResourceExhausted" in type(e).__name__ or "RESOURCE_EXHAUSTED" in str(e).upper()
+```
+
+**📋 En `generate_agent_events` (Paso 8):** envuelve el run en un loop de reintento, con un flag
+`streamed_any` que marca si ya emitiste algo:
+```python
+attempt = 0
+while True:
+    streamed_any = False
+    final_text, usage = "", None
+    try:
+        # ... crear sesión si no existe ...
+        async for event in runner.run_async(...):
+            # cada vez que hagas yield de un token/tool: streamed_any = True
+            ...
+        # ... persistir + yield usage + yield done ...
+        return
+    except Exception as e:
+        # reintenta SOLO si es transitorio Y todavía no streameamos nada
+        if is_retryable_error(e) and not streamed_any and attempt < AGENT_MAX_RETRIES:
+            attempt += 1
+            await asyncio.sleep(AGENT_RETRY_BASE_DELAY * (2 ** (attempt - 1)))   # 2, 4, 8...
+            continue
+        yield _sse("error", {"code": type(e).__name__, "message": str(e)})
+        return
+```
+
+> **El caveat del streaming** (lo advertía el template original): el retry con decorador (tipo
+> `tenacity`) sirve para una llamada **no-streaming** (`Runner.run`), donde el error se levanta dentro
+> de un solo `await`. Para **streaming** (`run_async`), el error aparece al iterar, posiblemente a
+> mitad de la respuesta — por eso el retry va **dentro** del generador y solo **antes** del primer
+> token (`not streamed_any`). Si el fallo es a mitad de stream, se emite `event: error` y listo.
+>
+> ⚠️ Nota: al reintentar se vuelve a llamar `run_async` con el mismo mensaje. Si ADK alcanzó a
+> registrar el turno del usuario en su sesión antes de fallar, podría duplicarse en el contexto. Para
+> una app de dev es aceptable; en producción querrías idempotencia más fina.
+
+
+## Paso 9 — Registrar los routers
 
 **📋 Agregar a `backend/app/main.py`:**
 ```python
@@ -382,13 +457,13 @@ app.include_router(stream.router)
 app.include_router(usage.router)
 ```
 
----
-
 ## Paso 10 — Usage tracking (`api/usage.py`)
 
-**Por qué:** con los tokens guardados por mensaje, podemos sumar el uso y estimar el costo.
+**Por qué:** como en el Paso 8 guardamos `input_tokens`/`output_tokens` por cada mensaje del agente,
+ahora podemos **sumarlos** y estimar el costo. Solo necesitas poner los **precios de Gemini** (USD por
+1M de tokens, input y output por separado) en las constantes de abajo.
 
-**📋 Código a copiar — `backend/app/api/usage.py`:**
+**📋 Código — `backend/app/api/usage.py`:**
 ```python
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
@@ -401,22 +476,23 @@ from app.persistence.models import Message, Session
 
 router = APIRouter(prefix="/api/usage", tags=["usage"])
 
-# Precios gpt-5-nano (USD por 1M tokens). El output incluye reasoning y cuesta ~3x.
-INPUT_PRICE_PER_1M = 5.0
-OUTPUT_PRICE_PER_1M = 15.0
+# ⚠️ Ajusta a los precios de Gemini (USD por 1M tokens)
+INPUT_PRICE_PER_1M = 0.10
+OUTPUT_PRICE_PER_1M = 0.40
+
 
 def _estimate_cost(input_tokens: int, output_tokens: int) -> float:
     cost = (input_tokens / 1_000_000) * INPUT_PRICE_PER_1M
     cost += (output_tokens / 1_000_000) * OUTPUT_PRICE_PER_1M
     return round(cost, 4)
 
+
 @router.get("/summary")
 async def get_usage_summary(
     db: AsyncSession = Depends(get_session),
-    auth0_id: str = Depends(get_current_user_id),
+    subject: str = Depends(get_current_user_id),
 ):
-    """Uso total del usuario (todas sus sesiones)."""
-    user = await user_service.get_or_create_from_auth0_id(db, auth0_id)
+    user = await user_service.get_or_create_from_subject(db, subject)
     query = (
         select(
             func.coalesce(func.sum(Message.input_tokens), 0).label("input_tokens"),
@@ -436,20 +512,19 @@ async def get_usage_summary(
         "estimated_cost_usd": _estimate_cost(row.input_tokens, row.output_tokens),
     }
 
+
 @router.get("/by-session/{session_id}")
 async def get_session_usage(
     session_id: int,
     db: AsyncSession = Depends(get_session),
-    auth0_id: str = Depends(get_current_user_id),
+    subject: str = Depends(get_current_user_id),
 ):
-    """Uso de una sesión (con authz de ownership)."""
-    user = await user_service.get_or_create_from_auth0_id(db, auth0_id)
+    user = await user_service.get_or_create_from_subject(db, subject)
     session = (await db.execute(
         select(Session).where(Session.id == session_id, Session.user_id == user.id)
     )).scalar_one_or_none()
     if not session:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
-
     query = select(
         func.coalesce(func.sum(Message.input_tokens), 0).label("input_tokens"),
         func.coalesce(func.sum(Message.output_tokens), 0).label("output_tokens"),
@@ -469,93 +544,188 @@ async def get_session_usage(
 
 ---
 
-## Conceptos clave de esta parte
+## Paso 11 — Probar el agente (end-to-end)
 
-- **`session` vs `context`:** la *session* es lo que el agente **recuerda** (historial); el *context*
-  (no usado aquí, pero clave en producción) son las **dependencias** del request (BD, user_id) que
-  los tools necesitan. El context **nunca se manda a OpenAI** — se queda local.
-- **El LLM ve:** mensajes, instructions, schemas de tools y resultados de tools. **Nunca ve:** tu
-  context, conexiones a BD, API keys.
-- **Two-tier:** tu **BD** guarda el historial limpio para el usuario (UI); el **tracing** (en una receta futura)
-  guarda el detalle técnico para los devs. Cada uno su trabajo.
-- **`gpt-5-nano` es un modelo de razonamiento:** "piensa" antes de responder y esos *reasoning
-  tokens* se facturan como output. Un simple "Hi" puede gastar ~500 tokens. Tenlo en cuenta para el
-  costo.
-- **Retry en streaming:** el `@retry` NO sirve para `run_streamed` (el error ocurre al iterar, no en
-  el `await`); por eso el rate limit se atrapa **dentro del loop**.
+Vamos de **lo más fácil a lo más completo**. Las primeras pruebas no necesitan ni HTTP ni cookie. Hazlas en orden.
 
-## Gotchas (verificados)
+### A) Las tools solas (5 segundos)
 
-| Síntoma | Causa | Fix |
-|---|---|---|
-| `No module named 'openai_agents'` | el paquete se importa como `agents` | `from agents import Agent, Runner, function_tool` |
-| `SQLAlchemySession` no se encuentra | ruta distinta en el SDK | `from agents.extensions.memory import SQLAlchemySession` |
-| `OpenAIError: Missing credentials` | el SDK lee la key del entorno, no de `settings` | `set_default_openai_key(settings.OPENAI_API_KEY)` |
-| `RunResult has no attribute 'usage'` | el usage no cuelga de `RunResult` | `result.context_wrapper.usage` |
-| `SQLAlchemySession missing 'session_id'` | no hay "store"; es 1 instancia por conversación | `SQLAlchemySession(str(session_id), engine=engine, create_tables=True)` |
-| `ValidationError: extra_forbidden` | el `.env` trae vars que `Settings` no declara | `extra="ignore"` en el `SettingsConfigDict` |
-| rate limit no se reintenta en streaming | `@retry` no cubre `run_streamed` | `try/except RateLimitError` dentro del loop |
-
-## Transparencia y debugging (agente + streaming)
-
-### Probar el agente solo (sin HTTP)
-
-Un script suelto es la forma más rápida de ver si el agente responde:
+Las tools son funciones Python normales: pruébalas sin nada de ADK. Desde `infra/`:
 ```bash
-cd backend
-PYTHONPATH=. uv run python scripts/test_agent.py
+docker compose exec backend uv run python -c \
+  "from app.agents.agent_assistant.tools import get_current_time, get_current_date; \
+   print(get_current_time()); print(get_current_date())"
 ```
-Si falla, casi siempre es uno de los gotchas de arriba (import, key, session_id).
+Deberías ver algo como `{'time': '14:03:22 (-04)'}` y `{'date': '2026-06-28'}`. Si esto falla, es un
+problema de la tool, no del agente.
 
-### Probar el streaming por SSE (con curl)
+### B) El agente, sin HTTP (la prueba clave)
 
-Necesitas la cookie de stream primero (receta 03), luego abres el stream:
-```bash
-# 1. cookie (con un JWT válido)
-curl -X POST http://localhost:8000/auth/session -H "Authorization: Bearer $TOKEN" -c cookies.txt
-# 2. abrir el stream (Origin es obligatorio por el guard de CSRF)
-curl -N -b cookies.txt -H "Origin: http://localhost:5173" \
-  "http://localhost:8000/stream/?session_id=1&message=hola"
-```
-`-N` desactiva el buffering de curl → ves los eventos `token` llegar en vivo. Deberías ver
-`event: token` repetidos, luego `event: usage` y `event: done`.
+Esta es **la más importante**: corre el agente directo con un `Runner` + `InMemorySessionService` (sin
+BD, sin cookie, sin SSE) e imprime los `Event` crudos.
 
-### Ver el "pensamiento" del agente (OpenAI Traces)
+**📋 `backend/scripts/try_agent.py`:**
+```python
+import asyncio
 
-El SDK tiene tracing built-in: entra a https://platform.openai.com/traces y busca por el
-`workflow_name` (`agent_assistant`) o el `trace_id` que guardamos en cada `Message`. Ahí ves cada
-paso: qué tools llamó, con qué argumentos, cuántos tokens. (Más adelante lo llevamos también a
-Phoenix, self-hosted.)
+from google.genai import types
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
 
-### Inspeccionar la memoria del SDK
+from app.agents.agent_assistant.agent import build_agent
 
-El SDK guarda el historial en SUS tablas (separadas de las tuyas):
-```bash
-cd infra
-docker compose exec db psql -U postgres -d agent_stack -c "\dt"          # verás agent_sessions, agent_messages
-docker compose exec db psql -U postgres -d agent_stack -c "SELECT * FROM agent_messages LIMIT 5;"
+APP_NAME = "agent_stack"
+
+
+async def main():
+    svc = InMemorySessionService()
+    await svc.create_session(app_name=APP_NAME, user_id="dev", session_id="s1")
+    runner = Runner(agent=build_agent(), app_name=APP_NAME, session_service=svc)
+
+    msg = types.Content(role="user", parts=[types.Part(text="¿Qué hora es?")])
+    async for event in runner.run_async(user_id="dev", session_id="s1", new_message=msg):
+        if event.content and event.content.parts:
+            text = "".join(p.text or "" for p in event.content.parts)
+            if text:
+                print(f"[texto partial={getattr(event, 'partial', None)}] {text!r}")
+        for fc in event.get_function_calls():
+            print(f"[tool_call] {fc.name} args={fc.args}")
+        for fr in event.get_function_responses():
+            print(f"[tool_result] {fr.response}")
+        if getattr(event, "usage_metadata", None):
+            print(f"[usage] {event.usage_metadata}")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
-### Ver el costo / tokens
+Como `scripts/` se **hornea en la imagen** (no es volumen), tras crear el archivo reconstruye el
+backend, y corre:
+```bash
+cd infra && docker compose up -d --build backend
+docker compose exec backend uv run python -m scripts.try_agent
+```
+> 💡 Si vas a iterar mucho en scripts de prueba, móntalo como volumen en el compose
+> (`- ../backend/scripts:/app/scripts`, como hiciste con `alembic/`) y te ahorras el rebuild cada vez.
 
-- `GET /api/usage/summary` → uso total + costo estimado del usuario.
-- En los logs del backend (`make logs-backend`) sale `agent_run_completed` con `total_tokens`.
-- Recuerda: un mensaje corto puede traer cientos de *reasoning tokens* (modelo de razonamiento).
+**Qué mirar:** que aparezca un `[tool_call] get_current_time`, luego un `[tool_result]`, después el
+texto final con la hora, y un `[usage]` con los conteos. Si los **nombres de los campos** que imprime
+`[usage]` no son `prompt_token_count`/`candidates_token_count`/`total_token_count`, ajústalos en el
+Paso 8.
 
-### Errores comunes en vivo
+### C) El endpoint SSE completo (con cookie)
 
-| Ves esto | Probablemente |
-|---|---|
-| `event: error` con `code: "rate_limit"` | superaste el rate limit de OpenAI; espera y reintenta |
-| el stream se corta a los 60s | el `TimeoutMiddleware` (respuestas muy largas) |
-| `403 Origin not allowed` | falta/está mal el header `Origin` o `cors_origins` |
-| `403 Session not found` | la sesión no es del usuario, o no existe |
+Ahora sí, el camino real. La **cookie de stream** sale de `POST /auth/session`, que a su vez necesita
+un **ID token de Firebase** en el `Bearer`. Lo primero es conseguir ese token.
 
-## Checklist de "agente listo"
+**Paso 0 — conseguir el ID token (`$TOKEN`)**
 
-- [ ] `make migrate` aplicó la migración de `input_tokens`/`output_tokens`
-- [ ] El curl del SSE devuelve `event: token` en vivo, luego `usage` y `done`
-- [ ] Tras una respuesta, hay un `Message` con `role="assistant"` y tokens > 0
-- [ ] Existen las tablas `agent_sessions` y `agent_messages`
-- [ ] `GET /api/usage/summary` devuelve tokens y `estimated_cost_usd`
-- [ ] Un segundo mensaje en la misma sesión **recuerda** el contexto del primero
+De dónde sale el token depende de qué proveedor activaste en la receta 03:
+
+- **Solo Google** (sin frontend que te lo dé fácil): sácalo del **navegador**. Con tu `App.tsx` de
+  prueba corriendo en `localhost:5173`, haz login con Google y abre la **consola del navegador**
+  (DevTools → Console). Importa tu helper y pídelo:
+  ```js
+  // en la consola del navegador, ya logueado:
+  const { getToken } = await import('/src/auth.ts')
+  console.log(await getToken())   // copia el string largo que empieza con eyJ...
+  ```
+  (O agrega temporalmente un `console.log(await getToken())` a un botón del `App.tsx`.)
+
+- **Email/Password activado**: sin navegador, pídelo a la API REST de Firebase con tu `apiKey`:
+  ```bash
+  curl "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=TU_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"email":"test@test.com","password":"test1234","returnSecureToken":true}'
+  # copia el campo "idToken" de la respuesta
+  ```
+
+Guarda ese token en una variable de shell (dura ~1 h):
+```bash
+export TOKEN="eyJ...pega-aquí-el-id-token..."
+```
+
+**Pasos 1–3 — generar la cookie y abrir el stream** (desde `infra/` o tu shell):
+
+```bash
+# 1) ID token → cookie de stream (la guardamos en un cookie jar local: cookies.txt)
+curl -c cookies.txt -X POST http://localhost:8000/auth/session \
+  -H "Authorization: Bearer $TOKEN"
+#    → debe responder 204. Revisa cookies.txt: tiene una línea con stream_session.
+
+# 2) crear una sesión (usa el Bearer, NO la cookie) y anota el id que devuelve
+curl -X POST http://localhost:8000/api/sessions/ \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"title":"prueba agente"}'
+
+# 3) abrir el stream (manda la cookie con -b + header Origin OBLIGATORIO; -N = sin buffer)
+curl -N -b cookies.txt -H "Origin: http://localhost:5173" -G \
+  --data-urlencode "session_id=1" \
+  --data-urlencode "message=hola, ¿qué hora es?" \
+  http://localhost:8000/stream/
+```
+> El `-c cookies.txt` (paso 1) **guarda** la cookie que devuelve el server; el `-b cookies.txt`
+> (paso 3) la **manda** de vuelta. Es el equivalente por terminal a lo que el navegador hace solo.
+> Ajusta el `session_id=1` al id real que te devolvió el paso 2.
+
+Deberías ver fluir los eventos SSE:
+```
+event: tool_call
+data: {"name": "get_current_time", ...}
+event: token
+data: {"delta": "Son las "}
+...
+event: usage
+data: {"input_tokens": 120, "output_tokens": 18, "total_tokens": 138}
+event: done
+data: {"message_id": 42, "session_id": 1}
+```
+> Gotchas que pegan acá:
+> - **500** en el paso 2 con `'str' object cannot be interpreted as an integer` (en el INSERT de
+>   `sessions.user_id`): te falta traducir `subject → user.id` en los handlers de la receta 03 (Paso
+>   8). El `subject` es el uid string de Firebase; el `user_id` de la BD es entero. Cada handler debe
+>   hacer `user = await user_service.get_or_create_from_subject(db, subject)` y pasar `user.id`, **no**
+>   `subject`. Aplica a los 6 handlers de `sessions.py`/`messages.py`.
+> - **403 "Origin not allowed"**: falta o no coincide el header `Origin` (debe estar en tu
+>   `cors_origins`).
+> - **401**: la cookie no viajó (revisa el paso 1, o que el `Path=/stream/` calce).
+
+### D) Desde el frontend (opcional)
+
+El `App.tsx` de prueba (receta 03) se puede extender: tras el login + `POST /auth/session`, abre un
+`EventSource` a `/stream/?session_id=...&message=...` y pinta los `token` a medida que llegan.
+`EventSource` manda la cookie solo (por eso el bridge de la 03). Esta es la prueba "de verdad", pero
+para verificar el agente las pruebas **A–C** alcanzan.
+
+### Checklist de "agente listo"
+
+- [ ] **A** — las tools devuelven su `dict`.
+- [ ] **B** — `try_agent.py` imprime `tool_call` → `tool_result` → texto final → `usage` con conteos.
+- [ ] Los nombres de `usage_metadata` calzan con los del Paso 8 (o los ajustaste).
+- [ ] **C** — el `curl -N` fluye `token`/`tool_call`/`usage`/`done` y termina sin `error`.
+- [ ] El mensaje del agente quedó guardado en `messages` (con `input_tokens`/`output_tokens`).
+- [ ] `GET /api/usage/summary` (con Bearer) devuelve tokens y costo estimado.
+
+---
+
+## Conceptos clave de ADK (lo que conviene recordar)
+
+- **El SessionService administra el scoping.** La sesión lleva `app_name + user_id + session_id`, así
+  que ADK conoce al usuario dueño de cada conversación. Aun así, **autorizas la sesión en tu
+  endpoint** antes de correr el agente (no confíes solo en ADK para la seguridad).
+- **Hay que crear la sesión antes de correr** (`create_session`): ADK **no** la crea sola en el primer
+  uso. Por eso el Paso 8 hace `get_session` → si no existe, `create_session`.
+- **Los `Event` son un único tipo de objeto** que describe todo lo que pasa en el run: `content.parts`
+  (el texto), `partial` (si es un chunk parcial o el texto final), `get_function_calls()` /
+  `get_function_responses()` (tools), `usage_metadata` (tokens), `is_final_response()`. Lees todos
+  los eventos del mismo modo.
+- **Gemini "thinking":** `gemini-2.5-flash` razona antes de responder, y esos tokens vienen aparte en
+  `usage_metadata.thoughts_token_count` (verificado: vimos `thoughts_token_count=38` en una corrida).
+  Ojo para el costo: ese conteo **no** está dentro de `candidates_token_count` (el output visible),
+  así que si quieres el costo real del output tienes que sumar `candidates + thoughts`.
+- **DB async (verificado):** tu app usa `asyncpg` (async) y el `DatabaseSessionService` de ADK 2.3.0
+  también es async por dentro (`create_async_engine`), así que comparten driver sin fricción: le pasas
+  tu `database_url` con `+asyncpg` tal cual.
+
+
