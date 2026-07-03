@@ -166,10 +166,15 @@ body > *:not(#dot-canvas){ position:relative; z-index:1; }
   max-width:100%;
 }
 .head .ghost{
-  display:none;
+  display:block;
   position:absolute;
   inset:0;
+  -webkit-text-stroke:0;
+  mix-blend-mode:screen;
+  will-change:opacity, transform;
 }
+.head .ghost:nth-child(1){ color:#ff0055; }
+.head .ghost:nth-child(2){ color:#00ffcc; }
 .head .solid{ position:relative; z-index:1; }
 .head .mid{ opacity:1; padding:0 .02em; }
 .pron{
@@ -428,49 +433,26 @@ body > *:not(#dot-canvas){ position:relative; z-index:1; }
 }
 .foot-link:hover, .foot-link:focus-visible{ border-bottom-color:var(--ink); }
 .foot-link:focus-visible{ outline:2px solid var(--ink); outline-offset:4px; }
+.foot-name{ color:inherit; }
 
-/* ---- convergencia: menos ruido, más outcome ---- */
-/* los ghosts se separan del original y luego vuelven a converger en él — nunca se distorsiona la verdad (.solid), solo el ruido alrededor */
-@keyframes converge-a{
-  0%   { opacity:0;   transform:translate(0,0); }
-  14%  { opacity:.55; transform:translate(-7px,-4px); color:#ff0055; }
-  70%  { opacity:.55; transform:translate(-7px,-4px); color:#ff0055; }
-  100% { opacity:0;   transform:translate(0,0); }
-}
-@keyframes converge-b{
-  0%   { opacity:0;  transform:translate(0,0); }
-  14%  { opacity:.5; transform:translate(7px,4px); color:#00ffcc; }
-  70%  { opacity:.5; transform:translate(7px,4px); color:#00ffcc; }
-  100% { opacity:0;  transform:translate(0,0); }
-}
-@keyframes converge-a-quick{
-  0%   { opacity:0;  transform:translate(0,0); }
-  45%  { opacity:.5; transform:translate(-3px,-2px); color:#ff0055; }
-  100% { opacity:0;  transform:translate(0,0); }
-}
-@keyframes converge-b-quick{
-  0%   { opacity:0;   transform:translate(0,0); }
-  45%  { opacity:.45; transform:translate(3px,2px); color:#00ffcc; }
-  100% { opacity:0;   transform:translate(0,0); }
-}
-
+/* ---- respiro: el wordmark late lento, como una ampolleta que se enciende y apaga en sinusoide ---- */
+/* los ghosts rojo/cian florecen y convergen en un ciclo suave y continuo — nunca se distorsiona la verdad (.solid), solo el halo respira alrededor. el ease-in-out sube y baja = curva tipo seno */
 .head{ isolation:isolate; }
 
-.head.glitching .ghost,
-.head.glitching-static .ghost{
-  display:block !important;
-  -webkit-text-stroke:0;
-  mix-blend-mode: screen;
-}
-.head.glitching .ghost:nth-child(1){ animation: converge-a 1.2s ease-out forwards; }
-.head.glitching .ghost:nth-child(2){ animation: converge-b 1.2s ease-out forwards; opacity:0; }
+.head .ghost:nth-child(1){ animation: breathe-a 12s ease-in-out infinite; }
+.head .ghost:nth-child(2){ animation: breathe-b 12s ease-in-out infinite; }
 
-.head.glitching-static .ghost:nth-child(1){ animation: converge-a-quick .2s ease-out forwards; }
-.head.glitching-static .ghost:nth-child(2){ animation: converge-b-quick .2s ease-out forwards; opacity:0; }
+@keyframes breathe-a{
+  0%, 100% { opacity:.2;  transform:translate(-3px,-2px); }
+  50%      { opacity:.5;  transform:translate(-7px,-4px); }
+}
+@keyframes breathe-b{
+  0%, 100% { opacity:.18; transform:translate(3px,2px); }
+  50%      { opacity:.45; transform:translate(7px,4px); }
+}
 
 @media (prefers-reduced-motion: reduce){
-  .head.glitching .ghost,
-  .head.glitching-static .ghost{ animation:none; }
+  .head .ghost{ display:none; }
 }
 
 /* ---- typewriter cursor ---- */

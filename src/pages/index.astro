@@ -8,192 +8,536 @@ const pinned2 = allPosts.find(p => p.id === '01-foundations');
 const postCount = allPosts.length;
 ---
 
-<Base>
-  <canvas id="dot-canvas" aria-hidden="true"></canvas>
-  <main class="hero">
-    <article class="entry">
-      <h1 class="head anim d2"><span class="ghost" aria-hidden="true">regard<span class="mid">·</span>less</span><span class="ghost" aria-hidden="true">regard<span class="mid">·</span>less</span><span class="solid">regard<span class="mid">·</span>less</span></h1>
-      <p class="pron anim d3"><span class="pos">(adv.)</span><span class="ipa">/rɪˈgɑːrdləs/</span></p>
-      <p class="def def-def anim d3"><span class="num">(def.)</span> <span class="def-text"></span><span class="type-cursor def-cursor" aria-hidden="true">|</span></p>
-      <p class="def def-lab anim d4"><span class="num">(lab.)</span> <span class="lab-text"></span><span class="type-cursor lab-cursor" aria-hidden="true">|</span></p>
-      <p class="def def-cred anim d5"><span class="num">(cred.)</span> <span class="cred-text"></span><span class="type-cursor cred-cursor" aria-hidden="true">|</span></p>
-    </article>
+<Base title="regardless">
+  <main class="v2">
+    <div class="v2-cast" aria-hidden="true"></div>
+    <div class="v2-pageno" aria-hidden="true">1/3</div>
+    <div class="v2-copy">
+      © 2026. All rights reserved.
+      <a href="https://www.linkedin.com/in/rafaelsacaanamunategui/" target="_blank" rel="noopener" class="v2-copy-in" aria-label="LinkedIn"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+    </div>
 
-    <section class="instruments">
-      <div class="cols">
-        <div class="col-group anim d4">
-          <div class="eyebrow" style="display:flex;align-items:center;gap:.5em;">artefactos <a href="https://github.com/rafasacaan" target="_blank" rel="noopener" style="display:flex;align-items:center;opacity:.35;transition:opacity .2s ease;" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
-          <div class="stack">
-            <span class="artifact-row"><a class="link" href="https://heyfrank.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">heyfrank</span>heyfrank<span class="arrow">↗</span></a><span class="soon">coming soon</span></span>
-            <span class="artifact-desc">Recetas para crear música desde el mood, no desde las perillas.</span>
-            <span class="artifact-row"><a class="link" href="https://munra.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">munra</span>munra<span class="arrow">↗</span></a><span class="soon">coming soon</span></span>
-            <span class="artifact-desc">Pequeños modelos que generan tracks instrumentales.</span>
-            <span class="artifact-row"><a class="link" href="https://yoescritor.cl" target="_blank" rel="noopener"><span class="g" aria-hidden="true">yoescritor</span>yoescritor<span class="arrow">↗</span></a><span class="soon">coming soon</span></span>
-            <span class="artifact-desc">Encuentra al escritor que ya vive en ti.</span>
+    <!-- ===== pantalla 1: el statement ===== -->
+    <section class="v2-hero">
+      <div class="v2-top"></div>
+
+      <div class="v2-block">
+        <h1 class="v2-mark">regardless</h1>
+        <p class="v2-adv"><span class="pos">(adv.)</span> <span class="ipa">/rɪˈɡɑːrdləs/</span></p>
+        <p class="v2-lede">Somos un estudio creativo de IA que construye artefactos digitales para gente común que quiere sacar afuera las ideas que lleva dentro.</p>
+      </div>
+
+      <footer class="v2-foot">
+        <hr class="v2-rule" />
+        <div class="v2-principles">
+          <div class="v2-label">Nos movemos bajo principios simples</div>
+          <ol class="v2-list">
+            <li><span class="n">(01)</span> Inmersión en cómo las personas hacen lo que hacen</li>
+            <li><span class="n">(02)</span> Menos ruido y menos relato, más recolección de evidencia</li>
+            <li><span class="n">(03)</span> Lo simple bien hecho</li>
+          </ol>
+        </div>
+      </footer>
+
+      <div class="v2-scroll" aria-hidden="true">↓</div>
+    </section>
+
+    <!-- ===== pantalla 2: el índice ===== -->
+    <section class="v2-more">
+      <h2 class="v2-more-title" data-reveal>Algunas cosas.</h2>
+      <p class="v2-adv v2-more-adv" data-reveal><span class="pos">(pl.)</span> <span class="ipa">/alˈɣunas ˈkosas/</span></p>
+      <div class="v2-cols">
+
+        <div class="v2-col" data-reveal>
+          <h2 class="v2-eyebrow">artefactos</h2>
+          <div class="v2-stack">
+            <span class="v2-item"><a class="v2-link" href="https://heyfrank.cl" target="_blank" rel="noopener">heyfrank <span class="v2-arrow">↗</span></a><span class="v2-soon">coming soon</span></span>
+            <p class="v2-desc">Recetas para crear música desde el mood y menos desde la técnica.</p>
+            <span class="v2-item"><a class="v2-link" href="https://munra.cl" target="_blank" rel="noopener">munra <span class="v2-arrow">↗</span></a><span class="v2-soon">coming soon</span></span>
+            <p class="v2-desc">Pequeños modelos de IA que generan tracks instrumentales.</p>
+            <span class="v2-item"><a class="v2-link" href="https://yoescritor.cl" target="_blank" rel="noopener">yoescritor <span class="v2-arrow">↗</span></a><span class="v2-soon">coming soon</span></span>
+            <p class="v2-desc">Encuentra al escritor que vive adentro tuyo.</p>
           </div>
         </div>
-        <div class="col-group anim d5">
-          <div class="eyebrow">notas</div>
-          <div class="stack">
-            <a class="link" href="/blog/"><span class="g" aria-hidden="true">blog</span>blog<span class="arrow">→</span></a>
-            <span class="post-count">{postCount} posts</span>
+
+        <div class="v2-col" data-reveal>
+          <h2 class="v2-eyebrow">notas</h2>
+          <div class="v2-stack">
+            <a class="v2-link" href="/blog/">blog <span class="v2-arrow">→</span></a>
+            <span class="v2-count">{postCount} posts</span>
             {pinned2 && (
-              <a class="latest-post" href={`/blog/${pinned2.id}/`}>
-                <div class="latest-meta">
-                  <span class="live-dot" aria-hidden="true"></span>
-                  <span>{pinned2.data.fecha.toLocaleDateString('es-CL', { day:'numeric', month:'short', year:'numeric' })}</span>
-                  <span class="latest-tipo">{pinned2.data.tipo}</span>
-                </div>
-                <span class="latest-title">{pinned2.data.title}</span>
+              <a class="v2-post" href={`/blog/${pinned2.id}/`}>
+                <span class="v2-post-meta">{pinned2.data.tipo}</span>
+                <span class="v2-post-title">{pinned2.data.title}</span>
               </a>
             )}
             {latest && (
-              <a class="latest-post" href={`/blog/${latest.id}/`}>
-                <div class="latest-meta">
-                  <span class="live-dot" aria-hidden="true"></span>
-                  <span>{latest.data.fecha.toLocaleDateString('es-CL', { day:'numeric', month:'short', year:'numeric' })}</span>
-                  <span class="latest-tipo">{latest.data.tipo}</span>
-                </div>
-                <span class="latest-title">{latest.data.title}</span>
+              <a class="v2-post" href={`/blog/${latest.id}/`}>
+                <span class="v2-post-meta">{latest.data.tipo}</span>
+                <span class="v2-post-title">{latest.data.title}</span>
               </a>
             )}
           </div>
         </div>
-        <div class="col-group anim d5">
-          <div class="eyebrow">música</div>
-          <div class="stack">
-            <a class="link" href="https://munra.bandcamp.com" target="_blank" rel="noopener"><span class="g" aria-hidden="true">bandcamp</span>bandcamp<span class="arrow">↗</span></a>
-            <a class="latest-post" href="https://munra.bandcamp.com" target="_blank" rel="noopener" style="margin-top:.5em;">
-              <span class="latest-meta">
-                <span class="live-dot" aria-hidden="true"></span>
-                <span class="latest-tipo">latest</span>
-              </span>
-              <span class="latest-title">Primeros samples a mano de un 808</span>
+
+        <div class="v2-col" data-reveal>
+          <h2 class="v2-eyebrow">música</h2>
+          <div class="v2-stack">
+            <a class="v2-link" href="https://munra.bandcamp.com" target="_blank" rel="noopener">bandcamp <span class="v2-arrow">↗</span></a>
+            <a class="v2-post" href="https://munra.bandcamp.com" target="_blank" rel="noopener">
+              <span class="v2-post-meta">latest</span>
+              <span class="v2-post-title">Primeros samples a mano de un 808</span>
             </a>
           </div>
         </div>
-        <div class="col-group anim d5">
-          <div class="eyebrow">contacto</div>
-          <div class="stack">
-            <span class="artifact-desc">Escríbeme acá:</span>
-            <form class="contact-form" action="https://formspree.io/f/xdarggap" method="POST">
-              <input class="contact-input" type="email" name="email" placeholder="tu email" required />
-              <textarea class="contact-input" name="message" placeholder="tu mensaje acá" rows="3" required></textarea>
-              <button class="contact-btn" type="submit">enviar →</button>
-            </form>
-          </div>
-        </div>
+
       </div>
     </section>
+
+    <!-- ===== contacto ===== -->
+    <section class="v2-contact">
+      <h2 class="v2-contact-head" data-reveal>¿Tienes alguna idea?<br>Escríbeme!</h2>
+      <form class="v2-form" data-reveal action="https://formspree.io/f/xdarggap" method="POST">
+        <input class="v2-field" type="email" name="email" placeholder="tu email" required />
+        <textarea class="v2-field" name="message" placeholder="cuéntanos la idea" rows="2" required></textarea>
+        <button class="v2-send" type="submit">enviar ↗</button>
+      </form>
+    </section>
+
   </main>
 
-  <footer class="foot anim d5">
-    <a class="foot-link" href="mailto:rafasacaan@gmail.com">un lab de rafa sacaan</a>
-    <span style="display:flex;align-items:center;gap:.6em;">
-      © 2026. All rights reserved.
-      <a href="https://www.linkedin.com/in/rafaelsacaanamunategui/" target="_blank" rel="noopener" style="display:flex;align-items:center;opacity:.6;transition:opacity .2s ease;" aria-label="LinkedIn">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-      </a>
-    </span>
-  </footer>
+  <script is:inline type="module">
+    // scroll inercial (Lenis) — solo en /v2, respeta reduce-motion
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      import('https://cdn.jsdelivr.net/npm/lenis@1.1.20/+esm')
+        .then(({ default: Lenis }) => {
+          const lenis = new Lenis({
+            duration: 2.3,     // ↑ más número = más peso / inercia
+            smoothWheel: true,
+          });
+          function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+          requestAnimationFrame(raf);
+
+          // ===== cuaderno: 3 hojas que se voltean (page flip deck) =====
+          const sheets = ['.v2-hero', '.v2-more', '.v2-contact']
+            .map((s) => document.querySelector(s))
+            .filter(Boolean);
+          if (sheets.length) {
+            const castEl = document.querySelector('.v2-cast');
+            sheets.forEach((s, i) => {
+              s.classList.add('flip-sheet');
+              s.style.zIndex = String(40 - i * 10); // hoja de arriba = mayor z
+            });
+            const pageEl = document.querySelector('.v2-pageno');
+            let idx = 0;             // hoja visible (arriba)
+            let animating = false;
+            const DUR = 850;         // = .85s de la transición CSS
+            lenis.stop();            // navegación por volteo, sin scroll
+
+            function setPageNo(){ if (pageEl) pageEl.textContent = (idx + 1) + '/' + sheets.length; }
+            setPageNo();
+
+            function pulse(z){
+              if (castEl) castEl.style.zIndex = String(z - 1);
+              document.body.classList.add('v2-casting');
+              setTimeout(() => document.body.classList.remove('v2-casting'), DUR);
+            }
+            function next(){
+              if (animating || idx >= sheets.length - 1) return;
+              animating = true;
+              pulse(40 - idx * 10);
+              sheets[idx].classList.add('is-flipped');
+              idx++;
+              setPageNo();
+              setTimeout(() => { animating = false; }, DUR);
+            }
+            function prev(){
+              if (animating || idx <= 0) return;
+              animating = true;
+              idx--;
+              pulse(40 - idx * 10);
+              sheets[idx].classList.remove('is-flipped');
+              setPageNo();
+              setTimeout(() => { animating = false; }, DUR);
+            }
+
+            let wheelLock = false;
+            let wheelTimer;
+            window.addEventListener('wheel', (e) => {
+              e.preventDefault();
+              clearTimeout(wheelTimer);
+              // se desbloquea recién cuando la rueda/trackpad deja de emitir
+              wheelTimer = setTimeout(() => { wheelLock = false; }, 140);
+              if (wheelLock || animating) return;
+              wheelLock = true;
+              if (e.deltaY > 0) next(); else if (e.deltaY < 0) prev();
+            }, { passive: false });
+
+            let ty = null;
+            window.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; }, { passive: true });
+            window.addEventListener('touchmove', (e) => {
+              e.preventDefault();
+              if (animating || ty === null) return;
+              const dy = ty - e.touches[0].clientY;
+              if (dy > 40) { next(); ty = null; }
+              else if (dy < -40) { prev(); ty = null; }
+            }, { passive: false });
+            window.addEventListener('touchend', () => { ty = null; }, { passive: true });
+
+            window.addEventListener('keydown', (e) => {
+              if (animating) return;
+              if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); next(); }
+              else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+            });
+          }
+        })
+        .catch(() => {});
+    }
+  </script>
 
   <script is:inline>
-    // dot canvas
+    // reveal on scroll (fade + slide-up al entrar en viewport)
     (function(){
-      const canvas = document.getElementById('dot-canvas');
-      const ctx = canvas.getContext('2d');
-      const SPACING = 28;
-      const RADIUS = 0.8;
-      const AMPLITUDE = 10;
-      const SPEED = 0.012;
-
-      function resize(){
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+      var els = document.querySelectorAll('[data-reveal]');
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        els.forEach(function(el){ el.classList.add('is-in'); });
+        return;
       }
-      resize();
-      window.addEventListener('resize', resize);
-
-      let t = 0;
-      function draw(){
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'rgba(14,14,12,0.1)';
-        const cols = Math.ceil(canvas.width / SPACING) + 2;
-        const rows = Math.ceil(canvas.height / SPACING) + 2;
-        for(let r = 0; r < rows; r++){
-          for(let c = 0; c < cols; c++){
-            const bx = c * SPACING;
-            const by = r * SPACING;
-            const phase = (c * 0.7 + r * 0.5);
-            const dx = Math.sin(t + phase) * AMPLITUDE;
-            const dy = Math.cos(t + phase * 0.8) * AMPLITUDE;
-            ctx.beginPath();
-            ctx.arc(bx + dx, by + dy, RADIUS, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-        t += SPEED;
-        requestAnimationFrame(draw);
-      }
-      draw();
-    })();
-
-    (function(){
-      const head = document.querySelector('.head');
-      if(!head || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-      function glitch(){
-        const isStatic = Math.random() < 0.35;
-        const cls = isStatic ? 'glitching-static' : 'glitching';
-        const dur = isStatic ? 200 : 420;
-        const actualDur = isStatic ? dur : 1200;
-        head.classList.add(cls);
-        setTimeout(() => head.classList.remove(cls), actualDur);
-
-        // a veces el glitch estático dispara un segundo pequeño
-        if(isStatic && Math.random() < 0.5){
-          setTimeout(() => {
-            head.classList.add('glitching-static');
-            setTimeout(() => head.classList.remove('glitching-static'), 180);
-          }, 280);
-        }
-
-        setTimeout(glitch, 1500 + Math.random() * 2500);
-      }
-
-      setTimeout(glitch, 2500 + Math.random() * 3000);
-
-      // typewriter secuencial: (def.) → (lab.) → (cred.)
-      function typeInto(textEl, cursorEl, text, onDone){
-        if(!textEl || !cursorEl){ if(onDone) onDone(); return; }
-        cursorEl.classList.add('typing');
-        let i = 0;
-        const iv = setInterval(() => {
-          textEl.textContent = text.slice(0, ++i);
-          if(i >= text.length){
-            clearInterval(iv);
-            cursorEl.classList.remove('typing');
-            cursorEl.classList.add('done');
-            if(onDone) setTimeout(onDone, 250);
-          }
-        }, 32);
-      }
-
-      const defPlain = 'Cuando algo se hace o es cierto independiente de los obstáculos o de lo que piensen los demás.';
-      const labPlain = 'Construimos artefactos digitales para personas normales que quieren sacar afuera las ideas que llevan dentro.';
-      const credPlain = 'Menos ruido, menos relato, más outcome.';
-
-      const entranceEnd = 400 + 900;
-      setTimeout(() => {
-        typeInto(document.querySelector('.def-text'), document.querySelector('.def-cursor'), defPlain, () => {
-          typeInto(document.querySelector('.lab-text'), document.querySelector('.lab-cursor'), labPlain, () => {
-            typeInto(document.querySelector('.cred-text'), document.querySelector('.cred-cursor'), credPlain, () => {
-              const credText = document.querySelector('.cred-text');
-              if(credText) credText.innerHTML = credPlain.replace('outcome', '<em class="lab-em">outcome</em>');
-            });
-          });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }
         });
-      }, entranceEnd);
+      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+      els.forEach(function(el){ io.observe(el); });
     })();
   </script>
 </Base>
+
+<style is:global>
+  /* base que pide Lenis para el scroll inercial */
+  html.lenis, html.lenis body{ height:auto; }
+  .lenis.lenis-smooth{ scroll-behavior:auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent]{ overscroll-behavior:contain; }
+  .lenis.lenis-stopped{ overflow:hidden; }
+</style>
+
+<style>
+  /* fondo blanco puro solo en esta página */
+  :global(html), :global(body){ background:#fff; }
+
+  .v2{
+    color:#000; /* negro puro, como rejouice (#000000) */
+    font-family:var(--blonded); /* Helvetica Neue — el grotesco */
+    font-weight:400;
+  }
+
+  /* ===== pantalla 1 ===== */
+  .v2-hero{
+    position:relative;
+    min-height:calc(100svh - 2 * var(--gut));
+    display:flex;
+    flex-direction:column;
+  }
+  /* páginas-hoja del cuaderno (page flip) — activadas por JS */
+  .flip-sheet{
+    position:fixed;
+    inset:0;
+    background:#fff;
+    padding:var(--gut);
+    display:flex;
+    flex-direction:column;
+    transform-origin:top center;
+    transform:perspective(1600px) rotateX(0deg);
+    transition:transform .85s cubic-bezier(.76,0,.24,1);
+    backface-visibility:hidden;
+    will-change:transform;
+    overflow:hidden;
+  }
+  .flip-sheet.is-flipped{
+    transform:perspective(1600px) rotateX(105deg);
+    pointer-events:none;
+  }
+  /* efecto papel: la hoja entra en sombra al voltearse */
+  .flip-sheet::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:5;
+    pointer-events:none;
+    background:linear-gradient(to top, rgba(0,0,0,.32), rgba(0,0,0,.04) 65%);
+    opacity:0;
+    transition:opacity .85s cubic-bezier(.76,0,.24,1);
+  }
+  .flip-sheet.is-flipped::after{ opacity:1; }
+  /* sombra proyectada: la hoja levantada oscurece lo que revela */
+  .v2-cast{
+    position:fixed;
+    left:0; right:0; top:0;
+    height:48vh;
+    z-index:38;
+    pointer-events:none;
+    opacity:0;
+    background:linear-gradient(to bottom, rgba(0,0,0,.38), rgba(0,0,0,0));
+  }
+  /* número de página, fijo abajo a la derecha */
+  .v2-pageno{
+    position:fixed;
+    right:var(--gut);
+    bottom:clamp(.6rem, 1.8vh, 1.1rem);
+    z-index:50;
+    font-family:var(--blonded);       /* mismo font que "Somos un estudio…" */
+    font-weight:100;
+    font-size:clamp(2rem, 5.2vw, 4.2rem);
+    line-height:1;
+    letter-spacing:-.02em;
+    color:rgba(0,0,0,.4);
+    pointer-events:none;
+  }
+  .v2-casting .v2-cast{ animation:v2-cast-pulse .85s ease; }
+  @keyframes v2-cast-pulse{
+    0%{ opacity:0; }
+    45%{ opacity:1; }
+    100%{ opacity:0; }
+  }
+
+  /* empuja el bloque hacia abajo */
+  .v2-top{ flex:1; min-height:14vh; }
+
+  /* ---- wordmark ---- */
+  .v2-mark{
+    font-family:var(--blonded);
+    font-weight:300;
+    text-transform:uppercase;
+    font-size:clamp(2.6rem, 12.5vw, 10.5rem);
+    line-height:.9;
+    letter-spacing:-.04em;
+    margin:0;
+  }
+
+  /* (adv.) /ipa/ — texto plano en negro, sin resalte */
+  .v2-adv{
+    font-family:var(--dict);
+    font-size:clamp(1.05rem, 2.6vw, 1.75rem);
+    margin:.5em 0 0;
+    color:#000;
+  }
+  .v2-adv .pos{ font-style:italic; margin-right:.4em; }
+
+  /* copy principal */
+  .v2-lede{
+    font-family:var(--blonded);
+    font-weight:300;
+    font-size:clamp(2rem, 5.2vw, 4.2rem);
+    line-height:1.1;
+    letter-spacing:-.02em;
+    margin:.7em 0 0;
+    max-width:none; /* a todo el ancho de la página */
+  }
+
+  /* ---- pie: principios ---- */
+  .v2-foot{ margin-top:clamp(2rem, 5vh, 4rem); padding-bottom:clamp(1rem, 3vh, 2rem); }
+  .v2-rule{
+    border:0;
+    border-top:1px solid rgba(14,14,12,.18);
+    margin:0 0 1.4rem;
+  }
+  .v2-principles{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:2rem;
+    font-size:clamp(.95rem, 1.5vw, 1.15rem);
+  }
+  .v2-label{ font-weight:400; }
+  .v2-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:.15em;
+  }
+  .v2-list .n{ display:inline-block; margin-right:.5em; }
+
+  /* pista de scroll */
+  .v2-scroll{
+    position:absolute;
+    left:50%;
+    bottom:.2rem;
+    transform:translateX(-50%);
+    font-size:1rem;
+    opacity:.35;
+    animation:v2-bob 2s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes v2-bob{
+    0%,100%{ transform:translate(-50%, 0); }
+    50%    { transform:translate(-50%, 5px); }
+  }
+
+  /* ===== pantalla 2: columnas ===== */
+  .v2-more{
+    min-height:calc(100svh - 2 * var(--gut));
+    padding-top:clamp(2.5rem, 8vh, 6rem);
+    padding-bottom:clamp(2rem, 6vh, 4rem);
+  }
+  .v2-more-title{
+    font-weight:300;
+    font-size:clamp(2.4rem, 6.5vw, 5.5rem);
+    line-height:1;
+    letter-spacing:-.025em;
+    margin:0 0 .12em;
+  }
+  .v2-more-adv{ margin:.4em 0 clamp(2rem, 6vh, 4rem); }
+  .v2-cols{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:clamp(2rem, 5vw, 5rem);
+  }
+  .v2-eyebrow{
+    font-size:clamp(1.4rem, 2.4vw, 1.9rem);
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:0;
+    color:#000;
+    margin:0 0 .7em;
+  }
+  .v2-stack{ display:flex; flex-direction:column; gap:.55rem; }
+  .v2-item{ display:flex; align-items:baseline; gap:.6em; flex-wrap:wrap; }
+  .v2-link{
+    position:relative;
+    display:inline-block;
+    font-size:clamp(1.15rem, 2vw, 1.5rem);
+    font-weight:500;
+    color:var(--ink);
+    text-decoration:none;
+  }
+  /* subrayado que se dibuja de izquierda a derecha en hover */
+  .v2-link::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-.05em;
+    width:100%;
+    height:1px;
+    background:currentColor;
+    transform:scaleX(0);
+    transform-origin:left center;
+    transition:transform .35s cubic-bezier(.4,0,.2,1);
+  }
+  .v2-link:hover::after{ transform:scaleX(1); }
+  .v2-arrow{ font-weight:400; opacity:.55; }
+  .v2-soon{ font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; opacity:.4; }
+  .v2-desc{
+    font-size:clamp(.95rem, 1.5vw, 1.15rem); /* igual que los principios */
+    line-height:1.35;
+    margin:0 0 1em;
+    max-width:34ch;
+  }
+  .v2-count{
+    font-size:.8rem;
+    opacity:.5;
+    margin-top:.1em;
+  }
+  .v2-post{
+    display:flex;
+    flex-direction:column;
+    gap:.1em;
+    text-decoration:none;
+    color:var(--ink);
+    margin-top:.35em;
+    transition:opacity .2s ease;
+  }
+  .v2-post:hover{ opacity:.6; }
+  .v2-post-meta{ font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; opacity:.4; }
+  .v2-post-title{ font-size:.98rem; line-height:1.3; }
+
+  /* ===== contacto (banda final, estilo rejouice) ===== */
+  .v2-contact{
+    justify-content:center;
+  }
+  .v2-contact-head{
+    font-weight:300;
+    font-size:clamp(1.5rem, 3.6vw, 2.5rem);
+    line-height:1.05;
+    letter-spacing:-.02em;
+    margin:0 0 clamp(1.4rem, 3.5vh, 2.4rem);
+  }
+  .v2-form{
+    display:flex;
+    flex-direction:column;
+    gap:1.3rem;
+    max-width:34rem;
+  }
+  .v2-field{
+    font-family:inherit;
+    font-weight:400;
+    font-size:clamp(.95rem, 1.5vw, 1.1rem);
+    color:#000;
+    background:transparent;
+    border:0;
+    border-bottom:1px solid rgba(0,0,0,.25);
+    padding:.55em 0;
+    outline:none;
+    resize:none;
+  }
+  .v2-field::placeholder{ color:rgba(0,0,0,.35); }
+  .v2-field:focus{ border-bottom-color:#000; }
+  .v2-send{
+    align-self:flex-start;
+    font-family:inherit;
+    font-size:clamp(.95rem, 1.5vw, 1.1rem);
+    color:#000;
+    background:transparent;
+    border:0;
+    padding:0;
+    cursor:pointer;
+    transition:opacity .2s ease;
+  }
+  .v2-send:hover{ opacity:.55; }
+
+  /* ===== copyright, fijo abajo a la izquierda (todas las páginas) ===== */
+  .v2-copy{
+    position:fixed;
+    left:var(--gut);
+    bottom:clamp(.9rem, 2.2vh, 1.5rem);
+    z-index:50;
+    display:flex;
+    align-items:center;
+    gap:.6em;
+    font-size:clamp(11px, 1.4vw, 13px);
+    color:rgba(0,0,0,.5);
+    pointer-events:none;
+  }
+  .v2-copy-in{
+    display:flex;
+    align-items:center;
+    color:rgba(0,0,0,.5);
+    pointer-events:auto;
+    transition:color .2s ease;
+  }
+  .v2-copy-in:hover{ color:#000; }
+
+  /* ===== reveal on scroll ===== */
+  [data-reveal]{
+    opacity:0;
+    transform:translateY(26px);
+    transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1);
+  }
+  [data-reveal].is-in{ opacity:1; transform:none; }
+  /* stagger de las columnas */
+  .v2-col[data-reveal]:nth-child(2){ transition-delay:.09s; }
+  .v2-col[data-reveal]:nth-child(3){ transition-delay:.18s; }
+  .v2-form[data-reveal]{ transition-delay:.12s; }
+
+  @media (prefers-reduced-motion: reduce){
+    [data-reveal]{ opacity:1; transform:none; transition:none; }
+  }
+
+  @media (max-width:760px){
+    .v2-cols{ grid-template-columns:1fr; gap:2.5rem; }
+    .v2-principles{ flex-direction:column; gap:1.1rem; }
+    .v2-lede{ max-width:none; }
+    .v2-scroll{ display:none; }
+  }
+</style>
