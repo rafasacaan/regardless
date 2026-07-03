@@ -429,133 +429,64 @@ body > *:not(#dot-canvas){ position:relative; z-index:1; }
 .foot-link:hover, .foot-link:focus-visible{ border-bottom-color:var(--ink); }
 .foot-link:focus-visible{ outline:2px solid var(--ink); outline-offset:4px; }
 
-/* ---- glitch ochetero ---- */
-@keyframes glitch-main{
-  0%  { transform:translate(0,0);     filter:none; }
-  8%  { transform:translate(-4px,0);  filter:none; clip-path:inset(15% 0 55% 0); }
-  16% { transform:translate(4px,0);   filter:none; clip-path:inset(60% 0 10% 0); }
-  24% { transform:translate(-2px,0);  filter:none; clip-path:inset(30% 0 40% 0); }
-  32% { transform:translate(0,0);     filter:none; clip-path:none; }
-  100%{ transform:translate(0,0);     filter:none; clip-path:none; }
+/* ---- convergencia: menos ruido, más outcome ---- */
+/* los ghosts se separan del original y luego vuelven a converger en él — nunca se distorsiona la verdad (.solid), solo el ruido alrededor */
+@keyframes converge-a{
+  0%   { opacity:0;   transform:translate(0,0); }
+  14%  { opacity:.55; transform:translate(-7px,-4px); color:#ff0055; }
+  70%  { opacity:.55; transform:translate(-7px,-4px); color:#ff0055; }
+  100% { opacity:0;   transform:translate(0,0); }
 }
-@keyframes glitch-red{
-  0%  { opacity:0; transform:translate(0,0) skewX(0deg); }
-  8%  { opacity:.75; transform:translate(5px, 0) skewX(-6deg);  clip-path:inset(0 0 70% 0); color:#ff0055; }
-  16% { opacity:.6;  transform:translate(-5px, 0) skewX(4deg);  clip-path:inset(40% 0 20% 0); color:#ff0055; }
-  28% { opacity:.5;  transform:translate(3px, 0) skewX(-3deg);  clip-path:inset(65% 0 5% 0);  color:#ff0055; }
-  36% { opacity:0;   transform:translate(0,0) skewX(0deg); }
-  100%{ opacity:0; }
+@keyframes converge-b{
+  0%   { opacity:0;  transform:translate(0,0); }
+  14%  { opacity:.5; transform:translate(7px,4px); color:#00ffcc; }
+  70%  { opacity:.5; transform:translate(7px,4px); color:#00ffcc; }
+  100% { opacity:0;  transform:translate(0,0); }
 }
-@keyframes glitch-cyan{
-  0%  { opacity:0; transform:translate(0,0) skewX(0deg); }
-  8%  { opacity:.65; transform:translate(-5px, 0) skewX(5deg);  clip-path:inset(25% 0 45% 0); color:#00ffcc; }
-  20% { opacity:.55; transform:translate(5px, 0) skewX(-7deg);  clip-path:inset(55% 0 15% 0); color:#00ffcc; }
-  32% { opacity:.4;  transform:translate(-3px, 0) skewX(3deg);  clip-path:inset(10% 0 65% 0); color:#00ffcc; }
-  40% { opacity:0;   transform:translate(0,0) skewX(0deg); }
-  100%{ opacity:0; }
+@keyframes converge-a-quick{
+  0%   { opacity:0;  transform:translate(0,0); }
+  45%  { opacity:.5; transform:translate(-3px,-2px); color:#ff0055; }
+  100% { opacity:0;  transform:translate(0,0); }
 }
-
-/* — glitch estático: corto y agresivo — */
-@keyframes static-main{
-  0%  { transform:translate(0,0); clip-path:none; }
-  15% { transform:translate(-6px,0); clip-path:inset(20% 0 60% 0); }
-  30% { transform:translate(6px,0);  clip-path:inset(55% 0 8% 0); }
-  45% { transform:translate(-3px,0); clip-path:inset(38% 0 35% 0); }
-  60% { transform:translate(0,0);    clip-path:none; }
-  100%{ transform:translate(0,0);    clip-path:none; }
-}
-@keyframes static-red{
-  0%  { opacity:0; }
-  15% { opacity:.9; transform:translate(8px,0) skewX(-10deg); clip-path:inset(10% 0 55% 0); color:#ff0055; }
-  30% { opacity:.7; transform:translate(-8px,0) skewX(8deg);  clip-path:inset(50% 0 12% 0); color:#ff0055; }
-  50% { opacity:0; }
-  100%{ opacity:0; }
-}
-@keyframes static-cyan{
-  0%  { opacity:0; }
-  15% { opacity:.8; transform:translate(-8px,0) skewX(9deg);  clip-path:inset(30% 0 40% 0); color:#00ffcc; }
-  30% { opacity:.65;transform:translate(8px,0) skewX(-8deg);  clip-path:inset(60% 0 5% 0);  color:#00ffcc; }
-  50% { opacity:0; }
-  100%{ opacity:0; }
-}
-@keyframes scanline{
-  0%  { background-position: 0 0; opacity:0; }
-  8%  { opacity:.18; }
-  40% { opacity:.18; background-position: 0 100%; }
-  50% { opacity:0; }
-  100%{ opacity:0; }
+@keyframes converge-b-quick{
+  0%   { opacity:0;   transform:translate(0,0); }
+  45%  { opacity:.45; transform:translate(3px,2px); color:#00ffcc; }
+  100% { opacity:0;   transform:translate(0,0); }
 }
 
 .head{ isolation:isolate; }
 
-.head.glitching .solid{
-  animation: glitch-main 1.2s steps(1) forwards;
-}
 .head.glitching .ghost,
 .head.glitching-static .ghost{
   display:block !important;
   -webkit-text-stroke:0;
   mix-blend-mode: screen;
 }
-.head.glitching .ghost:nth-child(1){
-  animation: glitch-red 1.2s steps(1) forwards;
-}
-.head.glitching .ghost:nth-child(2){
-  animation: glitch-cyan 1.2s steps(1) forwards;
-  opacity:0;
-}
+.head.glitching .ghost:nth-child(1){ animation: converge-a 1.2s ease-out forwards; }
+.head.glitching .ghost:nth-child(2){ animation: converge-b 1.2s ease-out forwards; opacity:0; }
 
-.head.glitching-static .solid{
-  animation: static-main .22s steps(1) forwards;
-}
-.head.glitching-static .ghost:nth-child(1){
-  animation: static-red .22s steps(1) forwards;
-}
-.head.glitching-static .ghost:nth-child(2){
-  animation: static-cyan .22s steps(1) forwards;
-  opacity:0;
-}
-
-/* scanline overlay */
-.head::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 3px,
-    rgba(0,0,0,.08) 3px,
-    rgba(0,0,0,.08) 4px
-  );
-  opacity:0;
-  z-index:10;
-}
-.head.glitching::after{
-  animation: scanline .5s steps(1) forwards;
-}
+.head.glitching-static .ghost:nth-child(1){ animation: converge-a-quick .2s ease-out forwards; }
+.head.glitching-static .ghost:nth-child(2){ animation: converge-b-quick .2s ease-out forwards; opacity:0; }
 
 @media (prefers-reduced-motion: reduce){
-  .head.glitching .solid,
   .head.glitching .ghost,
-  .head.glitching::after,
-  .head.glitching-static .solid,
   .head.glitching-static .ghost{ animation:none; }
 }
 
-/* ---- lab typewriter cursor ---- */
+/* ---- typewriter cursor ---- */
 @keyframes blink{ 0%,100%{ opacity:1 } 50%{ opacity:0 } }
-.lab-cursor{
+.type-cursor{
   display:inline-block;
   font-weight:300;
   opacity:0;
   margin-left:.05em;
 }
-.lab-cursor.typing{ opacity:1; animation: blink .7s step-end infinite; }
-.lab-cursor.done{ animation: blink 1.1s step-end infinite; opacity:1; }
+.type-cursor.typing{ opacity:1; animation: blink .7s step-end infinite; }
+.type-cursor.done{ animation: blink 1.1s step-end infinite; opacity:1; }
 .lab-em{ font-style:italic; font-weight:500; }
+.def-def{ min-height:calc(clamp(.85rem,1.4vw,1.05rem) * 1.4 * 2); }
 .def-lab{ min-height:calc(clamp(.85rem,1.4vw,1.05rem) * 1.4 * 3); }
+.def-cred{ min-height:calc(clamp(.85rem,1.4vw,1.05rem) * 1.4 * 1); }
 
 /* ---- atención perdida ---- */
 @keyframes lose-focus{

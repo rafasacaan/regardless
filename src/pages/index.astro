@@ -14,9 +14,9 @@ const postCount = allPosts.length;
     <article class="entry">
       <h1 class="head anim d2"><span class="ghost" aria-hidden="true">regard<span class="mid">·</span>less</span><span class="ghost" aria-hidden="true">regard<span class="mid">·</span>less</span><span class="solid">regard<span class="mid">·</span>less</span></h1>
       <p class="pron anim d3"><span class="pos">(adv.)</span><span class="ipa">/rɪˈgɑːrdləs/</span></p>
-      <p class="def anim d3"><span class="num">(def.)</span> Cuando algo se hace o es cierto independiente de los obstáculos o de lo que piensen los demás.</p>
-      <p class="def def-lab anim d4"><span class="num">(lab.)</span> <span class="lab-text"></span><span class="lab-cursor" aria-hidden="true">|</span></p>
-      <p class="def def-last anim d4"><span class="num">(n.b.)</span> Tu atención es un recurso limitado, úsala bien.</p>
+      <p class="def def-def anim d3"><span class="num">(def.)</span> <span class="def-text"></span><span class="type-cursor def-cursor" aria-hidden="true">|</span></p>
+      <p class="def def-lab anim d4"><span class="num">(lab.)</span> <span class="lab-text"></span><span class="type-cursor lab-cursor" aria-hidden="true">|</span></p>
+      <p class="def def-cred anim d5"><span class="num">(cred.)</span> <span class="cred-text"></span><span class="type-cursor cred-cursor" aria-hidden="true">|</span></p>
     </article>
 
     <section class="instruments">
@@ -163,39 +163,37 @@ const postCount = allPosts.length;
 
       setTimeout(glitch, 2500 + Math.random() * 3000);
 
-      // typewriter (lab.)
-      const labText = document.querySelector('.lab-text');
-      const labCursor = document.querySelector('.lab-cursor');
-      const labPlain = 'Un laboratorio experimental que construye artefactos digitales para que personas normales saquen afuera las ideas que llevan dentro.';
-      const labHighlight = 'personas normales';
-      const labFull = labPlain.replace(labHighlight, `<em class="lab-em">${labHighlight}</em>`);
-      if(labText && labCursor){
-        const entranceEnd = 560 + 900;
-        setTimeout(() => {
-          labCursor.classList.add('typing');
-          let i = 0;
-          const iv = setInterval(() => {
-            const slice = labPlain.slice(0, ++i);
-            labText.innerHTML = slice.replace(labHighlight, `<em class="lab-em">${labHighlight}</em>`);
-            if(i >= labPlain.length){
-              clearInterval(iv);
-              labCursor.classList.remove('typing');
-              labCursor.classList.add('done');
-            }
-          }, 32);
-        }, entranceEnd);
+      // typewriter secuencial: (def.) → (lab.) → (cred.)
+      function typeInto(textEl, cursorEl, text, onDone){
+        if(!textEl || !cursorEl){ if(onDone) onDone(); return; }
+        cursorEl.classList.add('typing');
+        let i = 0;
+        const iv = setInterval(() => {
+          textEl.textContent = text.slice(0, ++i);
+          if(i >= text.length){
+            clearInterval(iv);
+            cursorEl.classList.remove('typing');
+            cursorEl.classList.add('done');
+            if(onDone) setTimeout(onDone, 250);
+          }
+        }, 32);
       }
 
-      // efecto atención perdida en (n.b.)
-      const nb = document.querySelector('.def-last');
-      if(nb){
-        function loseAttention(){
-          nb.classList.add('losing');
-          nb.addEventListener('animationend', () => nb.classList.remove('losing'), { once:true });
-          setTimeout(loseAttention, 12000 + Math.random() * 20000);
-        }
-        setTimeout(loseAttention, 2000 + Math.random() * 1000);
-      }
+      const defPlain = 'Cuando algo se hace o es cierto independiente de los obstáculos o de lo que piensen los demás.';
+      const labPlain = 'Construimos artefactos digitales para personas normales que quieren sacar afuera las ideas que llevan dentro.';
+      const credPlain = 'Menos ruido, menos relato, más outcome.';
+
+      const entranceEnd = 400 + 900;
+      setTimeout(() => {
+        typeInto(document.querySelector('.def-text'), document.querySelector('.def-cursor'), defPlain, () => {
+          typeInto(document.querySelector('.lab-text'), document.querySelector('.lab-cursor'), labPlain, () => {
+            typeInto(document.querySelector('.cred-text'), document.querySelector('.cred-cursor'), credPlain, () => {
+              const credText = document.querySelector('.cred-text');
+              if(credText) credText.innerHTML = credPlain.replace('outcome', '<em class="lab-em">outcome</em>');
+            });
+          });
+        });
+      }, entranceEnd);
     })();
   </script>
 </Base>
