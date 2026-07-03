@@ -10,7 +10,6 @@ const postCount = allPosts.length;
 
 <Base title="regardless">
   <main class="v2">
-    <div class="v2-cast" aria-hidden="true"></div>
     <div class="v2-copy">
       © 2026. All rights reserved.
       <a href="https://www.linkedin.com/in/rafaelsacaanamunategui/" target="_blank" rel="noopener" class="v2-copy-in" aria-label="LinkedIn"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
@@ -104,7 +103,7 @@ const postCount = allPosts.length;
   </main>
 
   <script is:inline type="module">
-    // scroll inercial (Lenis) — solo en /v2, respeta reduce-motion
+    // scroll inercial (Lenis) — respeta reduce-motion
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       import('https://cdn.jsdelivr.net/npm/lenis@1.1.20/+esm')
         .then(({ default: Lenis }) => {
@@ -114,75 +113,6 @@ const postCount = allPosts.length;
           });
           function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
           requestAnimationFrame(raf);
-
-          // ===== cuaderno: 3 hojas que se voltean (page flip deck) =====
-          // solo en desktop: en móvil pelea con el scroll táctil y corta el contenido
-          const isDesktop = window.matchMedia('(min-width: 761px)').matches;
-          const sheets = ['.v2-hero', '.v2-more', '.v2-contact']
-            .map((s) => document.querySelector(s))
-            .filter(Boolean);
-          if (sheets.length && isDesktop) {
-            const castEl = document.querySelector('.v2-cast');
-            sheets.forEach((s, i) => {
-              s.classList.add('flip-sheet');
-              s.style.zIndex = String(40 - i * 10); // hoja de arriba = mayor z
-            });
-            let idx = 0;             // hoja visible (arriba)
-            let animating = false;
-            const DUR = 850;         // = .85s de la transición CSS
-            lenis.stop();            // navegación por volteo, sin scroll
-
-            function pulse(z){
-              if (castEl) castEl.style.zIndex = String(z - 1);
-              document.body.classList.add('v2-casting');
-              setTimeout(() => document.body.classList.remove('v2-casting'), DUR);
-            }
-            function next(){
-              if (animating || idx >= sheets.length - 1) return;
-              animating = true;
-              pulse(40 - idx * 10);
-              sheets[idx].classList.add('is-flipped');
-              idx++;
-              setTimeout(() => { animating = false; }, DUR);
-            }
-            function prev(){
-              if (animating || idx <= 0) return;
-              animating = true;
-              idx--;
-              pulse(40 - idx * 10);
-              sheets[idx].classList.remove('is-flipped');
-              setTimeout(() => { animating = false; }, DUR);
-            }
-
-            let wheelLock = false;
-            let wheelTimer;
-            window.addEventListener('wheel', (e) => {
-              e.preventDefault();
-              clearTimeout(wheelTimer);
-              // se desbloquea recién cuando la rueda/trackpad deja de emitir
-              wheelTimer = setTimeout(() => { wheelLock = false; }, 140);
-              if (wheelLock || animating) return;
-              wheelLock = true;
-              if (e.deltaY > 0) next(); else if (e.deltaY < 0) prev();
-            }, { passive: false });
-
-            let ty = null;
-            window.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; }, { passive: true });
-            window.addEventListener('touchmove', (e) => {
-              e.preventDefault();
-              if (animating || ty === null) return;
-              const dy = ty - e.touches[0].clientY;
-              if (dy > 40) { next(); ty = null; }
-              else if (dy < -40) { prev(); ty = null; }
-            }, { passive: false });
-            window.addEventListener('touchend', () => { ty = null; }, { passive: true });
-
-            window.addEventListener('keydown', (e) => {
-              if (animating) return;
-              if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); next(); }
-              else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); prev(); }
-            });
-          }
         })
         .catch(() => {});
     }
@@ -231,54 +161,6 @@ const postCount = allPosts.length;
     display:flex;
     flex-direction:column;
   }
-  /* páginas-hoja del cuaderno (page flip) — activadas por JS */
-  .flip-sheet{
-    position:fixed;
-    inset:0;
-    background:#fff;
-    padding:var(--gut);
-    display:flex;
-    flex-direction:column;
-    transform-origin:top center;
-    transform:perspective(1600px) rotateX(0deg);
-    transition:transform .85s cubic-bezier(.76,0,.24,1);
-    backface-visibility:hidden;
-    will-change:transform;
-    overflow:hidden;
-  }
-  .flip-sheet.is-flipped{
-    transform:perspective(1600px) rotateX(105deg);
-    pointer-events:none;
-  }
-  /* efecto papel: la hoja entra en sombra al voltearse */
-  .flip-sheet::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    z-index:5;
-    pointer-events:none;
-    background:linear-gradient(to top, rgba(0,0,0,.32), rgba(0,0,0,.04) 65%);
-    opacity:0;
-    transition:opacity .85s cubic-bezier(.76,0,.24,1);
-  }
-  .flip-sheet.is-flipped::after{ opacity:1; }
-  /* sombra proyectada: la hoja levantada oscurece lo que revela */
-  .v2-cast{
-    position:fixed;
-    left:0; right:0; top:0;
-    height:48vh;
-    z-index:38;
-    pointer-events:none;
-    opacity:0;
-    background:linear-gradient(to bottom, rgba(0,0,0,.38), rgba(0,0,0,0));
-  }
-  .v2-casting .v2-cast{ animation:v2-cast-pulse .85s ease; }
-  @keyframes v2-cast-pulse{
-    0%{ opacity:0; }
-    45%{ opacity:1; }
-    100%{ opacity:0; }
-  }
-
   /* empuja el bloque hacia abajo */
   .v2-top{ flex:1; min-height:14vh; }
 
@@ -501,8 +383,6 @@ const postCount = allPosts.length;
     .v2-cols{ grid-template-columns:1fr; gap:2.5rem; }
     .v2-principles{ flex-direction:column; gap:1.1rem; }
     .v2-lede{ max-width:none; }
-    /* sin cuaderno en móvil: la sombra del volteo no aplica */
-    .v2-cast{ display:none; }
     /* deja aire al final para que el © fijo no tape el formulario */
     .v2-contact{ padding-bottom:clamp(3.5rem, 12vh, 6rem); }
   }
