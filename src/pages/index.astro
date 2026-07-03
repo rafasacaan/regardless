@@ -119,10 +119,12 @@ const postCount = allPosts.length;
           requestAnimationFrame(raf);
 
           // ===== cuaderno: 3 hojas que se voltean (page flip deck) =====
+          // solo en desktop: en móvil pelea con el scroll táctil y corta el contenido
+          const isDesktop = window.matchMedia('(min-width: 761px)').matches;
           const sheets = ['.v2-hero', '.v2-more', '.v2-contact']
             .map((s) => document.querySelector(s))
             .filter(Boolean);
-          if (sheets.length) {
+          if (sheets.length && isDesktop) {
             const castEl = document.querySelector('.v2-cast');
             sheets.forEach((s, i) => {
               s.classList.add('flip-sheet');
@@ -539,5 +541,9 @@ const postCount = allPosts.length;
     .v2-principles{ flex-direction:column; gap:1.1rem; }
     .v2-lede{ max-width:none; }
     .v2-scroll{ display:none; }
+    /* sin cuaderno en móvil: el nº de página y la sombra del volteo no aplican */
+    .v2-pageno, .v2-cast{ display:none; }
+    /* deja aire al final para que el © fijo no tape el formulario */
+    .v2-contact{ padding-bottom:clamp(3.5rem, 12vh, 6rem); }
   }
 </style>
