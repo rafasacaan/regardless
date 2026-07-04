@@ -41,6 +41,7 @@ const { title = 'regardless — v3', dark = false, gridMarkOpacity = 15 } = Astr
     </div>
 
     <footer class="v3-bottom">
+      <span class="v3-copy">Un lab de Rafa Sacaan. All rights reserved 2026</span>
       <span class="v3-loc">Santiago, Chile <time class="v3-clock" datetime="">--:--:--</time></span>
     </footer>
   </main>
@@ -105,7 +106,7 @@ const { title = 'regardless — v3', dark = false, gridMarkOpacity = 15 } = Astr
     margin-top:calc(var(--gut) * -0.85);
     padding-bottom:clamp(1rem, 3vh, 2rem);
   }
-  .v3-bottom{ padding-top:clamp(1rem, 3vh, 2rem); align-items:flex-end; }
+  .v3-bottom{ padding-top:clamp(1rem, 3vh, 2rem); align-items:flex-end; font-size:11px; }
 
   .v3-top-item{
     background:none;
@@ -145,7 +146,7 @@ const { title = 'regardless — v3', dark = false, gridMarkOpacity = 15 } = Astr
     --row-q1: calc(var(--row-top) + (100% - var(--row-top)) / 4);
     --row-mid: calc(var(--row-top) + (100% - var(--row-top)) / 2);
     --row-q3: calc(var(--row-top) + (100% - var(--row-top)) * 3 / 4);
-    --line: color-mix(in srgb, currentColor 3%, transparent);
+    --line: color-mix(in srgb, currentColor 5%, transparent);
     position:fixed;
     inset:var(--gut);
     z-index:0;

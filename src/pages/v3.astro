@@ -1,0 +1,284 @@
+---
+import V3Layout from '../layouts/V3Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
+  .slice(0, 2);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<V3Layout title="regardless" dark={true}>
+  <div class="v3-home-bg" aria-hidden="true"></div>
+
+  <section id="top" class="v3-section v3-hero">
+    <h1 class="v3-heading">regardless.</h1>
+    <p class="v3-tagline v3-tagline--center">Somos un estudio creativo de IA que construye<br>artefactos digitales para gente común que quiere<br>sacar afuera las ideas que lleva dentro.</p>
+
+    <nav class="v3-tabs" role="tablist">
+      <button class="v3-tab" data-tab="artefactos" aria-pressed="false">Artefactos</button>
+      <button class="v3-tab" data-tab="blog" aria-pressed="false">Blog</button>
+      <button class="v3-tab" data-tab="contacto" aria-pressed="false">Contacto</button>
+    </nav>
+  </section>
+
+  <section class="v3-section v3-panels">
+    <div class="v3-panel" data-panel="artefactos" hidden>
+      <ul class="v3-rows">
+        <li class="v3-row">
+          <a class="v3-row-link" href="https://heyfrank.cl" target="_blank" rel="noopener">
+            <span class="v3-row-name">heyfrank</span>
+            <span class="v3-row-desc">Recetas para crear música desde el mood.</span>
+          </a>
+        </li>
+        <li class="v3-row">
+          <a class="v3-row-link" href="https://munra.cl" target="_blank" rel="noopener">
+            <span class="v3-row-name">munra</span>
+            <span class="v3-row-desc">Modelos de IA que generan tracks instrumentales.</span>
+          </a>
+        </li>
+        <li class="v3-row">
+          <a class="v3-row-link" href="https://yoescritor.cl" target="_blank" rel="noopener">
+            <span class="v3-row-name">yoescritor</span>
+            <span class="v3-row-desc">Encuentra al escritor que vive adentro tuyo.</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="v3-panel" data-panel="blog" hidden>
+      <ul class="v3-rows">
+        {posts.map((post) => (
+          <li class="v3-row">
+            <a class="v3-row-link" href={`/blog/${post.id}/`}>
+              <span class="v3-row-meta">{post.data.tipo} · {fmt(post.data.fecha)}</span>
+              <span class="v3-row-desc">{post.data.title}</span>
+            </a>
+          </li>
+        ))}
+        <li class="v3-row">
+          <a class="v3-send" href="/blog/">Blog ↗</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="v3-panel" data-panel="contacto" hidden>
+      <p class="v3-row-desc v3-contact-lede">¿Tienes una idea? Escríbeme!</p>
+      <form class="v3-form" action="https://formspree.io/f/xdarggap" method="POST">
+        <div class="v3-frow">
+          <label class="v3-flabel" for="v3c-email">Email</label>
+          <input class="v3-field" id="v3c-email" type="email" name="email" required />
+        </div>
+        <div class="v3-frow">
+          <label class="v3-flabel" for="v3c-msg">Mensaje</label>
+          <input class="v3-field" id="v3c-msg" name="message" required />
+        </div>
+        <button class="v3-send" type="submit">Enviar ↗</button>
+      </form>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function(){
+      var tabs = document.querySelectorAll('.v3-tab');
+      var panels = document.querySelectorAll('.v3-panel');
+      tabs.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var target = btn.dataset.tab;
+          var wasOpen = btn.getAttribute('aria-pressed') === 'true';
+          tabs.forEach(function(b){ b.setAttribute('aria-pressed', 'false'); });
+          panels.forEach(function(p){ p.hidden = true; });
+          if(!wasOpen){
+            btn.setAttribute('aria-pressed', 'true');
+            document.querySelector('.v3-panel[data-panel="' + target + '"]').hidden = false;
+          }
+        });
+      });
+    })();
+  </script>
+</V3Layout>
+
+<style>
+  .v3-home-bg{
+    position:fixed;
+    inset:-5%;
+    z-index:-1;
+    pointer-events:none;
+    background-image:url('/img/home-bg.png');
+    background-size:280%;
+    background-position:82% 35%;
+    opacity:0;
+    animation:
+      v3-home-bg-in 1.6s ease .05s forwards,
+      v3-home-bg-drift 26s ease-in-out .1s infinite;
+  }
+  @keyframes v3-home-bg-in{ from{ opacity:0 } to{ opacity:.75 } }
+  @keyframes v3-home-bg-drift{
+    0%, 100%{ transform:scale(1) translate(0, 0); }
+    50%{ transform:scale(1.06) translate(-1.2%, 1%); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .v3-home-bg{ animation:none; opacity:.75; }
+  }
+
+  .v3-section{
+    position:relative;
+    z-index:1;
+  }
+
+  .v3-hero{
+    padding-top:clamp(2rem, 8vh, 6rem);
+  }
+
+  .v3-heading{
+    margin:0 0 clamp(.6rem, 2vh, 1rem);
+    text-align:left;
+    font-family:var(--mono);
+    font-weight:300;
+    text-transform:uppercase;
+    font-size:clamp(1.1rem, 1.6vw, 1.4rem);
+    letter-spacing:-.01em;
+    line-height:1.1;
+  }
+
+  .v3-tagline{
+    margin:0;
+    font-family:var(--mono);
+    font-size:15px;
+    font-weight:300;
+    letter-spacing:-.01em;
+    line-height:1.35;
+  }
+  .v3-tagline--center{
+    text-align:left;
+    font-size:clamp(.85rem, 1.1vw, 1rem);
+    line-height:1.4;
+  }
+
+  .v3-contact-lede{
+    margin:0 0 clamp(1rem, 3vh, 1.6rem);
+  }
+
+  /* ---- tabs ---- */
+  .v3-tabs{
+    display:flex;
+    gap:1.6rem;
+    margin-top:clamp(1.5rem, 4vh, 2.2rem);
+  }
+  .v3-tab{
+    font-family:var(--mono);
+    font-weight:300;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+    font-size:.85rem;
+    background:none;
+    border:0;
+    border-bottom:1px solid transparent;
+    padding:0 0 .25em;
+    color:inherit;
+    opacity:.55;
+    cursor:pointer;
+    transition:opacity .2s ease, border-color .2s ease;
+  }
+  .v3-tab:hover{ opacity:.85; }
+  .v3-tab[aria-pressed="true"]{ opacity:1; border-bottom-color:currentColor; }
+
+  /* ---- panel abierto ---- */
+  .v3-panels{ margin-top:clamp(1.5rem, 4vh, 2rem); }
+  .v3-panel[hidden]{ display:none; }
+
+  .v3-rows{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:.6em;
+    max-width:34rem;
+  }
+  .v3-row{
+    padding-top:.5em;
+    border-top:1px solid color-mix(in srgb, currentColor 22%, transparent);
+  }
+  .v3-row-link{
+    display:flex;
+    flex-direction:column;
+    gap:.25em;
+    text-decoration:none;
+    color:inherit;
+    opacity:.45;
+    transition:opacity .2s ease;
+  }
+  .v3-row-link:hover{ opacity:1; }
+  .v3-row-name{
+    font-family:var(--mono);
+    font-weight:300;
+    text-transform:uppercase;
+    letter-spacing:-.01em;
+    line-height:1.2;
+    font-size:clamp(.95rem, 1.3vw, 1.15rem);
+  }
+  .v3-row-desc{
+    font-family:var(--mono);
+    font-weight:300;
+    letter-spacing:-.01em;
+    line-height:1.3;
+    font-size:clamp(.78rem, .95vw, .85rem);
+    opacity:.75;
+  }
+  .v3-row-meta{ font-family:var(--mono); font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; opacity:.5; }
+
+  /* ---- contacto ---- */
+  .v3-form{
+    display:flex;
+    flex-direction:column;
+    gap:.9em;
+    max-width:26rem;
+  }
+  .v3-frow{ display:flex; flex-direction:column; gap:.25rem; padding-top:.5em; border-top:1px solid color-mix(in srgb, currentColor 22%, transparent); }
+  .v3-flabel{
+    font-family:var(--mono);
+    font-size:.65rem;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    opacity:.5;
+  }
+  .v3-field{
+    font-family:var(--mono);
+    font-weight:300;
+    font-size:.95rem;
+    color:inherit;
+    background:transparent;
+    border:0;
+    padding:.15em 0;
+    outline:none;
+    resize:none;
+  }
+  .v3-send{
+    display:inline-block;
+    align-self:flex-start;
+    font-family:var(--mono);
+    font-weight:300;
+    text-transform:uppercase;
+    font-size:.95rem;
+    letter-spacing:-.01em;
+    color:inherit;
+    text-decoration:none;
+    background:transparent;
+    border:0;
+    padding:.4em 0 0;
+    cursor:pointer;
+    transition:opacity .2s ease;
+  }
+  .v3-send:hover{ opacity:.55; }
+
+  @media (max-width:760px){
+    .v3-tab{ font-size:.75rem; }
+    .v3-row-name{ font-size:.85rem; }
+    .v3-row-desc{ font-size:.75rem; }
+    .v3-field{ font-size:.85rem; }
+    .v3-send{ font-size:.85rem; }
+  }
+</style>

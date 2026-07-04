@@ -12,87 +12,128 @@ const fmt = (d: Date) =>
 
 <V3Layout title="regardless" dark={true}>
   <div class="v3-home-bg" aria-hidden="true"></div>
+  <div class="v3-aura" aria-hidden="true"></div>
+  <div class="v3-aura v3-aura--echo" aria-hidden="true"></div>
 
-  <section id="top" class="v3-section v3-hero">
-    <h1 class="v3-heading">regardless.</h1>
-    <p class="v3-tagline v3-tagline--center">Somos un estudio creativo de IA que construye<br>artefactos digitales para gente común que quiere<br>sacar afuera las ideas que lleva dentro.</p>
+  <div class="v3-dust" aria-hidden="true">
+    <span style="left:14%; top:22%; --d:9s;    --dl:0s;   --op:.9; --sz:2px;"></span>
+    <span style="left:71%; top:16%; --d:8s;    --dl:1.6s; --op:.9; --sz:1.5px;"></span>
+    <span style="left:88%; top:44%; --d:11s;   --dl:3s;   --op:1;  --sz:2px;"></span>
+    <span style="left:34%; top:63%; --d:7.5s;  --dl:.8s;  --op:.85; --sz:1.5px;"></span>
+    <span style="left:57%; top:78%; --d:10s;   --dl:4.2s; --op:.9; --sz:2px;"></span>
+    <span style="left:23%; top:88%; --d:8.5s;  --dl:2.2s; --op:.85; --sz:1.5px;"></span>
+    <span style="left:79%; top:71%; --d:12s;   --dl:5.2s; --op:.9; --sz:2px;"></span>
+    <span style="left:46%; top:33%; --d:7s;    --dl:3.2s; --op:.85; --sz:1.5px;"></span>
+    <span style="left:92%; top:86%; --d:11.5s; --dl:1.2s; --op:1;  --sz:2px;"></span>
+    <span style="left:8%;  top:52%; --d:10.5s; --dl:4.8s; --op:.9; --sz:1.5px;"></span>
+    <span style="left:63%; top:9%;  --d:9.5s;  --dl:6.2s; --op:.9; --sz:2px;"></span>
+    <span style="left:38%; top:94%; --d:11s;   --dl:3.8s; --op:.85; --sz:1.5px;"></span>
+    <span style="left:52%; top:52%; --d:8s;    --dl:.4s;  --op:.9; --sz:2px;"></span>
+    <span style="left:19%; top:41%; --d:10s;   --dl:5.6s; --op:.85; --sz:1.5px;"></span>
+    <span style="left:83%; top:28%; --d:7.5s;  --dl:2.6s; --op:.9; --sz:2px;"></span>
+    <span style="left:29%; top:14%; --d:11.5s; --dl:1.8s; --op:.85; --sz:1.5px;"></span>
+    <span style="left:67%; top:60%; --d:9s;    --dl:4.4s; --op:.9; --sz:2px;"></span>
+    <span style="left:44%; top:82%; --d:10.5s; --dl:3.4s; --op:.85; --sz:1.5px;"></span>
+    <span style="left:96%; top:63%; --d:8.5s;  --dl:1s;   --op:.9; --sz:1.5px;"></span>
+    <span style="left:6%;  top:78%; --d:11s;   --dl:6.6s; --op:.85; --sz:2px;"></span>
+    <span style="left:76%; top:92%; --d:8s;    --dl:2.8s; --op:.9; --sz:1.5px;"></span>
+    <span style="left:50%; top:20%; --d:9.5s;  --dl:5s;   --op:.85; --sz:1.5px;"></span>
+    <span style="left:11%; top:34%; --d:10s;   --dl:7.4s; --op:.9; --sz:2px;"></span>
+    <span style="left:60%; top:44%; --d:8.5s;  --dl:3.6s; --op:.85; --sz:1.5px;"></span>
+    <span style="left:85%; top:56%; --d:11s;   --dl:.6s;  --op:.9; --sz:2px;"></span>
+    <span style="left:41%; top:71%; --d:9s;    --dl:6s;   --op:.85; --sz:1.5px;"></span>
+    <span style="left:27%; top:56%; --d:10.5s; --dl:4s;   --op:.9; --sz:1.5px;"></span>
+    <span style="left:73%; top:37%; --d:8s;    --dl:2s;   --op:.85; --sz:2px;"></span>
+  </div>
 
-    <nav class="v3-tabs" role="tablist">
-      <button class="v3-tab" data-tab="artefactos" aria-pressed="false">Artefactos</button>
-      <button class="v3-tab" data-tab="blog" aria-pressed="false">Blog</button>
-      <button class="v3-tab" data-tab="contacto" aria-pressed="false">Contacto</button>
-    </nav>
-  </section>
+  <div class="home">
+    <header class="home-hero">
+      <h1 class="hero-mark">regardless<span class="hero-dot">.</span></h1>
+      <p class="hero-gloss"><span class="pos">(adv.)</span> <span class="ipa">/rɪˈɡɑːrdləs/</span> · pase lo que pase.</p>
+      <p class="v3-tagline">Somos un estudio creativo de IA que construye<br>artefactos digitales para la gente común que quiere<br>sacar afuera las ideas que lleva dentro.</p>
 
-  <section class="v3-section v3-panels">
-    <div class="v3-panel" data-panel="artefactos" hidden>
-      <ul class="v3-rows">
-        <li class="v3-row">
-          <a class="v3-row-link" href="https://heyfrank.cl" target="_blank" rel="noopener">
-            <span class="v3-row-name">heyfrank</span>
-            <span class="v3-row-desc">Recetas para crear música desde el mood.</span>
-          </a>
-        </li>
-        <li class="v3-row">
-          <a class="v3-row-link" href="https://munra.cl" target="_blank" rel="noopener">
-            <span class="v3-row-name">munra</span>
-            <span class="v3-row-desc">Modelos de IA que generan tracks instrumentales.</span>
-          </a>
-        </li>
-        <li class="v3-row">
-          <a class="v3-row-link" href="https://yoescritor.cl" target="_blank" rel="noopener">
-            <span class="v3-row-name">yoescritor</span>
-            <span class="v3-row-desc">Encuentra al escritor que vive adentro tuyo.</span>
-          </a>
-        </li>
-      </ul>
-    </div>
+      <nav class="v3-tabs" role="tablist">
+        <button class="v3-tab" data-tab="artefactos" aria-pressed="false">Artefactos</button>
+        <button class="v3-tab" data-tab="blog" aria-pressed="false">Blog</button>
+        <button class="v3-tab" data-tab="contacto" aria-pressed="false">Contacto</button>
+        <span class="v3-caret" aria-hidden="true">▊</span>
+      </nav>
+    </header>
 
-    <div class="v3-panel" data-panel="blog" hidden>
-      <ul class="v3-rows">
-        {posts.map((post) => (
+    <div class="stage">
+      <div class="v3-panel" data-panel="artefactos">
+        <ul class="v3-rows">
           <li class="v3-row">
-            <a class="v3-row-link" href={`/blog/${post.id}/`}>
-              <span class="v3-row-meta">{post.data.tipo} · {fmt(post.data.fecha)}</span>
-              <span class="v3-row-name v3-row-name--post">{post.data.title}</span>
+            <a class="v3-row-link" href="https://heyfrank.cl" target="_blank" rel="noopener">
+              <span class="v3-row-name">heyfrank</span>
+              <span class="v3-row-desc">Recetas para crear música desde el mood.</span>
             </a>
           </li>
-        ))}
-        <li class="v3-row">
-          <a class="v3-send" href="/blog/">Blog ↗</a>
-        </li>
-      </ul>
-    </div>
+          <li class="v3-row">
+            <a class="v3-row-link" href="https://munra.cl" target="_blank" rel="noopener">
+              <span class="v3-row-name">munra</span>
+              <span class="v3-row-desc">Modelos de IA que generan tracks instrumentales.</span>
+            </a>
+          </li>
+          <li class="v3-row">
+            <a class="v3-row-link" href="https://yoescritor.cl" target="_blank" rel="noopener">
+              <span class="v3-row-name">yoescritor</span>
+              <span class="v3-row-desc">Encuentra al escritor que vive adentro tuyo.</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
-    <div class="v3-panel" data-panel="contacto" hidden>
-      <p class="v3-panel-title">¿Tienes una idea? Escríbeme!</p>
-      <form class="v3-form" action="https://formspree.io/f/xdarggap" method="POST">
-        <div class="v3-frow">
-          <label class="v3-flabel" for="v3c-email">Email</label>
-          <input class="v3-field" id="v3c-email" type="email" name="email" required />
-        </div>
-        <div class="v3-frow">
-          <label class="v3-flabel" for="v3c-msg">Mensaje</label>
-          <input class="v3-field" id="v3c-msg" name="message" required />
-        </div>
-        <button class="v3-send" type="submit">Enviar ↗</button>
-      </form>
+      <div class="v3-panel" data-panel="blog">
+        <ul class="v3-rows">
+          {posts.map((post) => (
+            <li class="v3-row">
+              <a class="v3-row-link" href={`/blog/${post.id}/`}>
+                <span class="v3-row-meta">{post.data.tipo} · {fmt(post.data.fecha)}</span>
+                <span class="v3-row-desc">{post.data.title}</span>
+              </a>
+            </li>
+          ))}
+          <li class="v3-row">
+            <a class="v3-send" href="/blog/">Blog ↗</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="v3-panel" data-panel="contacto">
+        <p class="v3-row-desc v3-contact-lede">¿Tienes una idea? Escríbeme!</p>
+        <form class="v3-form" action="https://formspree.io/f/xdarggap" method="POST">
+          <div class="v3-frow">
+            <label class="v3-flabel" for="v3c-email">Email</label>
+            <input class="v3-field" id="v3c-email" type="email" name="email" required />
+          </div>
+          <div class="v3-frow">
+            <label class="v3-flabel" for="v3c-msg">Mensaje</label>
+            <input class="v3-field" id="v3c-msg" name="message" required />
+          </div>
+          <button class="v3-send" type="submit">Enviar ↗</button>
+        </form>
+      </div>
     </div>
-  </section>
+  </div>
 
   <script is:inline>
     (function(){
       var tabs = document.querySelectorAll('.v3-tab');
       var panels = document.querySelectorAll('.v3-panel');
+      var caret = document.querySelector('.v3-caret');
       tabs.forEach(function(btn){
         btn.addEventListener('click', function(){
           var target = btn.dataset.tab;
           var wasOpen = btn.getAttribute('aria-pressed') === 'true';
           tabs.forEach(function(b){ b.setAttribute('aria-pressed', 'false'); });
-          panels.forEach(function(p){ p.hidden = true; });
+          panels.forEach(function(p){ p.classList.remove('is-open'); });
+          if(caret) caret.classList.add('is-gone');
           if(!wasOpen){
             btn.setAttribute('aria-pressed', 'true');
-            document.querySelector('.v3-panel[data-panel="' + target + '"]').hidden = false;
+            var panel = document.querySelector('.v3-panel[data-panel="' + target + '"]');
+            void panel.offsetWidth; /* reinicia la animación */
+            panel.classList.add('is-open');
           }
         });
       });
@@ -123,54 +164,133 @@ const fmt = (d: Date) =>
     .v3-home-bg{ animation:none; opacity:.75; }
   }
 
-  .v3-section{
+  /* ===== aura: la parte de color de au-pro-11, vagando muy sutil y frágil ===== */
+  .v3-aura{
+    position:fixed;
+    inset:-25%;
+    z-index:-1;
+    pointer-events:none;
+    background-image:url('/img/aura.png');
+    background-size:170%;
+    background-position:38% 52%;
+    background-repeat:no-repeat;
+    filter:blur(44px) saturate(1.8) contrast(1.18);
+    mix-blend-mode:screen;   /* el negro de la foto desaparece; solo brilla el color */
+    opacity:0;
+    will-change:opacity, transform;
+    animation:aura-wander 46s ease-in-out infinite;
+  }
+  .v3-aura--echo{
+    background-position:64% 40%;
+    filter:blur(70px) saturate(1.55) contrast(1.1);
+    animation:aura-echo 62s ease-in-out infinite;
+    animation-delay:-18s;
+  }
+  @keyframes aura-wander{
+    0%   { opacity:0;   transform:translate(-6%, 3%)  scale(1.12); }
+    22%  { opacity:.36; }
+    50%  { opacity:.18; transform:translate(6%, -4%)  scale(1.32); }
+    78%  { opacity:.36; }
+    100% { opacity:0;   transform:translate(-6%, 3%)  scale(1.12); }
+  }
+  @keyframes aura-echo{
+    0%   { opacity:0;   transform:translate(5%, -3%)  scale(1.24); }
+    30%  { opacity:.2;  }
+    50%  { opacity:.28; transform:translate(-5%, 4%)  scale(1.42); }
+    70%  { opacity:.2;  }
+    100% { opacity:0;   transform:translate(5%, -3%)  scale(1.24); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .v3-aura{ animation:none; opacity:.16; }
+  }
+
+  /* ===== polvo: puntos blancos que aparecen y se van, muy dispersos ===== */
+  .v3-dust{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+  .v3-dust span{
+    position:absolute;
+    width:var(--sz, 2px);
+    height:var(--sz, 2px);
+    border-radius:50%;
+    background:#fff;
+    opacity:0;
+    will-change:opacity, transform;
+    animation:dust-blink var(--d, 10s) ease-in-out var(--dl, 0s) infinite;
+  }
+  @keyframes dust-blink{
+    0%, 100%{ opacity:0; transform:scale(.5); }
+    40%{ opacity:0; transform:scale(.5); }
+    55%{ opacity:var(--op, .7); transform:scale(1); }
+    72%{ opacity:var(--op, .7); transform:scale(1); }
+    88%{ opacity:0; transform:scale(.8); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .v3-dust{ display:none; }
+  }
+
+  /* ===== composición: hero anclado arriba, panel justo debajo ===== */
+  .home{
     position:relative;
     z-index:1;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    padding-top:clamp(1rem, 6vh, 4rem);
   }
 
-  .v3-hero{
-    padding-top:clamp(2rem, 8vh, 6rem);
-  }
+  .home-hero{ display:block; }
 
-  .v3-heading{
-    margin:0 0 clamp(.6rem, 2vh, 1rem);
-    text-align:left;
+  /* ---- gesto grande: el wordmark ---- */
+  .hero-mark{
+    margin:0;
     font-family:var(--mono);
     font-weight:300;
     text-transform:uppercase;
-    font-size:clamp(1.1rem, 1.6vw, 1.4rem);
-    letter-spacing:-.01em;
-    line-height:1.1;
+    font-size:clamp(2.6rem, 9vw, 7rem);
+    line-height:.92;
+    letter-spacing:-.04em;
+    opacity:0;
+    animation:hero-rise .9s cubic-bezier(.2,.8,.2,1) .1s forwards;
   }
+  .hero-dot{ opacity:.4; }
+  @keyframes hero-rise{ from{ opacity:0; transform:translateY(.25em) } to{ opacity:1; transform:translateY(0) } }
+
+  .hero-gloss{
+    margin:clamp(.6rem, 1.5vh, 1rem) 0 0;
+    font-family:var(--mono);
+    font-weight:300;
+    font-size:clamp(.72rem, .9vw, .82rem);
+    letter-spacing:.02em;
+    opacity:.5;
+    animation:hero-fade 1s ease .35s backwards;
+  }
+  .hero-gloss .ipa{ font-style:italic; }
+  @keyframes hero-fade{ from{ opacity:0 } to{ opacity:.5 } }
 
   .v3-tagline{
-    margin:0;
+    margin:clamp(1.4rem, 4vh, 2.4rem) 0 0;
     font-family:var(--mono);
-    font-size:15px;
     font-weight:300;
-    letter-spacing:-.01em;
-    line-height:1.35;
-  }
-  .v3-tagline--center{
-    text-align:left;
     font-size:clamp(.85rem, 1.1vw, 1rem);
-    line-height:1.4;
-  }
-
-  .v3-panel-title{
-    margin:0 0 clamp(1rem, 3vh, 1.6rem);
-    font-family:var(--mono);
-    font-weight:300;
-    font-size:16px;
     letter-spacing:-.01em;
-    line-height:1.3;
+    line-height:1.4;
+    max-width:40rem;
+    animation:hero-fade-full 1s ease .5s backwards;
   }
+  @keyframes hero-fade-full{ from{ opacity:0 } to{ opacity:1 } }
 
-  /* ---- tabs ---- */
+  /* ---- tabs (con affordance) ---- */
   .v3-tabs{
     display:flex;
+    align-items:center;
     gap:1.6rem;
-    margin-top:clamp(1.5rem, 4vh, 2.2rem);
+    margin-top:clamp(1.6rem, 4vh, 2.4rem);
+    animation:hero-fade-full 1s ease .65s backwards;
   }
   .v3-tab{
     font-family:var(--mono);
@@ -180,20 +300,54 @@ const fmt = (d: Date) =>
     font-size:.85rem;
     background:none;
     border:0;
-    border-bottom:1px solid transparent;
-    padding:0 0 .25em;
+    border-bottom:1px solid color-mix(in srgb, currentColor 20%, transparent);
+    padding:0 0 .3em;
     color:inherit;
-    opacity:.55;
+    opacity:.7;
     cursor:pointer;
     transition:opacity .2s ease, border-color .2s ease;
   }
-  .v3-tab:hover{ opacity:.85; }
+  .v3-tab:hover{ opacity:1; border-bottom-color:color-mix(in srgb, currentColor 55%, transparent); }
   .v3-tab[aria-pressed="true"]{ opacity:1; border-bottom-color:currentColor; }
 
-  /* ---- panel abierto ---- */
-  .v3-panels{ margin-top:clamp(1.5rem, 4vh, 2rem); }
-  .v3-panel[hidden]{ display:none; }
+  .v3-caret{
+    font-family:var(--mono);
+    font-size:.8rem;
+    opacity:.55;
+    animation:caret-blink 1.1s step-end infinite;
+  }
+  .v3-caret.is-gone{ display:none; }
+  @keyframes caret-blink{ 0%,100%{ opacity:.55 } 50%{ opacity:0 } }
 
+  /* ---- stage: donde se abre el contenido, pegado a los tabs ---- */
+  .stage{ margin-top:clamp(1.6rem, 4vh, 2.4rem); }
+
+  .v3-panel{ display:none; }
+  .v3-panel.is-open{
+    display:block;
+    animation:panel-in .5s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes panel-in{ from{ opacity:0 } to{ opacity:1 } }
+
+  /* stagger de las filas al abrir */
+  .v3-panel.is-open .v3-row,
+  .v3-panel.is-open .v3-contact-lede,
+  .v3-panel.is-open .v3-form{
+    animation:row-in .55s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+  .v3-panel.is-open .v3-row:nth-child(1){ animation-delay:.06s; }
+  .v3-panel.is-open .v3-row:nth-child(2){ animation-delay:.13s; }
+  .v3-panel.is-open .v3-row:nth-child(3){ animation-delay:.20s; }
+  .v3-panel.is-open .v3-row:nth-child(4){ animation-delay:.27s; }
+  .v3-panel.is-open .v3-contact-lede{ animation-delay:.06s; }
+  .v3-panel.is-open .v3-form{ animation-delay:.14s; }
+  @keyframes row-in{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  @media (prefers-reduced-motion: reduce){
+    .hero-mark, .hero-gloss, .v3-tagline, .v3-tabs,
+    .v3-panel.is-open, .v3-panel.is-open *{ animation:none !important; opacity:1 !important; transform:none !important; }
+  }
+
+  /* ---- filas ---- */
   .v3-rows{
     list-style:none;
     margin:0;
@@ -213,10 +367,11 @@ const fmt = (d: Date) =>
     gap:.25em;
     text-decoration:none;
     color:inherit;
-    opacity:.45;
+    opacity:.7;
     transition:opacity .2s ease;
   }
-  .v3-row-link:hover{ opacity:1; }
+  .v3-rows:hover .v3-row-link{ opacity:.4; }
+  .v3-rows .v3-row-link:hover{ opacity:1; }
   .v3-row-name{
     font-family:var(--mono);
     font-weight:300;
@@ -225,18 +380,18 @@ const fmt = (d: Date) =>
     line-height:1.2;
     font-size:clamp(.95rem, 1.3vw, 1.15rem);
   }
-  .v3-row-name--post{ text-transform:none; }
   .v3-row-desc{
     font-family:var(--mono);
     font-weight:300;
     letter-spacing:-.01em;
     line-height:1.3;
     font-size:clamp(.78rem, .95vw, .85rem);
-    opacity:.75;
+    opacity:.85;
   }
   .v3-row-meta{ font-family:var(--mono); font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; opacity:.5; }
 
   /* ---- contacto ---- */
+  .v3-contact-lede{ margin:0 0 clamp(1rem, 3vh, 1.6rem); opacity:1; }
   .v3-form{
     display:flex;
     flex-direction:column;
@@ -279,4 +434,13 @@ const fmt = (d: Date) =>
     transition:opacity .2s ease;
   }
   .v3-send:hover{ opacity:.55; }
+
+  @media (max-width:760px){
+    .v3-tabs{ flex-wrap:wrap; gap:1rem; }
+    .v3-tab{ font-size:.75rem; }
+    .v3-row-name{ font-size:.85rem; }
+    .v3-row-desc{ font-size:.75rem; }
+    .v3-field{ font-size:.85rem; }
+    .v3-send{ font-size:.85rem; }
+  }
 </style>
