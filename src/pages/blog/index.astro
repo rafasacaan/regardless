@@ -1,5 +1,5 @@
 ---
-import Base from '../../layouts/Base.astro';
+import V3Layout from '../../layouts/V3Layout.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
@@ -10,38 +10,34 @@ const fmt = (d: Date) =>
   d.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
 ---
 
-<Base title="blog — regardless" description="Notas técnicas y no técnicas desde el lab.">
-  <main class="wrap">
-    <nav class="crumb">
-      <a href="/">regardless</a> / blog
-    </nav>
+<V3Layout title="blog — regardless" dark={true}>
+  <div class="blog-bg" aria-hidden="true"></div>
 
-    <h1 class="section-head">blog</h1>
-    <p class="section-sub">Notas y registros de lo que construyo y lo que pienso.</p>
+  <div class="v3-blog">
+    <p class="v3-crumb"><a href="/">regardless</a> / blog</p>
+    <h1 class="v3-heading">blog.</h1>
+    <p class="v3-tagline">Notas y registros de lo que construyo y lo que pienso.</p>
 
-    <div class="filters" role="group" aria-label="filtrar por tipo">
-      <button class="filter" data-filter="todos" aria-pressed="true">todos</button>
-      <button class="filter" data-filter="hey frank" aria-pressed="false">hey frank</button>
-      <button class="filter" data-filter="tech" aria-pressed="false">tech</button>
-      <button class="filter" data-filter="notas" aria-pressed="false">notas</button>
+    <div class="v3-filters" role="group" aria-label="filtrar por tipo">
+      <button class="v3-filter" data-filter="todos" aria-pressed="true">todos</button>
+      <button class="v3-filter" data-filter="hey frank" aria-pressed="false">hey frank</button>
+      <button class="v3-filter" data-filter="tech" aria-pressed="false">tech</button>
+      <button class="v3-filter" data-filter="notas" aria-pressed="false">notas</button>
     </div>
 
     {
       posts.length === 0 ? (
-        <p class="empty">todavía no hay nada escrito. pronto.</p>
+        <p class="v3-empty">todavía no hay nada escrito. pronto.</p>
       ) : (
-        <ul class="posts">
+        <ul class="v3-rows">
           {posts.map((post) => (
-            <li class="post-item" data-tipo={post.data.tipo}>
-              <a href={`/blog/${post.id}/`}>
-                <div class="post-meta">
-                  <span class="post-tipo">{post.data.tipo}</span>
-                  <time datetime={post.data.fecha.toISOString().slice(0, 10)}>
-                    {fmt(post.data.fecha)}
-                  </time>
-                </div>
-                <h2 class="post-title">{post.data.title}</h2>
-                {post.data.resumen && <p class="post-resumen">{post.data.resumen}</p>}
+            <li class="v3-row" data-tipo={post.data.tipo}>
+              <a class="v3-row-link" href={`/blog/${post.id}/`}>
+                <span class="v3-row-meta">
+                  {post.data.tipo} · {fmt(post.data.fecha)}
+                </span>
+                <span class="v3-row-name">{post.data.title}</span>
+                {post.data.resumen && <span class="v3-row-desc">{post.data.resumen}</span>}
               </a>
             </li>
           ))}
@@ -49,18 +45,13 @@ const fmt = (d: Date) =>
       )
     }
 
-    <p class="empty" data-empty-filter hidden>nada en esta categoría… por ahora.</p>
-  </main>
-
-  <footer class="foot">
-    <span class="foot-name">un lab de rafa sacaan</span>
-    <a class="foot-link" href="/">← volver</a>
-  </footer>
+    <p class="v3-empty" data-empty-filter hidden>nada en esta categoría… por ahora.</p>
+  </div>
 
   <script is:inline>
     (function () {
-      const buttons = Array.from(document.querySelectorAll('.filter'));
-      const items = Array.from(document.querySelectorAll('.post-item'));
+      const buttons = Array.from(document.querySelectorAll('.v3-filter'));
+      const items = Array.from(document.querySelectorAll('.v3-row'));
       const emptyMsg = document.querySelector('[data-empty-filter]');
 
       function apply(filter) {
@@ -81,4 +72,122 @@ const fmt = (d: Date) =>
       );
     })();
   </script>
-</Base>
+</V3Layout>
+
+<style>
+  .blog-bg{
+    position:fixed;
+    inset:-5%;
+    z-index:-1;
+    pointer-events:none;
+    background-image:url('/img/home-bg.png');
+    background-size:280%;
+    background-position:82% 35%;
+    opacity:0;
+    animation:
+      blog-bg-in 1.6s ease .05s forwards,
+      blog-bg-drift 26s ease-in-out .1s infinite;
+  }
+  @keyframes blog-bg-in{ from{ opacity:0 } to{ opacity:.75 } }
+  @keyframes blog-bg-drift{
+    0%, 100%{ transform:scale(1) translate(0, 0); }
+    50%{ transform:scale(1.06) translate(-1.2%, 1%); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .blog-bg{ animation:none; opacity:.75; }
+  }
+
+  .v3-blog{
+    position:relative;
+    z-index:1;
+    max-width:44rem;
+  }
+
+  .v3-crumb{
+    margin:0 0 clamp(1.5rem, 4vh, 2.5rem);
+    font-family:var(--mono);
+    font-size:.75rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    opacity:.5;
+  }
+  .v3-crumb a{ color:inherit; text-decoration:none; border-bottom:1px solid currentColor; }
+
+  .v3-heading{
+    margin:0 0 clamp(.5rem, 1.5vh, .8rem);
+    font-family:var(--mono);
+    font-weight:300;
+    text-transform:uppercase;
+    font-size:clamp(1.2rem, 2vw, 1.6rem);
+    letter-spacing:-.01em;
+    line-height:1.1;
+  }
+  .v3-tagline{
+    margin:0 0 clamp(1.5rem, 4vh, 2.5rem);
+    font-family:var(--mono);
+    font-weight:300;
+    font-size:.85rem;
+    letter-spacing:-.005em;
+    opacity:.7;
+  }
+
+  .v3-filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:1.4rem;
+    margin-bottom:clamp(1.5rem, 4vh, 2.5rem);
+  }
+  .v3-filter{
+    font-family:var(--mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    background:none;
+    border:0;
+    border-bottom:1px solid transparent;
+    padding:0 0 .2em;
+    opacity:.5;
+    cursor:pointer;
+    color:inherit;
+    transition:opacity .2s ease, border-color .2s ease;
+  }
+  .v3-filter:hover{ opacity:.85; }
+  .v3-filter[aria-pressed="true"]{ opacity:1; border-bottom-color:currentColor; }
+
+  .v3-rows{ list-style:none; margin:0; padding:0; }
+  .v3-row{ border-top:1px solid color-mix(in srgb, currentColor 18%, transparent); }
+  .v3-row:last-child{ border-bottom:1px solid color-mix(in srgb, currentColor 18%, transparent); }
+  .v3-row-link{
+    display:flex;
+    flex-direction:column;
+    gap:.35em;
+    padding:clamp(1rem, 2.6vh, 1.4rem) 0;
+    text-decoration:none;
+    color:inherit;
+    opacity:.5;
+    transition:opacity .2s ease;
+  }
+  .v3-row-link:hover{ opacity:1; }
+  .v3-row-meta{ font-family:var(--mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; opacity:.6; }
+  .v3-row-name{
+    font-family:var(--mono);
+    font-weight:300;
+    font-size:clamp(1.05rem, 2vw, 1.35rem);
+    letter-spacing:-.01em;
+    line-height:1.25;
+  }
+  .v3-row-desc{
+    font-family:var(--mono);
+    font-weight:300;
+    font-size:.82rem;
+    line-height:1.4;
+    opacity:.65;
+    max-width:52ch;
+  }
+  .v3-empty{
+    font-family:var(--mono);
+    font-size:.85rem;
+    opacity:.5;
+    padding:clamp(1.5rem, 4vh, 2.5rem) 0;
+  }
+</style>

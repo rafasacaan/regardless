@@ -1,0 +1,181 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title?: string;
+  dark?: boolean;
+  gridMarkOpacity?: number;
+}
+
+const { title = 'regardless — v3', dark = false, gridMarkOpacity = 15 } = Astro.props;
+---
+
+<Base title={title} htmlClass={dark ? 'v3-dark' : ''}>
+  <main class="v3">
+    <header class="v3-top"></header>
+
+    <div class="v3-focus-grid" aria-hidden="true" style={`--mark-op:${gridMarkOpacity}%;`}>
+      <span class="v3-gl v3-gl--v" style="left:0%"></span>
+      <span class="v3-gl v3-gl--v" style="left:25%"></span>
+      <span class="v3-gl v3-gl--v" style="left:50%"></span>
+      <span class="v3-gl v3-gl--v" style="left:75%"></span>
+      <span class="v3-gl v3-gl--v" style="left:100%"></span>
+      <span class="v3-gl v3-gl--h" style="top:var(--row-top)"></span>
+      <span class="v3-gl v3-gl--h" style="top:var(--row-q1)"></span>
+      <span class="v3-gl v3-gl--h" style="top:var(--row-mid)"></span>
+      <span class="v3-gl v3-gl--h" style="top:var(--row-q3)"></span>
+      <span class="v3-gl v3-gl--h" style="top:100%"></span>
+      <span class="v3-fm v3-fm--top" style="left:0%"></span>
+      <span class="v3-fm v3-fm--top" style="left:50%"></span>
+      <span class="v3-fm v3-fm--top" style="left:100%"></span>
+      <span class="v3-fm v3-fm--mid" style="left:0%"></span>
+      <span class="v3-fm v3-fm--mid" style="left:50%"></span>
+      <span class="v3-fm v3-fm--mid" style="left:100%"></span>
+      <span class="v3-fm v3-fm--bot" style="left:0%"></span>
+      <span class="v3-fm v3-fm--bot" style="left:50%"></span>
+      <span class="v3-fm v3-fm--bot" style="left:100%"></span>
+    </div>
+
+    <div class="v3-body">
+      <slot />
+    </div>
+
+    <footer class="v3-bottom">
+      <span class="v3-loc">Santiago, Chile <time class="v3-clock" datetime="">--:--:--</time></span>
+    </footer>
+  </main>
+
+  <script is:inline>
+    // reloj en vivo (hora de Santiago)
+    (function(){
+      var el = document.querySelector('.v3-clock');
+      if(!el) return;
+      function tick(){
+        try{
+          el.textContent = new Date().toLocaleTimeString('es-CL', { hour12:false, timeZone:'America/Santiago' });
+        }catch(e){
+          el.textContent = new Date().toLocaleTimeString('es-CL', { hour12:false });
+        }
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+</Base>
+
+<style>
+  :global(html){ scroll-behavior:smooth; }
+  :global(html), :global(body){ background:#fff; transition:background-color .32s ease; }
+  :global(html.v3-dark), :global(html.v3-dark body){ background:#121212; }
+
+  .v3{
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --ink:#141414;
+
+    min-height:calc(100svh - 2 * var(--gut));
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    transition:color .3s ease;
+  }
+  :global(html.v3-dark) .v3{ --ink:#F4F3F0; }
+
+  /* ===== barras (mono fino, uppercase) ===== */
+  .v3-top, .v3-bottom{
+    position:relative;
+    z-index:1;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1.5rem;
+    font-family:var(--mono);
+    font-size:15px;
+    font-weight:300;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:rgb(17, 17, 17);
+    transition:color .32s ease;
+  }
+  /* en dark mode, navbar y footer en blanco */
+  :global(html.v3-dark) .v3-top,
+  :global(html.v3-dark) .v3-bottom{ color:#fff; }
+  /* menu bar: lo sube, menos margen con el tope */
+  .v3-top{
+    margin-top:calc(var(--gut) * -0.85);
+    padding-bottom:clamp(1rem, 3vh, 2rem);
+  }
+  .v3-bottom{ padding-top:clamp(1rem, 3vh, 2rem); align-items:flex-end; }
+
+  .v3-top-item{
+    background:none;
+    border:0;
+    padding:0;
+    font:inherit;
+    letter-spacing:inherit;
+    text-transform:inherit;
+    color:inherit;
+    text-decoration:none;
+    cursor:pointer;
+    transition:opacity .2s ease;
+  }
+  .v3-top-item:hover{ opacity:.5; }
+  .v3-brand{ font-size:1.6em; letter-spacing:.02em; }
+
+  .v3-loc{ white-space:nowrap; margin-left:auto; }
+  .v3-clock{ font-variant-numeric:tabular-nums; }
+
+  /* ===== zona central: contiene las secciones ===== */
+  .v3-body{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:clamp(1rem, 2.5vh, 1.6rem) 0;
+    min-height:0;
+  }
+
+  @media (max-width:760px){
+    .v3-top, .v3-bottom{ flex-wrap:wrap; gap:.6rem 1.2rem; }
+  }
+
+  /* ===== grilla técnica de foco (todas las páginas v3, salvo el blog) ===== */
+  .v3-focus-grid{
+    --row-top: clamp(2.75rem, 7.5vh, 4.75rem);
+    --row-q1: calc(var(--row-top) + (100% - var(--row-top)) / 4);
+    --row-mid: calc(var(--row-top) + (100% - var(--row-top)) / 2);
+    --row-q3: calc(var(--row-top) + (100% - var(--row-top)) * 3 / 4);
+    --line: color-mix(in srgb, currentColor 3%, transparent);
+    position:fixed;
+    inset:var(--gut);
+    z-index:0;
+    pointer-events:none;
+  }
+  .v3-gl{
+    position:absolute;
+  }
+  .v3-gl--v{ top:0; bottom:0; width:0; border-left:1px dashed var(--line); }
+  .v3-gl--h{ left:0; right:0; height:0; border-top:1px dashed var(--line); }
+  .v3-fm{
+    position:absolute;
+    width:clamp(18px, 2.5vw, 32px);
+    height:clamp(18px, 2.5vw, 32px);
+    transform:translate(-50%, -50%);
+  }
+  .v3-fm--top{ top:var(--row-top); }
+  .v3-fm--mid{ top:var(--row-mid); }
+  .v3-fm--bot{ top:100%; }
+  .v3-fm::before, .v3-fm::after{
+    content:'';
+    position:absolute;
+    background:color-mix(in srgb, currentColor var(--mark-op, 15%), transparent);
+  }
+  .v3-fm::before{
+    left:0; right:0; top:50%; height:1px;
+    transform:translateY(-50%);
+  }
+  .v3-fm::after{
+    top:0; bottom:0; left:50%; width:1px;
+    transform:translateX(-50%);
+  }
+</style>

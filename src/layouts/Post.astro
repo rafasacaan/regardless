@@ -1,5 +1,5 @@
 ---
-import Base from './Base.astro';
+import V3Layout from './V3Layout.astro';
 
 interface Props {
   title: string;
@@ -18,27 +18,77 @@ const fechaLegible = fecha.toLocaleDateString('es-CL', {
 const fechaISO = fecha.toISOString().slice(0, 10);
 ---
 
-<Base title={`${title} — regardless`} description={resumen}>
-  <main class="wrap">
-    <nav class="crumb">
-      <a href="/">regardless</a> / <a href="/blog/">blog</a>
-    </nav>
+<V3Layout title={`${title} — regardless`} dark={true}>
+  <div class="v3-post-bg" aria-hidden="true"></div>
+  <div class="v3-post">
+    <p class="v3-crumb"><a href="/">regardless</a> / <a href="/blog/">blog</a></p>
 
-    <header class="post-header">
-      <div class="post-meta">
-        <span class="post-tipo">{tipo}</span>
-        <time datetime={fechaISO}>{fechaLegible}</time>
-      </div>
-      <h1 class="post-h1">{title}</h1>
+    <header class="v3-post-header">
+      <p class="v3-post-meta">
+        <span>{tipo}</span> · <time datetime={fechaISO}>{fechaLegible}</time>
+      </p>
+      <h1 class="v3-post-title">{title}</h1>
     </header>
 
     <article class="prose">
       <slot />
     </article>
-  </main>
+  </div>
+</V3Layout>
 
-  <footer class="foot">
-    <span class="foot-name">un lab de rafa sacaan</span>
-    <a class="foot-link" href="/blog/">← volver al blog</a>
-  </footer>
-</Base>
+<style>
+  .v3-post-bg{
+    position:fixed;
+    inset:-5%;
+    z-index:-1;
+    pointer-events:none;
+    background-image:url('/img/home-bg.png');
+    background-size:280%;
+    background-position:82% 35%;
+    opacity:0;
+    animation:
+      v3-post-bg-in 1.6s ease .05s forwards,
+      v3-post-bg-drift 26s ease-in-out .1s infinite;
+  }
+  @keyframes v3-post-bg-in{ from{ opacity:0 } to{ opacity:.75 } }
+  @keyframes v3-post-bg-drift{
+    0%, 100%{ transform:scale(1) translate(0, 0); }
+    50%{ transform:scale(1.06) translate(-1.2%, 1%); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .v3-post-bg{ animation:none; opacity:.75; }
+  }
+
+  .v3-post{
+    position:relative;
+    z-index:1;
+    max-width:44rem;
+  }
+  .v3-crumb{
+    margin:0 0 clamp(1.5rem, 4vh, 2.5rem);
+    font-family:var(--mono);
+    font-size:.75rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    opacity:.5;
+  }
+  .v3-crumb a{ color:inherit; text-decoration:none; border-bottom:1px solid currentColor; }
+
+  .v3-post-header{ margin-bottom:clamp(2rem, 5vh, 3rem); }
+  .v3-post-meta{
+    margin:0 0 .6em;
+    font-family:var(--mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    opacity:.55;
+  }
+  .v3-post-title{
+    margin:0;
+    font-family:var(--mono);
+    font-weight:300;
+    font-size:clamp(1.6rem, 4vw, 2.4rem);
+    letter-spacing:-.01em;
+    line-height:1.15;
+  }
+</style>

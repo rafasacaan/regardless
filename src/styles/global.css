@@ -3,7 +3,6 @@
   --ink:#0E0E0C;
   --display:'Anton', Impact, sans-serif;
   --blonded:'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --serif:'Spectral', Georgia, 'Times New Roman', serif;
   --dict:'Times New Roman', Times, Georgia, serif;
   --body:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --gut: clamp(20px, 5vw, 64px);
@@ -29,7 +28,7 @@ body{
   pointer-events:none;
   z-index:0;
 }
-body > *:not(#dot-canvas){ position:relative; z-index:1; }
+body > *:not(#dot-canvas):not(.v2-bg):not(.blog-bg){ position:relative; z-index:1; }
 
 /* ---- top bar ---- */
 .top{
@@ -425,14 +424,6 @@ body > *:not(#dot-canvas){ position:relative; z-index:1; }
   color:#888;
   text-transform:lowercase;
 }
-.foot-link{
-  color:inherit;
-  text-decoration:none;
-  border-bottom:1px solid transparent;
-  transition:border-color .2s ease;
-}
-.foot-link:hover, .foot-link:focus-visible{ border-bottom-color:var(--ink); }
-.foot-link:focus-visible{ outline:2px solid var(--ink); outline-offset:4px; }
 .foot-name{ color:inherit; }
 
 /* ---- respiro: el wordmark late lento, como una ampolleta que se enciende y apaga en sinusoide ---- */
@@ -531,172 +522,33 @@ body > *:not(#dot-canvas){ position:relative; z-index:1; }
    BLOG — misma gramática visual: diccionario, blonded, ink
    ============================================================ */
 
-/* ---- nav minúscula compartida (volver / migas) ---- */
-.crumb{
-  font-family:var(--blonded);
-  font-size:clamp(12px,1.5vw,14px);
-  text-transform:lowercase;
-  letter-spacing:.02em;
-  opacity:.55;
-  margin-bottom:clamp(28px,5vh,56px);
-}
-.crumb a{
-  color:inherit;
-  text-decoration:none;
-  border-bottom:1px solid transparent;
-  transition:border-color .2s ease, opacity .2s ease;
-}
-.crumb a:hover, .crumb a:focus-visible{ border-bottom-color:var(--ink); opacity:1; }
-.crumb a:focus-visible{ outline:2px solid var(--ink); outline-offset:4px; }
-
-/* ---- contenedor de lectura ---- */
-.wrap{
-  flex:1;
-  width:100%;
-  max-width:64ch;
-  margin-inline:auto;
-}
-
-/* ---- encabezado de sección (/blog) ---- */
-.section-head{
-  font-family:var(--blonded);
-  font-weight:200;
-  text-transform:lowercase;
-  font-size:clamp(2.6rem,9vw,6rem);
-  line-height:.85;
-  letter-spacing:-.03em;
-  margin-bottom:clamp(8px,1.5vh,16px);
-}
-.section-sub{
-  font-family:var(--blonded);
-  font-style:normal;
-  font-weight:300;
-  font-size:clamp(1rem,2vw,1.3rem);
-  opacity:.6;
-  margin-bottom:clamp(32px,6vh,64px);
-}
-
-/* ---- filtro técnico / no-técnico ---- */
-.filters{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.6em;
-  margin-bottom:clamp(28px,5vh,52px);
-}
-.filter{
-  font-family:var(--blonded);
-  font-size:clamp(12px,1.5vw,14px);
-  text-transform:lowercase;
-  letter-spacing:.04em;
-  padding:.4em .9em;
-  border:1px solid var(--ink);
-  border-radius:999px;
-  background:transparent;
-  color:var(--ink);
-  cursor:pointer;
-  opacity:.5;
-  transition:opacity .2s ease, background .2s ease, color .2s ease;
-}
-.filter:hover{ opacity:.85; }
-.filter[aria-pressed="true"]{
-  opacity:1;
-  background:var(--ink);
-  color:var(--bone);
-}
-.filter:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
-
-/* ---- lista de posts ---- */
-.posts{ list-style:none; }
-.post-item{
-  border-top:1px solid rgba(14,14,12,.18);
-  padding:clamp(18px,3vh,28px) 0;
-}
-.post-item:last-child{ border-bottom:1px solid rgba(14,14,12,.18); }
-.post-item a{
-  display:block;
-  color:inherit;
-  text-decoration:none;
-}
-.post-meta{
-  display:flex;
-  align-items:baseline;
-  gap:.8em;
-  font-family:var(--blonded);
-  font-size:clamp(11px,1.4vw,13px);
-  text-transform:lowercase;
-  letter-spacing:.04em;
-  opacity:.5;
-  margin-bottom:.4em;
-}
-.post-tipo{
-  font-style:normal;
-  border:1px solid currentColor;
-  border-radius:999px;
-  padding:.05em .6em;
-}
-.post-title{
-  font-family:var(--blonded);
-  font-weight:300;
-  font-size:clamp(1.4rem,3.5vw,2.2rem);
-  line-height:1.05;
-  letter-spacing:-.02em;
-  transition:opacity .2s ease;
-}
-.post-item a:hover .post-title{ opacity:.55; }
-.post-resumen{
-  font-family:var(--blonded);
-  font-style:normal;
-  font-weight:300;
-  font-size:clamp(.95rem,1.8vw,1.15rem);
-  line-height:1.45;
-  opacity:.6;
-  margin-top:.4em;
-  max-width:52ch;
-}
-.empty{
-  font-family:var(--dict);
-  font-style:italic;
-  opacity:.5;
-  padding:clamp(24px,5vh,48px) 0;
-}
-
 /* ---- cuerpo de un post (.prose) ---- */
-.post-header{ margin-bottom:clamp(32px,6vh,64px); }
-.post-header .post-meta{ margin-bottom:1em; }
-.post-h1{
-  font-family:var(--blonded);
-  font-weight:300;
-  font-size:clamp(2rem,6vw,3.6rem);
-  line-height:1.02;
-  letter-spacing:-.025em;
-}
-
 .prose{
-  font-family:var(--body);
-  font-size:clamp(1.02rem,1.4vw,1.18rem);
+  font-family:var(--mono, 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace);
+  font-size:clamp(.95rem,1.3vw,1.08rem);
   line-height:1.7;
   color:var(--ink);
 }
 .prose > * + *{ margin-top:1.2em; }
 .prose h2{
-  font-family:var(--blonded);
+  font-family:var(--mono, 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace);
   font-weight:400;
-  font-size:clamp(1.5rem,3.5vw,2.1rem);
-  line-height:1.1;
-  letter-spacing:-.02em;
+  font-size:clamp(1.3rem,3vw,1.8rem);
+  line-height:1.2;
+  letter-spacing:-.01em;
   margin-top:1.8em;
 }
 .prose h3{
-  font-family:var(--blonded);
+  font-family:var(--mono, 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace);
   font-weight:500;
-  font-size:clamp(1.2rem,2.6vw,1.5rem);
-  line-height:1.2;
+  font-size:clamp(1.05rem,2.2vw,1.3rem);
+  line-height:1.25;
   margin-top:1.6em;
 }
 .prose a{
   color:var(--ink);
   text-decoration:none;
-  border-bottom:1px solid rgba(14,14,12,.35);
+  border-bottom:1px solid color-mix(in srgb, currentColor 35%, transparent);
   transition:border-color .2s ease;
 }
 .prose a:hover{ border-bottom-color:var(--ink); }
@@ -714,13 +566,13 @@ body > *:not(#dot-canvas){ position:relative; z-index:1; }
 .prose code{
   font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size:.88em;
-  background:rgba(14,14,12,.06);
+  background:color-mix(in srgb, currentColor 10%, transparent);
   padding:.12em .4em;
   border-radius:4px;
 }
 .prose pre{
-  background:var(--ink);
-  color:var(--bone);
+  background:#1a1a1a;
+  color:#f4f3f0;
   padding:clamp(14px,2.5vw,22px);
   border-radius:8px;
   overflow-x:auto;
@@ -736,7 +588,7 @@ body > *:not(#dot-canvas){ position:relative; z-index:1; }
 .prose img{ max-width:100%; height:auto; border-radius:6px; }
 .prose hr{
   border:none;
-  border-top:1px solid rgba(14,14,12,.18);
+  border-top:1px solid color-mix(in srgb, currentColor 18%, transparent);
   margin:2.4em 0;
 }
 
