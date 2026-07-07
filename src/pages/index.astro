@@ -12,8 +12,6 @@ const fmt = (d: Date) =>
 
 <V3Layout title="regardless" dark={true}>
   <div class="v3-home-bg" aria-hidden="true"></div>
-  <div class="v3-aura" aria-hidden="true"></div>
-  <div class="v3-aura v3-aura--echo" aria-hidden="true"></div>
 
   <div class="v3-dust" aria-hidden="true">
     <span style="left:14%; top:22%; --d:9s;    --dl:0s;   --op:.9; --sz:2px;"></span>
@@ -163,60 +161,23 @@ const fmt = (d: Date) =>
   @media (prefers-reduced-motion: reduce){
     .v3-home-bg{ animation:none; opacity:.75; }
   }
+  /* en tema claro: sin foto, fondo blanco limpio */
+  :global(html:not(.v3-dark)) .v3-home-bg{ display:none; }
 
-  /* ===== aura: la parte de color de au-pro-11, vagando muy sutil y frágil ===== */
-  .v3-aura{
-    position:fixed;
-    inset:-25%;
-    z-index:-1;
-    pointer-events:none;
-    background-image:url('/img/aura.png');
-    background-size:170%;
-    background-position:38% 52%;
-    background-repeat:no-repeat;
-    filter:blur(44px) saturate(1.8) contrast(1.18);
-    mix-blend-mode:screen;   /* el negro de la foto desaparece; solo brilla el color */
-    opacity:0;
-    will-change:opacity, transform;
-    animation:aura-wander 46s ease-in-out infinite;
-  }
-  .v3-aura--echo{
-    background-position:64% 40%;
-    filter:blur(70px) saturate(1.55) contrast(1.1);
-    animation:aura-echo 62s ease-in-out infinite;
-    animation-delay:-18s;
-  }
-  @keyframes aura-wander{
-    0%   { opacity:0;   transform:translate(-6%, 3%)  scale(1.12); }
-    22%  { opacity:.36; }
-    50%  { opacity:.18; transform:translate(6%, -4%)  scale(1.32); }
-    78%  { opacity:.36; }
-    100% { opacity:0;   transform:translate(-6%, 3%)  scale(1.12); }
-  }
-  @keyframes aura-echo{
-    0%   { opacity:0;   transform:translate(5%, -3%)  scale(1.24); }
-    30%  { opacity:.2;  }
-    50%  { opacity:.28; transform:translate(-5%, 4%)  scale(1.42); }
-    70%  { opacity:.2;  }
-    100% { opacity:0;   transform:translate(5%, -3%)  scale(1.24); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .v3-aura{ animation:none; opacity:.16; }
-  }
-
-  /* ===== polvo: puntos blancos que aparecen y se van, muy dispersos ===== */
+  /* ===== polvo: puntos que aparecen y se van, muy dispersos ===== */
   .v3-dust{
     position:fixed;
     inset:0;
     z-index:0;
     pointer-events:none;
+    color:var(--ink);   /* el polvo hereda el color de texto: claro en dark, oscuro en light */
   }
   .v3-dust span{
     position:absolute;
     width:var(--sz, 2px);
     height:var(--sz, 2px);
     border-radius:50%;
-    background:#fff;
+    background:currentColor;
     opacity:0;
     will-change:opacity, transform;
     animation:dust-blink var(--d, 10s) ease-in-out var(--dl, 0s) infinite;

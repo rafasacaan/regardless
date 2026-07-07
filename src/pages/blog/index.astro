@@ -96,6 +96,7 @@ const fmt = (d: Date) =>
   @media (prefers-reduced-motion: reduce){
     .blog-bg{ animation:none; opacity:.75; }
   }
+  :global(html:not(.v3-dark)) .blog-bg{ display:none; }
 
   .v3-blog{
     position:relative;

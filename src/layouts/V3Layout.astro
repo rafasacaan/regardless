@@ -12,7 +12,9 @@ const { title = 'regardless — v3', dark = false, gridMarkOpacity = 15 } = Astr
 
 <Base title={title} htmlClass={dark ? 'v3-dark' : ''}>
   <main class="v3">
-    <header class="v3-top"></header>
+    <header class="v3-top">
+      <button class="v3-top-item v3-theme" type="button" aria-label="Cambiar tema claro/oscuro">Light</button>
+    </header>
 
     <div class="v3-focus-grid" aria-hidden="true" style={`--mark-op:${gridMarkOpacity}%;`}>
       <span class="v3-gl v3-gl--v" style="left:0%"></span>
@@ -60,6 +62,22 @@ const { title = 'regardless — v3', dark = false, gridMarkOpacity = 15 } = Astr
       }
       tick();
       setInterval(tick, 1000);
+    })();
+
+    // toggle tema claro/oscuro (persiste en localStorage)
+    (function(){
+      var btn = document.querySelector('.v3-theme');
+      if(!btn) return;
+      function sync(){
+        var dark = document.documentElement.classList.contains('v3-dark');
+        btn.textContent = dark ? 'Light' : 'Dark';
+      }
+      sync();
+      btn.addEventListener('click', function(){
+        var dark = document.documentElement.classList.toggle('v3-dark');
+        try{ localStorage.setItem('rgl-theme', dark ? 'dark' : 'light'); }catch(e){}
+        sync();
+      });
     })();
   </script>
 </Base>
@@ -122,6 +140,7 @@ const { title = 'regardless — v3', dark = false, gridMarkOpacity = 15 } = Astr
   }
   .v3-top-item:hover{ opacity:.5; }
   .v3-brand{ font-size:1.6em; letter-spacing:.02em; }
+  .v3-theme{ margin-left:auto; opacity:.7; }
 
   .v3-loc{ white-space:nowrap; margin-left:auto; }
   .v3-clock{ font-variant-numeric:tabular-nums; }

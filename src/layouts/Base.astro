@@ -19,6 +19,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 <!doctype html>
 <html lang="es" class={htmlClass}>
   <head>
+    <!-- tema guardado, aplicado antes del paint para evitar flash -->
+    <script is:inline>
+      try{
+        var t = localStorage.getItem('rgl-theme');
+        if(t === 'light') document.documentElement.classList.remove('v3-dark');
+        else if(t === 'dark') document.documentElement.classList.add('v3-dark');
+      }catch(e){}
+    </script>
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-1H564NGHHD"></script>
     <script is:inline>

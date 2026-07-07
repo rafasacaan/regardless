@@ -58,6 +58,7 @@ const fechaISO = fecha.toISOString().slice(0, 10);
   @media (prefers-reduced-motion: reduce){
     .v3-post-bg{ animation:none; opacity:.75; }
   }
+  :global(html:not(.v3-dark)) .v3-post-bg{ display:none; }
 
   .v3-post{
     position:relative;
