@@ -16,3 +16,11 @@ node_modules/
 
 # logs
 npm-debug.log*
+
+# material de trabajo / assets fuente (no publicar)
+inspiration/
+claude_skills_and_posts/
+
+# macOS custom folder icon
+Icon
+Icon?

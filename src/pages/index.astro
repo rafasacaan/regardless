@@ -1,407 +1,177 @@
 ---
-import V3Layout from '../layouts/V3Layout.astro';
-import { getCollection } from 'astro:content';
-
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
-  .slice(0, 2);
-
-const fmt = (d: Date) =>
-  d.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
+import V4Layout from '../layouts/V4Layout.astro';
 ---
 
-<V3Layout title="regardless" dark={true}>
-  <div class="v3-home-bg" aria-hidden="true"></div>
+<V4Layout title="regardless">
 
-  <div class="v3-dust" aria-hidden="true">
-    <span style="left:14%; top:22%; --d:9s;    --dl:0s;   --op:.9; --sz:2px;"></span>
-    <span style="left:71%; top:16%; --d:8s;    --dl:1.6s; --op:.9; --sz:1.5px;"></span>
-    <span style="left:88%; top:44%; --d:11s;   --dl:3s;   --op:1;  --sz:2px;"></span>
-    <span style="left:34%; top:63%; --d:7.5s;  --dl:.8s;  --op:.85; --sz:1.5px;"></span>
-    <span style="left:57%; top:78%; --d:10s;   --dl:4.2s; --op:.9; --sz:2px;"></span>
-    <span style="left:23%; top:88%; --d:8.5s;  --dl:2.2s; --op:.85; --sz:1.5px;"></span>
-    <span style="left:79%; top:71%; --d:12s;   --dl:5.2s; --op:.9; --sz:2px;"></span>
-    <span style="left:46%; top:33%; --d:7s;    --dl:3.2s; --op:.85; --sz:1.5px;"></span>
-    <span style="left:92%; top:86%; --d:11.5s; --dl:1.2s; --op:1;  --sz:2px;"></span>
-    <span style="left:8%;  top:52%; --d:10.5s; --dl:4.8s; --op:.9; --sz:1.5px;"></span>
-    <span style="left:63%; top:9%;  --d:9.5s;  --dl:6.2s; --op:.9; --sz:2px;"></span>
-    <span style="left:38%; top:94%; --d:11s;   --dl:3.8s; --op:.85; --sz:1.5px;"></span>
-    <span style="left:52%; top:52%; --d:8s;    --dl:.4s;  --op:.9; --sz:2px;"></span>
-    <span style="left:19%; top:41%; --d:10s;   --dl:5.6s; --op:.85; --sz:1.5px;"></span>
-    <span style="left:83%; top:28%; --d:7.5s;  --dl:2.6s; --op:.9; --sz:2px;"></span>
-    <span style="left:29%; top:14%; --d:11.5s; --dl:1.8s; --op:.85; --sz:1.5px;"></span>
-    <span style="left:67%; top:60%; --d:9s;    --dl:4.4s; --op:.9; --sz:2px;"></span>
-    <span style="left:44%; top:82%; --d:10.5s; --dl:3.4s; --op:.85; --sz:1.5px;"></span>
-    <span style="left:96%; top:63%; --d:8.5s;  --dl:1s;   --op:.9; --sz:1.5px;"></span>
-    <span style="left:6%;  top:78%; --d:11s;   --dl:6.6s; --op:.85; --sz:2px;"></span>
-    <span style="left:76%; top:92%; --d:8s;    --dl:2.8s; --op:.9; --sz:1.5px;"></span>
-    <span style="left:50%; top:20%; --d:9.5s;  --dl:5s;   --op:.85; --sz:1.5px;"></span>
-    <span style="left:11%; top:34%; --d:10s;   --dl:7.4s; --op:.9; --sz:2px;"></span>
-    <span style="left:60%; top:44%; --d:8.5s;  --dl:3.6s; --op:.85; --sz:1.5px;"></span>
-    <span style="left:85%; top:56%; --d:11s;   --dl:.6s;  --op:.9; --sz:2px;"></span>
-    <span style="left:41%; top:71%; --d:9s;    --dl:6s;   --op:.85; --sz:1.5px;"></span>
-    <span style="left:27%; top:56%; --d:10.5s; --dl:4s;   --op:.9; --sz:1.5px;"></span>
-    <span style="left:73%; top:37%; --d:8s;    --dl:2s;   --op:.85; --sz:2px;"></span>
-  </div>
-
-  <div class="home">
-    <header class="home-hero">
-      <h1 class="hero-mark">regardless<span class="hero-dot">.</span></h1>
-      <p class="hero-gloss"><span class="pos">(adv.)</span> <span class="ipa">/rɪˈɡɑːrdləs/</span> · pase lo que pase.</p>
-      <p class="v3-tagline">Somos un estudio creativo de IA que construye<br>artefactos digitales para la gente común que quiere<br>sacar afuera las ideas que lleva dentro.</p>
-
-      <nav class="v3-tabs" role="tablist">
-        <button class="v3-tab" data-tab="artefactos" aria-pressed="false">Artefactos</button>
-        <button class="v3-tab" data-tab="blog" aria-pressed="false">Blog</button>
-        <button class="v3-tab" data-tab="contacto" aria-pressed="false">Contacto</button>
-        <span class="v3-caret" aria-hidden="true">▊</span>
+  <div class="bg"></div><div class="scrim"></div><div class="grain"></div>
+  <div class="frame">
+    <header class="top">
+      <span class="mark">regardless<span class="dot">.</span></span>
+      <nav class="navlinks">
+        <a href="#" data-panel="artefactos">artefactos</a>
+        <a href="/blog/">blog</a>
+        <a href="#" data-panel="contacto">escr&iacute;beme!</a>
       </nav>
     </header>
-
-    <div class="stage">
-      <div class="v3-panel" data-panel="artefactos">
-        <ul class="v3-rows">
-          <li class="v3-row">
-            <a class="v3-row-link" href="https://heyfrank.cl" target="_blank" rel="noopener">
-              <span class="v3-row-name">heyfrank</span>
-              <span class="v3-row-desc">Recetas para crear música desde el mood.</span>
-            </a>
-          </li>
-          <li class="v3-row">
-            <a class="v3-row-link" href="https://munra.cl" target="_blank" rel="noopener">
-              <span class="v3-row-name">munra</span>
-              <span class="v3-row-desc">Modelos de IA que generan tracks instrumentales.</span>
-            </a>
-          </li>
-          <li class="v3-row">
-            <a class="v3-row-link" href="https://yoescritor.cl" target="_blank" rel="noopener">
-              <span class="v3-row-name">yoescritor</span>
-              <span class="v3-row-desc">Encuentra al escritor que vive adentro tuyo.</span>
-            </a>
-          </li>
-        </ul>
+    <div></div>
+    <footer class="bottom">
+      <div class="lead">
+        <h1><span class="hl">Hay cosas que <em>s&oacute;lo t&uacute;</em> puedes decir.</span></h1>
+        <p class="sub"><span class="hl">Creamos herramientas digitales para sacar afuera lo que llevas dentro.</span></p>
       </div>
+      <div class="rmeta"><span class="u">Santiago, Chile &middot; <time class="clk" datetime="">--:--:--</time></span></div>
+    </footer>
+  </div>
 
-      <div class="v3-panel" data-panel="blog">
-        <ul class="v3-rows">
-          {posts.map((post) => (
-            <li class="v3-row">
-              <a class="v3-row-link" href={`/blog/${post.id}/`}>
-                <span class="v3-row-meta">{post.data.tipo} · {fmt(post.data.fecha)}</span>
-                <span class="v3-row-desc">{post.data.title}</span>
-              </a>
-            </li>
-          ))}
-          <li class="v3-row">
-            <a class="v3-send" href="/blog/">Blog ↗</a>
-          </li>
-        </ul>
-      </div>
+  <div class="overlay" id="ov-artefactos" role="dialog" aria-modal="true" aria-label="Artefactos" aria-hidden="true">
+    <div class="ov-inner">
+      <button class="ov-close" data-close aria-label="Cerrar">&times;</button>
+      <h2 class="ov-title">Artefactos</h2>
+      <ul class="ov-rows">
+        <li><a href="https://heyfrank.cl" target="_blank" rel="noopener"><span class="n">heyfrank <span class="ar">&rarr;</span></span><span class="d">Recetas para crear m&uacute;sica desde el mood.</span></a></li>
+        <li><a href="https://munra.cl" target="_blank" rel="noopener"><span class="n">munra <span class="ar">&rarr;</span></span><span class="d">Modelos de IA que generan tracks instrumentales.</span></a></li>
+        <li><a href="https://yoescritor.cl" target="_blank" rel="noopener"><span class="n">yoescritor <span class="ar">&rarr;</span></span><span class="d">Encuentra al escritor que vive adentro tuyo.</span></a></li>
+      </ul>
+    </div>
+  </div>
 
-      <div class="v3-panel" data-panel="contacto">
-        <p class="v3-row-desc v3-contact-lede">¿Tienes una idea? Escríbeme!</p>
-        <form class="v3-form" action="https://formspree.io/f/xdarggap" method="POST">
-          <div class="v3-frow">
-            <label class="v3-flabel" for="v3c-email">Email</label>
-            <input class="v3-field" id="v3c-email" type="email" name="email" required />
-          </div>
-          <div class="v3-frow">
-            <label class="v3-flabel" for="v3c-msg">Mensaje</label>
-            <input class="v3-field" id="v3c-msg" name="message" required />
-          </div>
-          <button class="v3-send" type="submit">Enviar ↗</button>
-        </form>
-      </div>
+  <div class="overlay" id="ov-contacto" role="dialog" aria-modal="true" aria-label="Escríbeme" aria-hidden="true">
+    <div class="ov-inner">
+      <button class="ov-close" data-close aria-label="Cerrar">&times;</button>
+      <h2 class="ov-title">Escr&iacute;beme</h2>
+      <p class="ov-lede">&iquest;Tienes una idea? Escr&iacute;beme.</p>
+      <form class="ov-form" action="https://formspree.io/f/xdarggap" method="POST">
+        <input type="email" name="email" placeholder="tu@email.com" required />
+        <input name="message" placeholder="Cu&eacute;ntame tu idea" required />
+        <button type="submit">Enviar &rarr;</button>
+      </form>
     </div>
   </div>
 
   <script is:inline>
     (function(){
-      var tabs = document.querySelectorAll('.v3-tab');
-      var panels = document.querySelectorAll('.v3-panel');
-      var caret = document.querySelector('.v3-caret');
-      tabs.forEach(function(btn){
-        btn.addEventListener('click', function(){
-          var target = btn.dataset.tab;
-          var wasOpen = btn.getAttribute('aria-pressed') === 'true';
-          tabs.forEach(function(b){ b.setAttribute('aria-pressed', 'false'); });
-          panels.forEach(function(p){ p.classList.remove('is-open'); });
-          if(caret) caret.classList.add('is-gone');
-          if(!wasOpen){
-            btn.setAttribute('aria-pressed', 'true');
-            var panel = document.querySelector('.v3-panel[data-panel="' + target + '"]');
-            void panel.offsetWidth; /* reinicia la animación */
-            panel.classList.add('is-open');
-          }
-        });
-      });
+      var el = document.querySelector('.clk');
+      if(!el) return;
+      function tick(){
+        try{ el.textContent = new Date().toLocaleTimeString('es-CL', { hour12:false, timeZone:'America/Santiago' }); }
+        catch(e){ el.textContent = new Date().toLocaleTimeString('es-CL', { hour12:false }); }
+      }
+      tick(); setInterval(tick, 1000);
     })();
   </script>
-</V3Layout>
 
-<style>
-  .v3-home-bg{
-    position:fixed;
-    inset:-5%;
-    z-index:-1;
-    pointer-events:none;
-    background-image:url('/img/home-bg.png');
-    background-size:280%;
-    background-position:82% 35%;
-    opacity:0;
-    animation:
-      v3-home-bg-in 1.6s ease .05s forwards,
-      v3-home-bg-drift 26s ease-in-out .1s infinite;
-  }
-  @keyframes v3-home-bg-in{ from{ opacity:0 } to{ opacity:.75 } }
-  @keyframes v3-home-bg-drift{
-    0%, 100%{ transform:scale(1) translate(0, 0); }
-    50%{ transform:scale(1.06) translate(-1.2%, 1%); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .v3-home-bg{ animation:none; opacity:.75; }
-  }
-  /* en tema claro: sin foto, fondo blanco limpio */
-  :global(html:not(.v3-dark)) .v3-home-bg{ display:none; }
+  <script is:inline>
+    (function(){
+      var lastTrigger = null;
+      function closeAll(){
+        document.querySelectorAll('.overlay.open').forEach(function(o){ o.classList.remove('open'); o.setAttribute('aria-hidden','true'); });
+        if(lastTrigger){ lastTrigger.focus(); lastTrigger = null; }
+      }
+      function openPanel(name, trigger){
+        var ov = document.getElementById('ov-' + name);
+        if(!ov) return;
+        closeAll();
+        ov.classList.add('open'); ov.setAttribute('aria-hidden','false');
+        lastTrigger = trigger || null;
+        var f = ov.querySelector('input, .ov-close');
+        if(f) f.focus();
+      }
+      document.querySelectorAll('[data-panel]').forEach(function(a){
+        a.addEventListener('click', function(e){ e.preventDefault(); openPanel(a.getAttribute('data-panel'), a); });
+      });
+      document.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeAll); });
+      document.querySelectorAll('.overlay').forEach(function(ov){
+        ov.addEventListener('click', function(e){ if(e.target === ov) closeAll(); });
+      });
+      document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeAll(); });
+    })();
+  </script>
 
-  /* ===== polvo: puntos que aparecen y se van, muy dispersos ===== */
-  .v3-dust{
-    position:fixed;
-    inset:0;
-    z-index:0;
-    pointer-events:none;
-    color:var(--ink);   /* el polvo hereda el color de texto: claro en dark, oscuro en light */
-  }
-  .v3-dust span{
-    position:absolute;
-    width:var(--sz, 2px);
-    height:var(--sz, 2px);
-    border-radius:50%;
-    background:currentColor;
-    opacity:0;
-    will-change:opacity, transform;
-    animation:dust-blink var(--d, 10s) ease-in-out var(--dl, 0s) infinite;
-  }
-  @keyframes dust-blink{
-    0%, 100%{ opacity:0; transform:scale(.5); }
-    40%{ opacity:0; transform:scale(.5); }
-    55%{ opacity:var(--op, .7); transform:scale(1); }
-    72%{ opacity:var(--op, .7); transform:scale(1); }
-    88%{ opacity:0; transform:scale(.8); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .v3-dust{ display:none; }
-  }
+  <style is:global>
 
-  /* ===== composición: hero anclado arriba, panel justo debajo ===== */
-  .home{
-    position:relative;
-    z-index:1;
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start;
-    padding-top:clamp(1rem, 6vh, 4rem);
+  :root{
+    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --sans:'Inter','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --paper:#F2ECDE; --moon:#E8C87A;
+    --faint:rgba(242,236,222,.62);
   }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body{ font-family:var(--sans); color:var(--paper); background:linear-gradient(180deg,#3a407d 0%,#2c3660 30%,#233a37 62%,#244328 100%); overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .bg{ position:fixed; inset:0; z-index:0; background-image:url('/img/home-yo.jpg'); background-size:100% auto; background-position:center; background-repeat:no-repeat; }
+  .scrim{ position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(180deg, rgba(15,26,42,.42) 0%, transparent 24%, transparent 50%, rgba(10,20,14,.62) 100%); }
+  .grain{ position:fixed; inset:0; z-index:2; pointer-events:none; opacity:.22; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-  .home-hero{ display:block; }
+  .frame{ position:relative; z-index:3; height:100%; padding:clamp(22px,2.8vw,44px); display:grid; grid-template-rows:auto 1fr auto; }
+  .top{ display:flex; justify-content:space-between; align-items:center; }
+  .mark{ font-family:var(--sans); font-weight:500; font-size:clamp(26px,3vw,44px); letter-spacing:-.02em; background:#000; padding:.14em .34em; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+  .mark .dot{ color:var(--moon); }
+  .navlinks{ display:flex; gap:.5rem; }
+  .navlinks a{ font-family:var(--sans); font-weight:500; font-size:clamp(14px,1.3vw,17px); color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; }
+  .navlinks a:hover{ color:var(--moon); }
+  /* hint: vibración breve al cargar sobre los botones interactivos, 3 veces, luego descansa */
+  .navlinks a[data-panel]{ animation:nav-vibe 2.4s ease-in-out 1.4s 3; }
+  .navlinks a[data-panel]:hover{ animation:none; }
+  @keyframes nav-vibe{
+    0%,13%,100%{ transform:translate(0,0); }
+    2%{ transform:translate(-1.5px,1px); }
+    4%{ transform:translate(1.5px,-1px); }
+    6%{ transform:translate(-1.5px,-1px); }
+    8%{ transform:translate(1.5px,1px); }
+    10%{ transform:translate(-1px,1px); }
+  }
+  @media (prefers-reduced-motion: reduce){ .navlinks a[data-panel]{ animation:none; } }
 
-  /* ---- gesto grande: el wordmark ---- */
-  .hero-mark{
-    margin:0;
-    font-family:var(--mono);
-    font-weight:300;
-    text-transform:uppercase;
-    font-size:clamp(2.6rem, 9vw, 7rem);
-    line-height:.92;
-    letter-spacing:-.04em;
-    opacity:0;
-    animation:hero-rise .9s cubic-bezier(.2,.8,.2,1) .1s forwards;
-  }
-  .hero-dot{ opacity:.4; }
-  @keyframes hero-rise{ from{ opacity:0; transform:translateY(.25em) } to{ opacity:1; transform:translateY(0) } }
+  .bottom{ display:flex; justify-content:space-between; align-items:flex-end; gap:2rem; }
+  .lead{ max-width:34ch; }
+  .eyebrow{ font-family:var(--mono); font-weight:400; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); margin-bottom:1em; }
+  .lead h1{ font-family:var(--serif); font-weight:400; font-optical-sizing:auto; font-size:clamp(1.9rem,8vw,3em); line-height:1.18; letter-spacing:-.015em; }
+  .lead h1 em{ font-style:italic; color:var(--moon); }
+  .hl{ display:inline; background:#000; -webkit-box-decoration-break:clone; box-decoration-break:clone; padding:.1em .34em; }
+  .lead .sub{ font-family:var(--sans); font-weight:400; letter-spacing:0; font-size:clamp(1rem,1.2vw,1.15rem); line-height:1.7; color:var(--paper); margin-top:clamp(18px,2.4vh,26px); max-width:42ch; }
+  .cta{ display:inline-flex; align-items:center; gap:.55em; margin-top:clamp(20px,2.6vh,32px); padding:.85em 1.5em; border-radius:100px;
+    background:var(--paper); color:#14202e; font-weight:500; font-size:15px; text-decoration:none; transition:transform .2s, background .2s; }
+  .cta:hover{ transform:translateY(-2px); background:#fff; }
+  .cta .ar{ transition:transform .2s; } .cta:hover .ar{ transform:translateX(3px); }
 
-  .hero-gloss{
-    margin:clamp(.6rem, 1.5vh, 1rem) 0 0;
-    font-family:var(--mono);
-    font-weight:300;
-    font-size:clamp(.72rem, .9vw, .82rem);
-    letter-spacing:.02em;
-    opacity:.5;
-    animation:hero-fade 1s ease .35s backwards;
-  }
-  .hero-gloss .ipa{ font-style:italic; }
-  @keyframes hero-fade{ from{ opacity:0 } to{ opacity:.5 } }
+  .rmeta{ text-align:right; }
+  .rmeta .u{ font-family:var(--mono); font-weight:300; font-size:11px; letter-spacing:.06em; color:var(--paper); line-height:1.7; }
 
-  .v3-tagline{
-    margin:clamp(1.4rem, 4vh, 2.4rem) 0 0;
-    font-family:var(--mono);
-    font-weight:300;
-    font-size:clamp(.85rem, 1.1vw, 1rem);
-    letter-spacing:-.01em;
-    line-height:1.4;
-    max-width:40rem;
-    animation:hero-fade-full 1s ease .5s backwards;
-  }
-  @keyframes hero-fade-full{ from{ opacity:0 } to{ opacity:1 } }
-
-  /* ---- tabs (con affordance) ---- */
-  .v3-tabs{
-    display:flex;
-    align-items:center;
-    gap:1.6rem;
-    margin-top:clamp(1.6rem, 4vh, 2.4rem);
-    animation:hero-fade-full 1s ease .65s backwards;
-  }
-  .v3-tab{
-    font-family:var(--mono);
-    font-weight:300;
-    text-transform:uppercase;
-    letter-spacing:.02em;
-    font-size:.85rem;
-    background:none;
-    border:0;
-    border-bottom:1px solid color-mix(in srgb, currentColor 20%, transparent);
-    padding:0 0 .3em;
-    color:inherit;
-    opacity:.7;
-    cursor:pointer;
-    transition:opacity .2s ease, border-color .2s ease;
-  }
-  .v3-tab:hover{ opacity:1; border-bottom-color:color-mix(in srgb, currentColor 55%, transparent); }
-  .v3-tab[aria-pressed="true"]{ opacity:1; border-bottom-color:currentColor; }
-
-  .v3-caret{
-    font-family:var(--mono);
-    font-size:.8rem;
-    opacity:.55;
-    animation:caret-blink 1.1s step-end infinite;
-  }
-  .v3-caret.is-gone{ display:none; }
-  @keyframes caret-blink{ 0%,100%{ opacity:.55 } 50%{ opacity:0 } }
-
-  /* ---- stage: donde se abre el contenido, pegado a los tabs ---- */
-  .stage{ margin-top:clamp(1.6rem, 4vh, 2.4rem); }
-
-  .v3-panel{ display:none; }
-  .v3-panel.is-open{
-    display:block;
-    animation:panel-in .5s cubic-bezier(.2,.8,.2,1);
-  }
-  @keyframes panel-in{ from{ opacity:0 } to{ opacity:1 } }
-
-  /* stagger de las filas al abrir */
-  .v3-panel.is-open .v3-row,
-  .v3-panel.is-open .v3-contact-lede,
-  .v3-panel.is-open .v3-form{
-    animation:row-in .55s cubic-bezier(.2,.8,.2,1) backwards;
-  }
-  .v3-panel.is-open .v3-row:nth-child(1){ animation-delay:.06s; }
-  .v3-panel.is-open .v3-row:nth-child(2){ animation-delay:.13s; }
-  .v3-panel.is-open .v3-row:nth-child(3){ animation-delay:.20s; }
-  .v3-panel.is-open .v3-row:nth-child(4){ animation-delay:.27s; }
-  .v3-panel.is-open .v3-contact-lede{ animation-delay:.06s; }
-  .v3-panel.is-open .v3-form{ animation-delay:.14s; }
-  @keyframes row-in{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
-  @media (prefers-reduced-motion: reduce){
-    .hero-mark, .hero-gloss, .v3-tagline, .v3-tabs,
-    .v3-panel.is-open, .v3-panel.is-open *{ animation:none !important; opacity:1 !important; transform:none !important; }
-  }
-
-  /* ---- filas ---- */
-  .v3-rows{
-    list-style:none;
-    margin:0;
-    padding:0;
-    display:flex;
-    flex-direction:column;
-    gap:.6em;
-    max-width:34rem;
-  }
-  .v3-row{
-    padding-top:.5em;
-    border-top:1px solid color-mix(in srgb, currentColor 22%, transparent);
-  }
-  .v3-row-link{
-    display:flex;
-    flex-direction:column;
-    gap:.25em;
-    text-decoration:none;
-    color:inherit;
-    opacity:.7;
-    transition:opacity .2s ease;
-  }
-  .v3-rows:hover .v3-row-link{ opacity:.4; }
-  .v3-rows .v3-row-link:hover{ opacity:1; }
-  .v3-row-name{
-    font-family:var(--mono);
-    font-weight:300;
-    text-transform:uppercase;
-    letter-spacing:-.01em;
-    line-height:1.2;
-    font-size:clamp(.95rem, 1.3vw, 1.15rem);
-  }
-  .v3-row-desc{
-    font-family:var(--mono);
-    font-weight:300;
-    letter-spacing:-.01em;
-    line-height:1.3;
-    font-size:clamp(.78rem, .95vw, .85rem);
-    opacity:.85;
-  }
-  .v3-row-meta{ font-family:var(--mono); font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; opacity:.5; }
-
-  /* ---- contacto ---- */
-  .v3-contact-lede{ margin:0 0 clamp(1rem, 3vh, 1.6rem); opacity:1; }
-  .v3-form{
-    display:flex;
-    flex-direction:column;
-    gap:.9em;
-    max-width:26rem;
-  }
-  .v3-frow{ display:flex; flex-direction:column; gap:.25rem; padding-top:.5em; border-top:1px solid color-mix(in srgb, currentColor 22%, transparent); }
-  .v3-flabel{
-    font-family:var(--mono);
-    font-size:.65rem;
-    text-transform:uppercase;
-    letter-spacing:.1em;
-    opacity:.5;
-  }
-  .v3-field{
-    font-family:var(--mono);
-    font-weight:300;
-    font-size:.95rem;
-    color:inherit;
-    background:transparent;
-    border:0;
-    padding:.15em 0;
-    outline:none;
-    resize:none;
-  }
-  .v3-send{
-    display:inline-block;
-    align-self:flex-start;
-    font-family:var(--mono);
-    font-weight:300;
-    text-transform:uppercase;
-    font-size:.95rem;
-    letter-spacing:-.01em;
-    color:inherit;
-    text-decoration:none;
-    background:transparent;
-    border:0;
-    padding:.4em 0 0;
-    cursor:pointer;
-    transition:opacity .2s ease;
-  }
-  .v3-send:hover{ opacity:.55; }
+  /* ---- overlays (artefactos / contacto) ---- */
+  .overlay{ position:fixed; inset:0; z-index:20; display:none; align-items:center; justify-content:center; padding:clamp(28px,5vw,60px);
+    background:rgba(12,18,12,.92); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+  .overlay.open{ display:flex; animation:ov-in .3s ease; }
+  @keyframes ov-in{ from{ opacity:0 } to{ opacity:1 } }
+  .ov-inner{ position:relative; width:100%; max-width:40rem; }
+  .ov-close{ position:absolute; top:-2.6rem; right:0; background:none; border:0; color:var(--paper); font-size:30px; line-height:1; cursor:pointer; opacity:.7; transition:opacity .2s, color .2s; }
+  .ov-close:hover{ opacity:1; color:var(--moon); }
+  .ov-title{ font-family:var(--serif); font-weight:400; font-optical-sizing:auto; font-size:clamp(2rem,5vw,3.2rem); letter-spacing:-.02em; margin-bottom:clamp(20px,3vh,32px); }
+  .ov-rows{ list-style:none; }
+  .ov-rows li{ border-top:1px solid rgba(242,236,222,.18); }
+  .ov-rows a{ display:flex; flex-direction:column; gap:.25em; padding:1em 0; text-decoration:none; color:var(--paper); transition:opacity .2s; }
+  .ov-rows:hover a{ opacity:.45; } .ov-rows a:hover{ opacity:1; }
+  .ov-rows .n{ font-family:var(--serif); font-weight:400; font-size:clamp(1.3rem,2.6vw,1.9rem); letter-spacing:-.01em; }
+  .ov-rows .n .ar{ color:var(--moon); margin-left:.35em; font-size:.66em; }
+  .ov-rows .d{ font-family:var(--sans); font-size:14px; color:var(--faint); }
+  .ov-lede{ font-family:var(--sans); color:var(--faint); margin-bottom:1.4em; }
+  .ov-form{ display:flex; flex-direction:column; gap:1em; }
+  .ov-form input{ font-family:var(--sans); font-size:16px; color:var(--paper); background:transparent; border:0; border-bottom:1px solid rgba(242,236,222,.3); padding:.6em 0; outline:none; }
+  .ov-form input::placeholder{ color:rgba(242,236,222,.4); }
+  .ov-form input:focus{ border-bottom-color:var(--moon); }
+  .ov-form button{ align-self:flex-start; margin-top:.6em; font-family:var(--sans); font-weight:500; font-size:15px; color:#14202e; background:var(--paper); border:0; border-radius:100px; padding:.75em 1.5em; cursor:pointer; transition:background .2s, transform .2s; }
+  .ov-form button:hover{ background:#fff; transform:translateY(-2px); }
 
   @media (max-width:760px){
-    .v3-tabs{ flex-wrap:wrap; gap:1rem; }
-    .v3-tab{ font-size:.75rem; }
-    .v3-row-name{ font-size:.85rem; }
-    .v3-row-desc{ font-size:.75rem; }
-    .v3-field{ font-size:.85rem; }
-    .v3-send{ font-size:.85rem; }
+    body{ overflow:auto; } .frame{ min-height:100%; }
+    .top{ flex-wrap:wrap; row-gap:.7rem; }
+    .navlinks{ flex-wrap:wrap; gap:.4rem; }
+    .bottom{ flex-direction:column; align-items:flex-start; gap:1.4rem; }
+    .rmeta{ text-align:left; }
+    .bg{ background-position:center 40%; }
   }
-</style>
+  </style>
+</V4Layout>
