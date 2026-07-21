@@ -111,20 +111,25 @@ import V4Layout from '../layouts/V4Layout.astro';
   .mark{ font-family:var(--sans); font-weight:500; font-size:clamp(26px,3vw,44px); letter-spacing:-.02em; background:#000; padding:.14em .34em; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
   .mark .dot{ color:var(--moon); }
   .navlinks{ display:flex; gap:.5rem; }
-  .navlinks a{ font-family:var(--sans); font-weight:500; font-size:clamp(14px,1.3vw,17px); color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; }
+  .navlinks a{ font-family:var(--sans); font-weight:500; font-size:clamp(14px,1.3vw,17px); color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
   .navlinks a:hover{ color:var(--moon); }
-  /* hint: vibración breve al cargar sobre los botones interactivos, 3 veces, luego descansa */
-  .navlinks a[data-panel]{ animation:nav-vibe 2.4s ease-in-out 1.4s 3; }
-  .navlinks a[data-panel]:hover{ animation:none; }
+  /* relevo: cada botón vibra por turno (artefactos -> blog -> escríbeme), en bucle infinito */
+  .navlinks a{ animation:nav-vibe 3s ease-in-out infinite; }
+  .navlinks a:nth-child(1){ animation-delay:0s; }
+  .navlinks a:nth-child(2){ animation-delay:1s; }
+  .navlinks a:nth-child(3){ animation-delay:2s; }
+  .navlinks a:hover{ animation-play-state:paused; }
   @keyframes nav-vibe{
-    0%,13%,100%{ transform:translate(0,0); }
-    2%{ transform:translate(-1.5px,1px); }
-    4%{ transform:translate(1.5px,-1px); }
-    6%{ transform:translate(-1.5px,-1px); }
-    8%{ transform:translate(1.5px,1px); }
-    10%{ transform:translate(-1px,1px); }
+    0%{ transform:translate(0,0) rotate(0); }
+    2%{ transform:translate(-1.5px,1px) rotate(-1deg); }
+    4%{ transform:translate(1.5px,-1px) rotate(1deg); }
+    6%{ transform:translate(-1.5px,-1px) rotate(-1deg); }
+    8%{ transform:translate(1.5px,1px) rotate(1deg); }
+    10%{ transform:translate(-1px,1px) rotate(-.6deg); }
+    12%{ transform:translate(1px,-1px) rotate(.6deg); }
+    15%,100%{ transform:translate(0,0) rotate(0); }
   }
-  @media (prefers-reduced-motion: reduce){ .navlinks a[data-panel]{ animation:none; } }
+  @media (prefers-reduced-motion: reduce){ .navlinks a{ animation:none; } }
 
   .bottom{ display:flex; justify-content:space-between; align-items:flex-end; gap:2rem; }
   .lead{ max-width:34ch; }
