@@ -9,7 +9,8 @@ import V4Layout from '../layouts/V4Layout.astro';
     <header class="top">
       <span class="mark">regardless<span class="dot">.</span></span>
       <nav class="navlinks">
-        <a href="#" data-panel="artefactos">artefactos</a>
+        <a href="#" data-panel="artefactos">c&oacute;mplices</a>
+        <a href="#" data-panel="sobremi">sobre m&iacute;</a>
         <a href="/blog/">blog</a>
         <a href="#" data-panel="contacto">escr&iacute;beme!</a>
       </nav>
@@ -18,21 +19,31 @@ import V4Layout from '../layouts/V4Layout.astro';
     <footer class="bottom">
       <div class="lead">
         <h1><span class="hl">Hay cosas que <em>s&oacute;lo t&uacute;</em> puedes decir.</span></h1>
-        <p class="sub"><span class="hl">Creamos herramientas digitales para sacar afuera lo que llevas dentro.</span></p>
+        <p class="sub"><span class="hl">Creamos <em>c&oacute;mplices</em> para sacar afuera eso &uacute;nico que llevas dentro.</span></p>
       </div>
       <div class="rmeta"><span class="u">Santiago, Chile &middot; <time class="clk" datetime="">--:--:--</time></span></div>
     </footer>
   </div>
 
-  <div class="overlay" id="ov-artefactos" role="dialog" aria-modal="true" aria-label="Artefactos" aria-hidden="true">
+  <div class="overlay" id="ov-artefactos" role="dialog" aria-modal="true" aria-label="Cómplices" aria-hidden="true">
     <div class="ov-inner">
       <button class="ov-close" data-close aria-label="Cerrar">&times;</button>
-      <h2 class="ov-title">Artefactos</h2>
+      <h2 class="ov-title">C&oacute;mplices</h2>
       <ul class="ov-rows">
-        <li><a href="https://heyfrank.cl" target="_blank" rel="noopener"><span class="n">heyfrank <span class="ar">&rarr;</span></span><span class="d">Recetas para crear m&uacute;sica desde el mood.</span></a></li>
-        <li><a href="https://munra.cl" target="_blank" rel="noopener"><span class="n">munra <span class="ar">&rarr;</span></span><span class="d">Modelos de IA que generan tracks instrumentales.</span></a></li>
-        <li><a href="https://yoescritor.cl" target="_blank" rel="noopener"><span class="n">yoescritor <span class="ar">&rarr;</span></span><span class="d">Encuentra al escritor que vive adentro tuyo.</span></a></li>
+        <li><a aria-disabled="true" tabindex="-1"><span class="n">heyfrank <span class="ar">&rarr;</span> <span class="soon">Coming soon</span></span><span class="d">Recetas para crear m&uacute;sica desde el <em>mood</em>.</span></a></li>
+        <li><a aria-disabled="true" tabindex="-1"><span class="n">munra <span class="ar">&rarr;</span> <span class="soon">Coming soon</span></span><span class="d">Modelos de IA que generan tracks instrumentales.</span></a></li>
+        <li><a aria-disabled="true" tabindex="-1"><span class="n">yoescritor <span class="ar">&rarr;</span> <span class="soon">Coming soon</span></span><span class="d">Encuentra al escritor que vive adentro tuyo.</span></a></li>
       </ul>
+    </div>
+  </div>
+
+  <div class="overlay" id="ov-sobremi" role="dialog" aria-modal="true" aria-label="Sobre mí" aria-hidden="true">
+    <div class="ov-inner">
+      <button class="ov-close" data-close aria-label="Cerrar">&times;</button>
+      <h2 class="ov-title">Sobre m&iacute;</h2>
+      <p class="ov-copy">Hola, soy Rafa y cre&eacute; esta p&aacute;gina para juntar una colecci&oacute;n de <em>c&oacute;mplices</em> &mdash; que son una especie de AI companions &mdash; para ayudarme a encontrar adentro m&iacute;o las cosas que me cuestan sacar y darles forma.</p>
+      <p class="ov-copy">Me vi muchas veces frustrado por no ser capaz de terminar mis ideas, y por lo tanto, no poder soltarlas y compartirlas.</p>
+      <p class="ov-copy">Espero que esta pandilla de <em>c&oacute;mplices</em> me pueda ayudar, y tal vez, te puedan ayudar a ti tambi&eacute;n.</p>
     </div>
   </div>
 
@@ -94,7 +105,7 @@ import V4Layout from '../layouts/V4Layout.astro';
     --serif:'Fraunces',Georgia,'Times New Roman',serif;
     --sans:'Inter','Helvetica Neue',Arial,sans-serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
-    --paper:#F2ECDE; --moon:#E8C87A;
+    --paper:#F2ECDE; --moon:#E8C87A; --bloom:#E0399C;
     --faint:rgba(242,236,222,.62);
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
@@ -113,11 +124,10 @@ import V4Layout from '../layouts/V4Layout.astro';
   .navlinks{ display:flex; gap:.5rem; }
   .navlinks a{ font-family:var(--sans); font-weight:500; font-size:clamp(14px,1.3vw,17px); color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
   .navlinks a:hover{ color:var(--moon); }
+  .navlinks a[data-panel="artefactos"]{ color:var(--bloom); }
+  .navlinks a[data-panel="artefactos"]:hover{ color:var(--bloom); filter:brightness(1.2); }
   /* relevo: cada botón vibra por turno (artefactos -> blog -> escríbeme), en bucle infinito */
-  .navlinks a{ animation:nav-vibe 3s ease-in-out infinite; }
-  .navlinks a:nth-child(1){ animation-delay:0s; }
-  .navlinks a:nth-child(2){ animation-delay:1s; }
-  .navlinks a:nth-child(3){ animation-delay:2s; }
+  .navlinks a[data-panel="artefactos"]{ animation:nav-vibe 2.4s ease-in-out infinite; }
   .navlinks a:hover{ animation-play-state:paused; }
   @keyframes nav-vibe{
     0%{ transform:translate(0,0) rotate(0); }
@@ -136,6 +146,7 @@ import V4Layout from '../layouts/V4Layout.astro';
   .eyebrow{ font-family:var(--mono); font-weight:400; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); margin-bottom:1em; }
   .lead h1{ font-family:var(--serif); font-weight:400; font-optical-sizing:auto; font-size:clamp(1.9rem,8vw,3em); line-height:1.18; letter-spacing:-.015em; }
   .lead h1 em{ font-style:italic; color:var(--moon); }
+  .lead .sub em{ font-style:normal; font-weight:600; color:var(--bloom); }
   .hl{ display:inline; background:#000; -webkit-box-decoration-break:clone; box-decoration-break:clone; padding:.1em .34em; }
   .lead .sub{ font-family:var(--sans); font-weight:400; letter-spacing:0; font-size:clamp(1rem,1.2vw,1.15rem); line-height:1.7; color:var(--paper); margin-top:clamp(18px,2.4vh,26px); max-width:42ch; }
   .cta{ display:inline-flex; align-items:center; gap:.55em; margin-top:clamp(20px,2.6vh,32px); padding:.85em 1.5em; border-radius:100px;
@@ -160,9 +171,12 @@ import V4Layout from '../layouts/V4Layout.astro';
   .ov-rows a{ display:flex; flex-direction:column; gap:.25em; padding:1em 0; text-decoration:none; color:var(--paper); transition:opacity .2s; }
   .ov-rows:hover a{ opacity:.45; } .ov-rows a:hover{ opacity:1; }
   .ov-rows .n{ font-family:var(--serif); font-weight:400; font-size:clamp(1.3rem,2.6vw,1.9rem); letter-spacing:-.01em; }
-  .ov-rows .n .ar{ color:var(--moon); margin-left:.35em; font-size:.66em; }
+  .ov-rows .n .ar{ color:var(--bloom); margin-left:.35em; font-size:.66em; }
+  .ov-rows .n .soon{ font-family:var(--mono); font-weight:400; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); border:1px solid rgba(242,236,222,.3); border-radius:100px; padding:.3em .7em; vertical-align:middle; }
   .ov-rows .d{ font-family:var(--sans); font-size:14px; color:var(--faint); }
   .ov-lede{ font-family:var(--sans); color:var(--faint); margin-bottom:1.4em; }
+  .ov-copy{ font-family:var(--sans); color:var(--paper); line-height:1.7; margin-bottom:1.1em; max-width:52ch; }
+  .ov-copy em{ font-style:normal; font-weight:600; color:var(--bloom); }
   .ov-form{ display:flex; flex-direction:column; gap:1em; }
   .ov-form input{ font-family:var(--sans); font-size:16px; color:var(--paper); background:transparent; border:0; border-bottom:1px solid rgba(242,236,222,.3); padding:.6em 0; outline:none; }
   .ov-form input::placeholder{ color:rgba(242,236,222,.4); }
