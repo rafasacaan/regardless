@@ -1,5 +1,10 @@
 ---
 import V4Layout from '../layouts/V4Layout.astro';
+import { getCollection } from 'astro:content';
+
+const ultimas = (await getCollection('bitacora', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
+  .slice(0, 3);
 ---
 
 <V4Layout title="regardless">
@@ -11,17 +16,28 @@ import V4Layout from '../layouts/V4Layout.astro';
       <nav class="navlinks">
         <a href="#" data-panel="artefactos">c&oacute;mplices</a>
         <a href="#" data-panel="sobremi">sobre m&iacute;</a>
-        <a href="#" data-panel="blog">blog</a>
+        <a href="/blog/">notas / build</a>
         <a href="#" data-panel="contacto">escr&iacute;beme!</a>
       </nav>
     </header>
     <div></div>
     <footer class="bottom">
       <div class="lead">
+        <p class="eyebrow"><span class="hl">AI companions &amp; yo: &iquest;podr&aacute;n ayudarme?</span></p>
         <h1><span class="hl">Hay cosas que <em>s&oacute;lo t&uacute;</em> puedes decir.</span></h1>
-        <p class="sub"><span class="hl">Creamos <em>c&oacute;mplices</em> para sacar afuera eso &uacute;nico que llevas dentro.</span></p>
+        <p class="sub"><span class="hl">Creamos &amp; testeamos <em>c&oacute;mplices</em> para sacar afuera eso &uacute;nico que llevas dentro.</span></p>
       </div>
-      <div class="rmeta"><span class="u">Santiago, Chile &middot; <time class="clk" datetime="">--:--:--</time></span></div>
+      <div class="rmeta">
+        <div class="latest">
+          <p class="latest-label"><a href="/bitacora/"><span class="hl">Mis notas <span class="ar">&rarr;</span></span></a></p>
+          <ul>
+            {ultimas.map((e) => (
+              <li><a href={`/bitacora/${e.id}/`}><span class="hl">{e.data.title} <span class="ar">&rarr;</span></span></a></li>
+            ))}
+          </ul>
+        </div>
+        <span class="u">Santiago, Chile &middot; <time class="clk" datetime="">--:--:--</time></span>
+      </div>
     </footer>
   </div>
 
@@ -33,17 +49,6 @@ import V4Layout from '../layouts/V4Layout.astro';
         <li><a aria-disabled="true" tabindex="-1"><span class="n">heyfrank <span class="ar">&rarr;</span> <span class="soon">Coming soon</span></span><span class="d">Recetas para crear m&uacute;sica desde el <em>mood</em>.</span></a></li>
         <li><a aria-disabled="true" tabindex="-1"><span class="n">munra <span class="ar">&rarr;</span> <span class="soon">Coming soon</span></span><span class="d">Modelos de IA que generan tracks instrumentales.</span></a></li>
         <li><a aria-disabled="true" tabindex="-1"><span class="n">yoescritor <span class="ar">&rarr;</span> <span class="soon">Coming soon</span></span><span class="d">Encuentra al escritor que vive adentro tuyo.</span></a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="overlay" id="ov-blog" role="dialog" aria-modal="true" aria-label="Blog" aria-hidden="true">
-    <div class="ov-inner">
-      <button class="ov-close" data-close aria-label="Cerrar">&times;</button>
-      <h2 class="ov-title">Blog</h2>
-      <ul class="ov-rows">
-        <li><a href="/bitacora/"><span class="n">bit&aacute;cora <span class="ar">&rarr;</span></span><span class="d">Notas cortas y frecuentes sobre el proceso de construir mis c&oacute;mplices.</span></a></li>
-        <li><a href="/blog/"><span class="n">blog tech <span class="ar">&rarr;</span></span><span class="d">Notas t&eacute;cnicas sobre c&oacute;mo construyo cada c&oacute;mplice, paso a paso.</span></a></li>
       </ul>
     </div>
   </div>
@@ -134,7 +139,7 @@ import V4Layout from '../layouts/V4Layout.astro';
   .mark em{ font-style:italic; }
   .mark .dot{ color:var(--moon); }
   .navlinks{ display:flex; gap:.5rem; }
-  .navlinks a{ font-family:var(--sans); font-weight:600; font-size:clamp(14px,1.3vw,17px); color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
+  .navlinks a{ font-family:var(--sans); font-weight:600; font-size:clamp(13px,1.2vw,16px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
   .navlinks a:hover{ color:var(--moon); }
   .navlinks a[data-panel="artefactos"]{ color:var(--bloom); }
   .navlinks a[data-panel="artefactos"]:hover{ color:var(--bloom); filter:brightness(1.2); }
@@ -155,7 +160,7 @@ import V4Layout from '../layouts/V4Layout.astro';
 
   .bottom{ display:flex; justify-content:space-between; align-items:flex-end; gap:2rem; }
   .lead{ max-width:34ch; }
-  .eyebrow{ font-family:var(--mono); font-weight:400; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); margin-bottom:1em; }
+  .eyebrow{ font-family:var(--mono); font-weight:400; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--paper); margin-bottom:.9em; }
   .lead h1{ font-family:var(--serif); font-weight:400; font-optical-sizing:auto; font-size:clamp(1.9rem,8vw,3em); line-height:1.18; letter-spacing:-.015em; }
   .lead h1 em{ font-style:italic; color:var(--moon); }
   .lead .sub em{ font-style:normal; font-weight:600; color:var(--bloom); }
@@ -166,8 +171,25 @@ import V4Layout from '../layouts/V4Layout.astro';
   .cta:hover{ transform:translateY(-2px); background:#fff; }
   .cta .ar{ transition:transform .2s; } .cta:hover .ar{ transform:translateX(3px); }
 
-  .rmeta{ text-align:right; }
+  .rmeta{ text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:1.1rem; }
   .rmeta .u{ font-family:var(--mono); font-weight:300; font-size:11px; letter-spacing:.06em; color:var(--paper); line-height:1.7; }
+  .latest ul{ list-style:none; }
+  .latest-label{ font-family:var(--mono); font-weight:500; font-size:clamp(13px,1.2vw,15px); letter-spacing:.16em; text-transform:uppercase; margin-bottom:.9em; }
+  .latest-label a{ color:var(--paper); text-decoration:none; opacity:.75; transition:opacity .2s, color .2s; }
+  .latest-label a .ar{ color:var(--bloom); }
+  .latest-label a:hover{ opacity:1; color:var(--bloom); }
+  .latest li{ margin-bottom:.5em; opacity:0; animation:note-in .55s ease forwards; }
+  .latest li:nth-child(1){ animation-delay:.45s; }
+  .latest li:nth-child(2){ animation-delay:.95s; }
+  .latest li:nth-child(3){ animation-delay:1.45s; }
+  @keyframes note-in{
+    from{ opacity:0; transform:translateY(7px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .latest a{ font-family:var(--sans); font-weight:500; font-size:clamp(15px,1.45vw,19px); color:var(--paper); text-decoration:none; line-height:1.45; transition:color .2s; }
+  .latest a .ar{ color:var(--bloom); }
+  .latest a:hover{ color:var(--bloom); }
+  @media (prefers-reduced-motion: reduce){ .latest li{ opacity:1; animation:none; } }
 
   /* ---- overlays (artefactos / contacto) ---- */
   .overlay{ position:fixed; inset:0; z-index:20; display:none; align-items:center; justify-content:center; padding:clamp(28px,5vw,60px);
