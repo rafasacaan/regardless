@@ -16,9 +16,23 @@ const fechaLegible = fecha.toLocaleDateString('es-CL', {
   day: 'numeric',
 });
 const fechaISO = fecha.toISOString().slice(0, 10);
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: resumen,
+  datePublished: fechaISO,
+  author: { '@type': 'Person', name: 'Rafa Sacaan' },
+  publisher: { '@type': 'Organization', name: 'regardless', url: 'https://regardless.cl' },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical.toString() },
+  image: new URL('/img/og.jpg', Astro.site).toString(),
+};
 ---
 
-<V3Layout title={`${title} — regardless`} dark={true}>
+<V3Layout title={`${title} — regardless`} description={resumen} dark={true}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <div class="v3-post-bg" aria-hidden="true"></div>
   <div class="v3-post">
     <p class="v3-crumb"><a href="/">regardless</a> / <a href="/blog/">blog</a></p>
