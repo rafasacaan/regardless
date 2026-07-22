@@ -5,12 +5,13 @@ interface Props {
   title?: string;
   dark?: boolean;
   gridMarkOpacity?: number;
+  noindex?: boolean;
 }
 
-const { title = 'regardless — v3', dark = false, gridMarkOpacity = 15 } = Astro.props;
+const { title = 'regardless — v3', dark = false, gridMarkOpacity = 15, noindex = false } = Astro.props;
 ---
 
-<Base title={title} htmlClass={dark ? 'v3-dark' : ''}>
+<Base title={title} htmlClass={dark ? 'v3-dark' : ''} noindex={noindex}>
   <main class="v3">
     <header class="v3-top">
       <button class="v3-top-item v3-theme" type="button" aria-label="Cambiar tema claro/oscuro">Light</button>

@@ -5,12 +5,14 @@ interface Props {
   title?: string;
   description?: string;
   htmlClass?: string;
+  noindex?: boolean;
 }
 
 const {
   title = 'regardless.',
-  description = 'Un laboratorio personal y experimental que construye artefactos para sacar afuera las ideas que ya llevas adentro.',
+  description = 'Un laboratorio personal y experimental que crea cómplices digitales para sacar afuera las ideas que ya llevas adentro.',
   htmlClass = '',
+  noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -42,11 +44,21 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=6" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/img/og.jpg', Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/img/og.jpg', Astro.site)} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
