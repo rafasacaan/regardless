@@ -2,9 +2,10 @@
 import V4Layout from '../layouts/V4Layout.astro';
 import { getCollection } from 'astro:content';
 
-const ultimas = (await getCollection('bitacora', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
-  .slice(0, 3);
+const todasLasNotas = (await getCollection('bitacora', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf(),
+);
+const ultimas = todasLasNotas.slice(0, 3);
 
 const fmtCorta = (d: Date) => {
   const dia = d.getUTCDate();
@@ -12,6 +13,10 @@ const fmtCorta = (d: Date) => {
   const anio = d.getUTCFullYear();
   return `${dia}${mes}${anio}`;
 };
+
+const notasParaRotar = JSON.stringify(
+  todasLasNotas.map((e) => ({ id: e.id, title: e.data.title, fecha: e.data.fecha.toISOString() })),
+);
 ---
 
 <V4Layout title="regardless">
@@ -37,7 +42,7 @@ const fmtCorta = (d: Date) => {
       <div class="rmeta">
         <div class="latest">
           <a href="/bitacora/" class="latest-label">Mis notas <span class="ar">&rarr;</span></a>
-          <ul>
+          <ul id="notes-ticker" data-notes={notasParaRotar}>
             {ultimas.map((e) => (
               <li><a href={`/bitacora/${e.id}/`}><span class="hl"><span class="note-date">{fmtCorta(e.data.fecha)}</span> / <em>&ldquo;{e.data.title}&rdquo;</em> <span class="ar">&rarr;</span></span></a></li>
             ))}
@@ -92,6 +97,99 @@ const fmtCorta = (d: Date) => {
         catch(e){ el.textContent = new Date().toLocaleTimeString('es-CL', { hour12:false }); }
       }
       tick(); setInterval(tick, 1000);
+    })();
+  </script>
+
+  <script is:inline>
+    (function(){
+      var ul = document.getElementById('notes-ticker');
+      if(!ul) return;
+      var notes;
+      try{ notes = JSON.parse(ul.getAttribute('data-notes')); }catch(e){ return; }
+      if(!notes || notes.length <= 3) return;
+      if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var offset = 3;
+
+      function fmtCorta(iso){
+        var d = new Date(iso);
+        var dia = d.getUTCDate();
+        var mes = d.toLocaleDateString('es-CL', { month:'short', timeZone:'UTC' }).replace('.','').toUpperCase();
+        var anio = d.getUTCFullYear();
+        return dia + mes + anio;
+      }
+
+      function renderInner(note){
+        return '<span class="hl"><span class="note-date">' + fmtCorta(note.fecha) + '</span> / <em>&ldquo;' + note.title + '&rdquo;</em> <span class="ar">&rarr;</span></span>';
+      }
+
+      function makeLi(note){
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = '/bitacora/' + note.id + '/';
+        a.innerHTML = renderInner(note);
+        li.appendChild(a);
+        return li;
+      }
+
+      // apagamos la animación de entrada inicial (fijando su estado final) para que de aquí en
+      // más el JS controle transform/opacity sin pelear con la animación CSS
+      Array.from(ul.children).forEach(function(li){
+        li.style.animation = 'none';
+        li.style.opacity = '1';
+        li.style.transform = 'translateY(0)';
+      });
+
+      function tick(){
+        var oldItems = Array.from(ul.children);
+        if(oldItems.length < 1) return;
+        var oldRects = oldItems.map(function(li){ return li.getBoundingClientRect(); });
+        var slotHeight = oldRects.length > 1 ? (oldRects[1].top - oldRects[0].top) : oldRects[0].height;
+
+        var note = notes[offset % notes.length];
+        offset++;
+
+        var newLi = makeLi(note);
+        ul.insertBefore(newLi, ul.firstChild);
+        var exiting = ul.children[oldItems.length]; // el que quedó empujado fuera de los 3 cupos
+        var newItems = Array.from(ul.children);
+        var newRects = newItems.map(function(li){ return li.getBoundingClientRect(); });
+
+        newItems.forEach(function(li, i){
+          if(li === newLi){
+            li.style.transition = 'none';
+            li.style.transform = 'translateY(-' + slotHeight + 'px)';
+            li.style.opacity = '0';
+            requestAnimationFrame(function(){
+              requestAnimationFrame(function(){
+                li.style.transition = 'transform .45s ease, opacity .45s ease';
+                li.style.transform = 'translateY(0)';
+                li.style.opacity = '1';
+              });
+            });
+            return;
+          }
+          var oldIndex = oldItems.indexOf(li);
+          if(oldIndex === -1) return;
+          var dy = oldRects[oldIndex].top - newRects[i].top;
+          li.style.transition = 'none';
+          li.style.transform = 'translateY(' + dy + 'px)';
+          if(li === exiting){ li.style.opacity = '1'; }
+          requestAnimationFrame(function(){
+            requestAnimationFrame(function(){
+              li.style.transition = 'transform .45s ease, opacity .45s ease';
+              li.style.transform = li === exiting ? 'translateY(' + slotHeight + 'px)' : 'translateY(0)';
+              if(li === exiting){ li.style.opacity = '0'; }
+            });
+          });
+        });
+
+        if(exiting){
+          setTimeout(function(){ if(exiting.parentNode === ul) ul.removeChild(exiting); }, 480);
+        }
+      }
+
+      setInterval(tick, 4200);
     })();
   </script>
 
@@ -181,7 +279,7 @@ const fmtCorta = (d: Date) => {
   .rmeta{ text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:1.1rem; }
   .rmeta .u{ font-family:var(--mono); font-weight:300; font-size:11px; letter-spacing:.06em; color:var(--paper); line-height:1.7; }
   .latest ul{ list-style:none; }
-  .latest-label{ display:inline-block; font-family:var(--sans); font-weight:600; font-size:clamp(20px,2.2vw,28px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; margin-bottom:.9em; transition:color .2s; }
+  .latest-label{ display:inline-block; font-family:var(--sans); font-weight:600; font-size:clamp(15px,1.4vw,18px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; margin-bottom:.9em; transition:color .2s; }
   .latest-label .ar{ color:var(--bloom); margin-left:.3em; }
   .latest-label:hover{ color:var(--moon); }
   .latest li{ margin-bottom:.5em; opacity:0; animation:note-in .55s ease forwards; }
@@ -192,11 +290,11 @@ const fmtCorta = (d: Date) => {
     from{ opacity:0; transform:translateY(7px); }
     to{ opacity:1; transform:translateY(0); }
   }
-  .latest a{ font-family:var(--sans); font-weight:500; font-size:clamp(12px,1.05vw,14px); color:var(--paper); text-decoration:none; line-height:1.5; transition:color .2s; }
-  .latest a em{ font-style:italic; }
+  .latest ul a{ font-family:var(--sans); font-weight:500; font-size:clamp(12px,1.05vw,14px); color:var(--paper); text-decoration:none; line-height:1.5; transition:color .2s; }
+  .latest ul a em{ font-style:italic; }
   .latest .note-date{ font-family:var(--mono); font-weight:400; font-size:.85em; letter-spacing:.02em; color:var(--faint); margin-right:.3em; }
-  .latest a .ar{ color:var(--bloom); }
-  .latest a:hover{ color:var(--bloom); }
+  .latest ul a .ar{ color:var(--bloom); }
+  .latest ul a:hover{ color:var(--bloom); }
   @media (prefers-reduced-motion: reduce){ .latest li{ opacity:1; animation:none; } }
 
   /* ---- overlays (artefactos / contacto) ---- */
