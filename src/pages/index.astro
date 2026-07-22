@@ -5,6 +5,8 @@ import { getCollection } from 'astro:content';
 const ultimas = (await getCollection('bitacora', ({ data }) => !data.draft))
   .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
   .slice(0, 3);
+
+const fmtCorta = (d: Date) => d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
 ---
 
 <V4Layout title="regardless">
@@ -32,7 +34,7 @@ const ultimas = (await getCollection('bitacora', ({ data }) => !data.draft))
           <a href="/bitacora/" class="latest-label">Mis notas <span class="ar">&rarr;</span></a>
           <ul>
             {ultimas.map((e) => (
-              <li><a href={`/bitacora/${e.id}/`}><span class="hl">{e.data.title} <span class="ar">&rarr;</span></span></a></li>
+              <li><a href={`/bitacora/${e.id}/`}><span class="hl"><span class="note-date">{fmtCorta(e.data.fecha)}</span> <em>&ldquo;{e.data.title}&rdquo;</em> <span class="ar">&rarr;</span></span></a></li>
             ))}
           </ul>
         </div>
@@ -185,7 +187,9 @@ const ultimas = (await getCollection('bitacora', ({ data }) => !data.draft))
     from{ opacity:0; transform:translateY(7px); }
     to{ opacity:1; transform:translateY(0); }
   }
-  .latest a{ font-family:var(--sans); font-weight:500; font-size:clamp(15px,1.45vw,19px); color:var(--paper); text-decoration:none; line-height:1.45; transition:color .2s; }
+  .latest a{ font-family:var(--sans); font-weight:500; font-size:clamp(12px,1.05vw,14px); color:var(--paper); text-decoration:none; line-height:1.5; transition:color .2s; }
+  .latest a em{ font-style:italic; }
+  .latest .note-date{ font-family:var(--mono); font-weight:400; font-size:.85em; letter-spacing:.02em; color:var(--faint); margin-right:.3em; }
   .latest a .ar{ color:var(--bloom); }
   .latest a:hover{ color:var(--bloom); }
   @media (prefers-reduced-motion: reduce){ .latest li{ opacity:1; animation:none; } }
