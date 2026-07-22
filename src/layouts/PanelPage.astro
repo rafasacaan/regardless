@@ -5,16 +5,17 @@ interface Props {
   title?: string;
   description?: string;
   closeHref?: string;
+  backLabel?: string;
 }
 
-const { title = 'regardless', description, closeHref = '/' } = Astro.props;
+const { title = 'regardless', description, closeHref = '/', backLabel = 'Volver' } = Astro.props;
 ---
 
 <V4Layout title={title} description={description}>
   <div class="bg"></div><div class="scrim"></div><div class="grain"></div>
   <div class="panel-wrap">
     <div class="ov-inner">
-      <a class="ov-close" href={closeHref} aria-label="Cerrar">&times;</a>
+      <a class="ov-back" href={closeHref}>&larr; {backLabel}</a>
       <slot />
     </div>
   </div>
@@ -45,8 +46,8 @@ const { title = 'regardless', description, closeHref = '/' } = Astro.props;
     background:rgba(12,18,12,.92); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
   }
   .ov-inner{ position:relative; width:100%; max-width:40rem; padding:clamp(2.5rem,6vh,4rem) 0; }
-  .ov-close{ position:absolute; top:0; right:0; background:none; border:0; color:var(--paper); font-size:30px; line-height:1; text-decoration:none; cursor:pointer; opacity:.7; transition:opacity .2s, color .2s; }
-  .ov-close:hover{ opacity:1; color:var(--moon); }
+  .ov-back{ display:inline-block; margin-bottom:clamp(1.5rem,4vh,2.5rem); font-family:var(--mono); font-weight:500; font-size:1rem; text-transform:uppercase; letter-spacing:.06em; color:var(--bloom); text-decoration:none; opacity:.9; transition:opacity .2s; }
+  .ov-back:hover{ opacity:1; }
   .ov-meta{ font-family:var(--mono); font-weight:400; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:1em; }
   .ov-title{ font-family:var(--serif); font-weight:400; font-optical-sizing:auto; font-size:clamp(2rem,5vw,3.2rem); letter-spacing:-.02em; margin-bottom:clamp(20px,3vh,32px); }
   .ov-rows{ list-style:none; }
