@@ -6,7 +6,12 @@ const ultimas = (await getCollection('bitacora', ({ data }) => !data.draft))
   .sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf())
   .slice(0, 3);
 
-const fmtCorta = (d: Date) => d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+const fmtCorta = (d: Date) => {
+  const dia = d.getDate();
+  const mes = d.toLocaleDateString('es-CL', { month: 'short' }).replace('.', '').toUpperCase();
+  const anio = d.getFullYear();
+  return `${dia}${mes}${anio}`;
+};
 ---
 
 <V4Layout title="regardless">
@@ -34,7 +39,7 @@ const fmtCorta = (d: Date) => d.toLocaleDateString('es-CL', { day: 'numeric', mo
           <a href="/bitacora/" class="latest-label">Mis notas <span class="ar">&rarr;</span></a>
           <ul>
             {ultimas.map((e) => (
-              <li><a href={`/bitacora/${e.id}/`}><span class="hl"><span class="note-date">{fmtCorta(e.data.fecha)}</span> <em>&ldquo;{e.data.title}&rdquo;</em> <span class="ar">&rarr;</span></span></a></li>
+              <li><a href={`/bitacora/${e.id}/`}><span class="hl"><span class="note-date">{fmtCorta(e.data.fecha)}</span> / <em>&ldquo;{e.data.title}&rdquo;</em> <span class="ar">&rarr;</span></span></a></li>
             ))}
           </ul>
         </div>
@@ -176,7 +181,7 @@ const fmtCorta = (d: Date) => d.toLocaleDateString('es-CL', { day: 'numeric', mo
   .rmeta{ text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:1.1rem; }
   .rmeta .u{ font-family:var(--mono); font-weight:300; font-size:11px; letter-spacing:.06em; color:var(--paper); line-height:1.7; }
   .latest ul{ list-style:none; }
-  .latest-label{ display:inline-block; font-family:var(--sans); font-weight:600; font-size:clamp(16px,1.5vw,20px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; margin-bottom:.9em; transition:color .2s; }
+  .latest-label{ display:inline-block; font-family:var(--sans); font-weight:600; font-size:clamp(20px,2.2vw,28px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; margin-bottom:.9em; transition:color .2s; }
   .latest-label .ar{ color:var(--bloom); margin-left:.3em; }
   .latest-label:hover{ color:var(--moon); }
   .latest li{ margin-bottom:.5em; opacity:0; animation:note-in .55s ease forwards; }
