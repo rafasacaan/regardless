@@ -169,7 +169,7 @@ const notasParaRotar = JSON.stringify(
             li.style.opacity = '0';
             requestAnimationFrame(function(){
               requestAnimationFrame(function(){
-                li.style.transition = 'transform .45s ease, opacity .45s ease';
+                li.style.transition = 'transform 1.1s cubic-bezier(.22,.68,.25,1), opacity 1.1s ease';
                 li.style.transform = 'translateY(0)';
                 li.style.opacity = '1';
               });
@@ -184,7 +184,7 @@ const notasParaRotar = JSON.stringify(
           if(li === exiting){ li.style.opacity = '1'; }
           requestAnimationFrame(function(){
             requestAnimationFrame(function(){
-              li.style.transition = 'transform .45s ease, opacity .45s ease';
+              li.style.transition = 'transform 1.1s cubic-bezier(.22,.68,.25,1), opacity 1.1s ease';
               li.style.transform = li === exiting ? 'translateY(' + slotHeight + 'px)' : 'translateY(0)';
               if(li === exiting){ li.style.opacity = '0'; }
             });
@@ -193,10 +193,10 @@ const notasParaRotar = JSON.stringify(
 
         setTimeout(function(){
           if(exiting && exiting.parentNode === ul) ul.removeChild(exiting);
-        }, 480);
+        }, 1150);
       }
 
-      setInterval(tick, 4200);
+      setInterval(tick, 5500);
     })();
   </script>
 
