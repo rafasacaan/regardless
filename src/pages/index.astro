@@ -29,7 +29,7 @@ const ultimas = (await getCollection('bitacora', ({ data }) => !data.draft))
       </div>
       <div class="rmeta">
         <div class="latest">
-          <p class="latest-label"><a href="/bitacora/"><span class="hl">Mis notas <span class="ar">&rarr;</span></span></a></p>
+          <a href="/bitacora/" class="latest-label">Mis notas <span class="ar">&rarr;</span></a>
           <ul>
             {ultimas.map((e) => (
               <li><a href={`/bitacora/${e.id}/`}><span class="hl">{e.data.title} <span class="ar">&rarr;</span></span></a></li>
@@ -174,10 +174,9 @@ const ultimas = (await getCollection('bitacora', ({ data }) => !data.draft))
   .rmeta{ text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:1.1rem; }
   .rmeta .u{ font-family:var(--mono); font-weight:300; font-size:11px; letter-spacing:.06em; color:var(--paper); line-height:1.7; }
   .latest ul{ list-style:none; }
-  .latest-label{ font-family:var(--mono); font-weight:500; font-size:clamp(13px,1.2vw,15px); letter-spacing:.16em; text-transform:uppercase; margin-bottom:.9em; }
-  .latest-label a{ color:var(--paper); text-decoration:none; opacity:.75; transition:opacity .2s, color .2s; }
-  .latest-label a .ar{ color:var(--bloom); }
-  .latest-label a:hover{ opacity:1; color:var(--bloom); }
+  .latest-label{ display:inline-block; font-family:var(--sans); font-weight:600; font-size:clamp(16px,1.5vw,20px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; margin-bottom:.9em; transition:color .2s; }
+  .latest-label .ar{ color:var(--bloom); margin-left:.3em; }
+  .latest-label:hover{ color:var(--moon); }
   .latest li{ margin-bottom:.5em; opacity:0; animation:note-in .55s ease forwards; }
   .latest li:nth-child(1){ animation-delay:.45s; }
   .latest li:nth-child(2){ animation-delay:.95s; }
