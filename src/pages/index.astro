@@ -26,10 +26,10 @@ const notasParaRotar = JSON.stringify(
     <header class="top">
       <span class="mark">regard<em>less</em><span class="dot">.</span></span>
       <nav class="navlinks">
-        <a href="#" data-panel="artefactos">c&oacute;mplices</a>
-        <a href="#" data-panel="sobremi">sobre m&iacute;</a>
-        <a href="/blog/">notas / build</a>
-        <a href="#" data-panel="contacto">escr&iacute;beme!</a>
+        <a href="#" data-panel="artefactos">c&oacute;mplices <span class="nav-ar">&#8599;</span></a>
+        <a href="#" data-panel="sobremi">sobre m&iacute; <span class="nav-ar">&#8599;</span></a>
+        <a href="/blog/">notas / build <span class="nav-ar">&#8599;</span></a>
+        <a href="#" data-panel="contacto">escr&iacute;beme! <span class="nav-ar">&#8599;</span></a>
       </nav>
     </header>
     <div></div>
@@ -253,6 +253,8 @@ const notasParaRotar = JSON.stringify(
   .navlinks{ display:flex; gap:.5rem; }
   .navlinks a{ font-family:var(--sans); font-weight:600; font-size:clamp(13px,1.2vw,16px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
   .navlinks a:hover{ color:var(--moon); }
+  .navlinks a .nav-ar{ display:inline-block; font-size:.72em; opacity:.55; margin-left:.15em; transition:transform .2s ease, opacity .2s ease; }
+  .navlinks a:hover .nav-ar{ opacity:1; transform:translate(2px,-2px); }
   .navlinks a[data-panel="artefactos"]{ color:var(--bloom); }
   .navlinks a[data-panel="artefactos"]:hover{ color:var(--bloom); filter:brightness(1.2); }
   /* relevo: cada botón vibra por turno (artefactos -> blog -> escríbeme), en bucle infinito */
@@ -301,7 +303,9 @@ const notasParaRotar = JSON.stringify(
   .latest ul a em{ font-style:italic; }
   .latest .note-date{ font-family:var(--mono); font-weight:400; font-size:.85em; letter-spacing:.02em; color:var(--faint); margin-right:.3em; }
   .latest ul a .ar{ color:var(--bloom); }
-  .latest ul a:hover{ color:var(--bloom); }
+  .latest ul a:hover{ color:#39ff14; text-shadow:0 0 6px rgba(57,255,20,.85), 0 0 16px rgba(57,255,20,.5); }
+  .latest ul a:hover .ar{ color:#39ff14; }
+  .latest ul a:hover .note-date{ color:#39ff14; }
   @media (prefers-reduced-motion: reduce){ .latest li{ opacity:1; animation:none; } }
 
   /* ---- overlays (artefactos / contacto) ---- */
