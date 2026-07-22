@@ -16,4 +16,17 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+const bitacora = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/bitacora' }),
+  schema: z.object({
+    title: z.string(),
+    // fecha de publicación
+    fecha: z.coerce.date(),
+    // bajada breve que se muestra en el listado
+    resumen: z.string().optional(),
+    // ocúltalo del listado mientras lo escribes
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { blog, bitacora };

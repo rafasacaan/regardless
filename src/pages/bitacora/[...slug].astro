@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from 'astro:content';
+import PanelPage from '../../layouts/PanelPage.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('bitacora', ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const fechaLegible = entry.data.fecha.toLocaleDateString('es-CL', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<PanelPage
+  title={`${entry.data.title} — regardless`}
+  description={entry.data.resumen}
+  closeHref="/bitacora/"
+>
+  <p class="ov-meta">{fechaLegible}</p>
+  <h2 class="ov-title">{entry.data.title}</h2>
+  <div class="ov-body">
+    <Content />
+  </div>
+</PanelPage>

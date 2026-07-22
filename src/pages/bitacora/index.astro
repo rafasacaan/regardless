@@ -1,0 +1,37 @@
+---
+import PanelPage from '../../layouts/PanelPage.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('bitacora', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf(),
+);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<PanelPage
+  title="Bitácora — regardless"
+  description="Notas cortas y frecuentes sobre el proceso de construir mis cómplices."
+  closeHref="/"
+>
+  <h2 class="ov-title">Bit&aacute;cora</h2>
+  <p class="ov-lede">Notas cortas sobre el proceso de construir mis c&oacute;mplices.</p>
+  <ul class="ov-rows">
+    {
+      entries.map((entry) => (
+        <li>
+          <a href={`/bitacora/${entry.id}/`}>
+            <span class="n">
+              {entry.data.title} <span class="ar">&rarr;</span>
+            </span>
+            <span class="d">
+              {fmt(entry.data.fecha)}
+              {entry.data.resumen ? ` — ${entry.data.resumen}` : ''}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</PanelPage>

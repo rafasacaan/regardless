@@ -11,7 +11,7 @@ import V4Layout from '../layouts/V4Layout.astro';
       <nav class="navlinks">
         <a href="#" data-panel="artefactos">c&oacute;mplices</a>
         <a href="#" data-panel="sobremi">sobre m&iacute;</a>
-        <a href="/blog/">blog</a>
+        <a href="#" data-panel="blog">blog</a>
         <a href="#" data-panel="contacto">escr&iacute;beme!</a>
       </nav>
     </header>
@@ -33,6 +33,17 @@ import V4Layout from '../layouts/V4Layout.astro';
         <li><a aria-disabled="true" tabindex="-1"><span class="n">heyfrank <span class="ar">&rarr;</span> <span class="soon">Coming soon</span></span><span class="d">Recetas para crear m&uacute;sica desde el <em>mood</em>.</span></a></li>
         <li><a aria-disabled="true" tabindex="-1"><span class="n">munra <span class="ar">&rarr;</span> <span class="soon">Coming soon</span></span><span class="d">Modelos de IA que generan tracks instrumentales.</span></a></li>
         <li><a aria-disabled="true" tabindex="-1"><span class="n">yoescritor <span class="ar">&rarr;</span> <span class="soon">Coming soon</span></span><span class="d">Encuentra al escritor que vive adentro tuyo.</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="overlay" id="ov-blog" role="dialog" aria-modal="true" aria-label="Blog" aria-hidden="true">
+    <div class="ov-inner">
+      <button class="ov-close" data-close aria-label="Cerrar">&times;</button>
+      <h2 class="ov-title">Blog</h2>
+      <ul class="ov-rows">
+        <li><a href="/bitacora/"><span class="n">bit&aacute;cora <span class="ar">&rarr;</span></span><span class="d">Notas cortas y frecuentes sobre el proceso de construir mis c&oacute;mplices.</span></a></li>
+        <li><a href="/blog/"><span class="n">blog tech <span class="ar">&rarr;</span></span><span class="d">Notas t&eacute;cnicas sobre c&oacute;mo construyo cada c&oacute;mplice, paso a paso.</span></a></li>
       </ul>
     </div>
   </div>
