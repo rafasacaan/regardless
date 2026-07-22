@@ -140,9 +140,16 @@ const notasParaRotar = JSON.stringify(
         li.style.transform = 'translateY(0)';
       });
 
+      // overflow:hidden + alto fijo, de forma permanente (no solo durante la transición):
+      // togglear overflow cambiaba el colapso de márgenes del último ítem y eso movía
+      // "MIS NOTAS" ~8px cada ciclo. Fijándolo una sola vez, el cálculo es siempre el mismo.
+      ul.style.overflow = 'hidden';
+      ul.style.height = ul.getBoundingClientRect().height + 'px';
+
       function tick(){
         var oldItems = Array.from(ul.children);
         if(oldItems.length < 1) return;
+
         var oldRects = oldItems.map(function(li){ return li.getBoundingClientRect(); });
         var slotHeight = oldRects.length > 1 ? (oldRects[1].top - oldRects[0].top) : oldRects[0].height;
 
@@ -184,9 +191,9 @@ const notasParaRotar = JSON.stringify(
           });
         });
 
-        if(exiting){
-          setTimeout(function(){ if(exiting.parentNode === ul) ul.removeChild(exiting); }, 480);
-        }
+        setTimeout(function(){
+          if(exiting && exiting.parentNode === ul) ul.removeChild(exiting);
+        }, 480);
       }
 
       setInterval(tick, 4200);
