@@ -7,9 +7,9 @@ const ultimas = (await getCollection('bitacora', ({ data }) => !data.draft))
   .slice(0, 3);
 
 const fmtCorta = (d: Date) => {
-  const dia = d.getDate();
-  const mes = d.toLocaleDateString('es-CL', { month: 'short' }).replace('.', '').toUpperCase();
-  const anio = d.getFullYear();
+  const dia = d.getUTCDate();
+  const mes = d.toLocaleDateString('es-CL', { month: 'short', timeZone: 'UTC' }).replace('.', '').toUpperCase();
+  const anio = d.getUTCFullYear();
   return `${dia}${mes}${anio}`;
 };
 ---

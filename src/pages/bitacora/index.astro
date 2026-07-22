@@ -7,7 +7,7 @@ const entries = (await getCollection('bitacora', ({ data }) => !data.draft)).sor
 );
 
 const fmt = (d: Date) =>
-  d.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
+  d.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
 ---
 
 <PanelPage

@@ -7,7 +7,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 );
 
 const fmt = (d: Date) =>
-  d.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
+  d.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
 ---
 
 <V3Layout title="blog — regardless" description="Notas y registros de lo que construyo y lo que pienso." dark={true}>
