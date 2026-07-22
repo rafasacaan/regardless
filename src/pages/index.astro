@@ -7,7 +7,7 @@ import V4Layout from '../layouts/V4Layout.astro';
   <div class="bg"></div><div class="scrim"></div><div class="grain"></div>
   <div class="frame">
     <header class="top">
-      <span class="mark">regardless<span class="dot">.</span></span>
+      <span class="mark">regard<em>less</em><span class="dot">.</span></span>
       <nav class="navlinks">
         <a href="#" data-panel="artefactos">c&oacute;mplices</a>
         <a href="#" data-panel="sobremi">sobre m&iacute;</a>
@@ -130,10 +130,11 @@ import V4Layout from '../layouts/V4Layout.astro';
 
   .frame{ position:relative; z-index:3; height:100%; padding:clamp(22px,2.8vw,44px); display:grid; grid-template-rows:auto 1fr auto; }
   .top{ display:flex; justify-content:space-between; align-items:center; }
-  .mark{ font-family:var(--sans); font-weight:500; font-size:clamp(26px,3vw,44px); letter-spacing:-.02em; background:#000; padding:.14em .34em; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+  .mark{ font-family:var(--serif); font-weight:400; font-optical-sizing:auto; font-size:clamp(26px,3vw,44px); letter-spacing:-.01em; background:#000; padding:.14em .34em; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+  .mark em{ font-style:italic; }
   .mark .dot{ color:var(--moon); }
   .navlinks{ display:flex; gap:.5rem; }
-  .navlinks a{ font-family:var(--sans); font-weight:500; font-size:clamp(14px,1.3vw,17px); color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
+  .navlinks a{ font-family:var(--sans); font-weight:600; font-size:clamp(14px,1.3vw,17px); color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
   .navlinks a:hover{ color:var(--moon); }
   .navlinks a[data-panel="artefactos"]{ color:var(--bloom); }
   .navlinks a[data-panel="artefactos"]:hover{ color:var(--bloom); filter:brightness(1.2); }
