@@ -22,10 +22,10 @@ const destacadaParrafos = destacada
         <button class="nav-toggle" id="nav-toggle" aria-label="Abrir men&uacute;" aria-expanded="false" aria-controls="site-nav">&#9776;</button>
         <nav class="navlinks" id="site-nav">
           <a href="#" data-panel="artefactos">c&oacute;mplices</a>
+          <a href="/bitacora/">Field Notes</a>
+          <a href="/blog/">Build notes</a>
           <a href="#" data-panel="sobremi">sobre m&iacute;</a>
-          <a href="/blog/">notas / build</a>
           <a href="#" data-panel="contacto">escr&iacute;beme!</a>
-          <a href="/bitacora/">mis notas</a>
         </nav>
       </div>
     </header>
@@ -39,7 +39,10 @@ const destacadaParrafos = destacada
       <div class="rmeta">
         {destacada && (
           <div class="glass-box">
-            <p class="glass-title">{destacada.data.title}</p>
+            <div class="glass-head">
+              <p class="glass-title">{destacada.data.title}</p>
+              <a href="/bitacora/" class="glass-link">clickea ac&aacute; para m&aacute;s field notes</a>
+            </div>
             <div class="glass-scroll">
               <div class="glass-reel">
                 <div class="glass-track">
@@ -192,7 +195,7 @@ const destacadaParrafos = destacada
     opacity:1; visibility:visible; transform:translateY(0); pointer-events:auto;
     transition:opacity .25s ease, transform .25s ease;
   }
-  .navlinks > a{ font-family:var(--sans); font-weight:600; font-size:clamp(13px,1.2vw,16px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
+  .navlinks > a{ white-space:nowrap; font-family:var(--sans); font-weight:600; font-size:clamp(13px,1.2vw,16px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
   .navlinks > a:hover{ color:var(--moon); }
   .navlinks > a[data-panel="artefactos"]{ color:var(--bloom); }
   .navlinks > a[data-panel="artefactos"]:hover{ color:var(--bloom); filter:brightness(1.2); }
@@ -218,6 +221,7 @@ const destacadaParrafos = destacada
   .lead h1 em{ font-style:italic; color:var(--moon); }
   .lead .sub em{ font-style:normal; font-weight:600; color:var(--bloom); }
   .hl{ display:inline; background:#000; -webkit-box-decoration-break:clone; box-decoration-break:clone; padding:.1em .34em; }
+  .eyebrow .hl{ background:transparent; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }
   .lead .sub{ font-family:var(--sans); font-weight:400; letter-spacing:0; font-size:clamp(1rem,1.2vw,1.15rem); line-height:1.7; color:var(--paper); margin-top:clamp(18px,2.4vh,26px); max-width:42ch; }
   .cta{ display:inline-flex; align-items:center; gap:.55em; margin-top:clamp(20px,2.6vh,32px); padding:.85em 1.5em; border-radius:100px;
     background:var(--paper); color:#14202e; font-weight:500; font-size:15px; text-decoration:none; transition:transform .2s, background .2s; }
@@ -225,23 +229,34 @@ const destacadaParrafos = destacada
   .cta .ar{ transition:transform .2s; } .cta:hover .ar{ transform:translateX(3px); }
 
   .glass-box{
-    width:clamp(320px,34vw,540px);
+    width:clamp(380px,44vw,680px);
     display:flex; flex-direction:column;
-    background:rgba(14,20,15,.55);
     -webkit-backdrop-filter:blur(2px);
     backdrop-filter:blur(2px);
-    border:1px solid rgba(242,236,222,.16);
     border-radius:4px;
-    padding:.9rem 1.1rem;
+    padding:.9rem 0rem .9rem 1.1rem;
   }
-  .glass-title{
-    font-family:var(--mono); font-weight:400;
-    font-size:clamp(.72rem,.85vw,.82rem); letter-spacing:.06em; text-transform:uppercase;
-    color:var(--moon);
+  .glass-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:1em;
     margin-bottom:.6em; padding-bottom:.5em;
     border-bottom:1px solid rgba(242,236,222,.16);
     flex-shrink:0;
   }
+  .glass-title{
+    font-family:var(--mono); font-weight:600;
+    font-size:clamp(.72rem,.85vw,.82rem); letter-spacing:.06em; text-transform:uppercase;
+    color:var(--moon);
+  }
+  .glass-link{
+    display:inline-block;
+    font-family:var(--mono); font-weight:400;
+    font-size:clamp(.66rem,.78vw,.75rem); letter-spacing:.06em; text-transform:uppercase;
+    color:#b97ae8; text-decoration:none; white-space:nowrap;
+    background:#000; padding:.32em .6em; border-radius:3px;
+    animation:nav-vibe 2.4s ease-in-out infinite;
+    transition:filter .2s;
+  }
+  .glass-link:hover{ filter:brightness(1.25); animation-play-state:paused; }
   .glass-scroll{
     height:6.6em; overflow:hidden; position:relative;
     -webkit-mask-image:linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
@@ -249,7 +264,7 @@ const destacadaParrafos = destacada
   }
   .glass-reel{ animation:glass-crawl 55s linear infinite; }
   .glass-track p{
-    font-family:var(--mono); font-size:clamp(.72rem,.82vw,.82rem); line-height:1.6;
+    font-family:var(--mono); font-weight:600; font-size:clamp(.72rem,.82vw,.82rem); line-height:1.6;
     color:rgba(242,236,222,.8); margin-bottom:.9em;
   }
   .glass-track p::before{ content:'> '; color:var(--moon); opacity:.7; }
@@ -290,7 +305,9 @@ const destacadaParrafos = destacada
   @media (max-width:760px){
     body{ overflow:auto; } .frame{ min-height:100%; }
     .bottom{ flex-direction:column; align-items:flex-start; gap:1.4rem; }
-    .rmeta{ text-align:left; }
+    .rmeta{ text-align:left; align-items:flex-start; width:100%; }
+    .glass-box{ width:100%; }
+    .glass-link{ white-space:normal; }
     .bg{ background-position:center 40%; }
   }
   </style>
