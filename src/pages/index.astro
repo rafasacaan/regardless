@@ -21,31 +21,15 @@ const destacadaParrafos = destacada
       <div class="nav-wrap">
         <button class="nav-toggle" id="nav-toggle" aria-label="Abrir men&uacute;" aria-expanded="false" aria-controls="site-nav">&#9776;</button>
         <nav class="navlinks" id="site-nav">
-          <a href="#" data-panel="artefactos">c&oacute;mplices <span class="nav-ar">&#8599;</span></a>
-          <a href="#" data-panel="sobremi">sobre m&iacute; <span class="nav-ar">&#8599;</span></a>
-          <a href="/blog/">notas / build <span class="nav-ar">&#8599;</span></a>
-          <a href="#" data-panel="contacto">escr&iacute;beme! <span class="nav-ar">&#8599;</span></a>
-          <a href="/bitacora/">mis notas <span class="nav-ar">&#8599;</span></a>
+          <a href="#" data-panel="artefactos">c&oacute;mplices</a>
+          <a href="#" data-panel="sobremi">sobre m&iacute;</a>
+          <a href="/blog/">notas / build</a>
+          <a href="#" data-panel="contacto">escr&iacute;beme!</a>
+          <a href="/bitacora/">mis notas</a>
         </nav>
       </div>
     </header>
-    <div class="mid">
-      {destacada && (
-        <div class="glass-box">
-          <p class="glass-title">{destacada.data.title}</p>
-          <div class="glass-scroll">
-            <div class="glass-reel">
-              <div class="glass-track">
-                {destacadaParrafos.map((p) => <p>{p}</p>)}
-              </div>
-              <div class="glass-track" aria-hidden="true">
-                {destacadaParrafos.map((p) => <p>{p}</p>)}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    <div class="mid"></div>
     <footer class="bottom">
       <div class="lead">
         <p class="eyebrow"><span class="hl">AI companions &amp; yo: &iquest;podr&aacute;n ayudarme?</span></p>
@@ -53,6 +37,21 @@ const destacadaParrafos = destacada
         <p class="sub"><span class="hl">Creamos &amp; testeamos <em>c&oacute;mplices</em> para sacar afuera eso &uacute;nico que llevas dentro.</span></p>
       </div>
       <div class="rmeta">
+        {destacada && (
+          <div class="glass-box">
+            <p class="glass-title">{destacada.data.title}</p>
+            <div class="glass-scroll">
+              <div class="glass-reel">
+                <div class="glass-track">
+                  {destacadaParrafos.map((p) => <p>{p}</p>)}
+                </div>
+                <div class="glass-track" aria-hidden="true">
+                  {destacadaParrafos.map((p) => <p>{p}</p>)}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <span class="u">Santiago, Chile &middot; <time class="clk" datetime="">--:--:--</time></span>
       </div>
     </footer>
@@ -195,8 +194,6 @@ const destacadaParrafos = destacada
   }
   .navlinks > a{ font-family:var(--sans); font-weight:600; font-size:clamp(13px,1.2vw,16px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
   .navlinks > a:hover{ color:var(--moon); }
-  .navlinks > a .nav-ar{ display:inline-block; font-size:.72em; opacity:.55; margin-left:.15em; transition:transform .2s ease, opacity .2s ease; }
-  .navlinks > a:hover .nav-ar{ opacity:1; transform:translate(2px,-2px); }
   .navlinks > a[data-panel="artefactos"]{ color:var(--bloom); }
   .navlinks > a[data-panel="artefactos"]:hover{ color:var(--bloom); filter:brightness(1.2); }
   /* relevo: cada botón vibra por turno (artefactos -> blog -> escríbeme), en bucle infinito */
@@ -227,36 +224,35 @@ const destacadaParrafos = destacada
   .cta:hover{ transform:translateY(-2px); background:#fff; }
   .cta .ar{ transition:transform .2s; } .cta:hover .ar{ transform:translateX(3px); }
 
-  .mid{ display:flex; flex-direction:column; align-items:flex-end; justify-content:flex-start; gap:1.4rem; height:100%; min-height:0; padding-bottom:1.2rem; }
-
   .glass-box{
-    width:clamp(240px,26vw,340px);
-    flex:1 1 auto; min-height:0;
+    width:clamp(320px,34vw,540px);
     display:flex; flex-direction:column;
-    background:rgba(20,32,22,.35);
+    background:rgba(14,20,15,.55);
     -webkit-backdrop-filter:blur(10px);
     backdrop-filter:blur(10px);
     border:1px solid rgba(242,236,222,.16);
-    border-radius:6px;
-    padding:1rem 1.15rem;
+    border-radius:4px;
+    padding:.9rem 1.1rem;
   }
   .glass-title{
-    font-family:var(--serif); font-weight:400; font-optical-sizing:auto;
-    font-size:clamp(1rem,1.3vw,1.2rem); color:var(--paper);
-    margin-bottom:.6em; padding-bottom:.55em;
+    font-family:var(--mono); font-weight:400;
+    font-size:clamp(.72rem,.85vw,.82rem); letter-spacing:.06em; text-transform:uppercase;
+    color:var(--moon);
+    margin-bottom:.6em; padding-bottom:.5em;
     border-bottom:1px solid rgba(242,236,222,.16);
     flex-shrink:0;
   }
   .glass-scroll{
-    flex:1 1 auto; min-height:0; overflow:hidden; position:relative;
-    -webkit-mask-image:linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
-    mask-image:linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+    height:6.6em; overflow:hidden; position:relative;
+    -webkit-mask-image:linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+    mask-image:linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
   }
   .glass-reel{ animation:glass-crawl 55s linear infinite; }
   .glass-track p{
-    font-family:var(--sans); font-size:clamp(.78rem,.92vw,.88rem); line-height:1.65;
-    color:rgba(242,236,222,.82); margin-bottom:1em;
+    font-family:var(--mono); font-size:clamp(.72rem,.82vw,.82rem); line-height:1.6;
+    color:rgba(242,236,222,.8); margin-bottom:.9em;
   }
+  .glass-track p::before{ content:'> '; color:var(--moon); opacity:.7; }
   .glass-track:last-child{ padding-bottom:1.2em; }
   @keyframes glass-crawl{ from{ transform:translateY(0); } to{ transform:translateY(-50%); } }
   @media (prefers-reduced-motion: reduce){ .glass-reel{ animation:none; } }
