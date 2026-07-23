@@ -21,10 +21,10 @@ const destacadaParrafos = destacada
       <div class="nav-wrap">
         <button class="nav-toggle" id="nav-toggle" aria-label="Abrir men&uacute;" aria-expanded="false" aria-controls="site-nav">&#9776;</button>
         <nav class="navlinks" id="site-nav">
+          <a href="#" data-panel="sobremi">Qu&eacute; es esto</a>
           <a href="#" data-panel="artefactos">c&oacute;mplices</a>
-          <a href="/bitacora/">Field Notes</a>
-          <a href="/blog/">Build notes</a>
-          <a href="#" data-panel="sobremi">sobre m&iacute;</a>
+          <a href="/bitacora/">Anotaciones</a>
+          <a href="/blog/">Memoria t&eacute;cnica</a>
           <a href="#" data-panel="contacto">escr&iacute;beme!</a>
         </nav>
       </div>
@@ -41,7 +41,7 @@ const destacadaParrafos = destacada
           <div class="glass-box">
             <div class="glass-head">
               <p class="glass-title">{destacada.data.title}</p>
-              <a href="/bitacora/" class="glass-link">clickea ac&aacute; para m&aacute;s field notes</a>
+              <a href="/bitacora/" class="glass-link">clickea ac&aacute; para m&aacute;s anotaciones</a>
             </div>
             <div class="glass-scroll">
               <div class="glass-reel">
@@ -72,10 +72,10 @@ const destacadaParrafos = destacada
     </div>
   </div>
 
-  <div class="overlay" id="ov-sobremi" role="dialog" aria-modal="true" aria-label="Sobre mí" aria-hidden="true">
+  <div class="overlay" id="ov-sobremi" role="dialog" aria-modal="true" aria-label="Qué es" aria-hidden="true">
     <div class="ov-inner">
       <button class="ov-close" data-close aria-label="Cerrar">&times;</button>
-      <h2 class="ov-title">Sobre m&iacute;</h2>
+      <h2 class="ov-title">Qu&eacute; es regardless</h2>
       <p class="ov-copy">Hola, soy Rafa y cre&eacute; esta p&aacute;gina para juntar una colecci&oacute;n de <em>c&oacute;mplices</em> &mdash; que son una especie de AI companions &mdash; para ayudarme a encontrar adentro m&iacute;o las cosas que me cuestan sacar y darles forma.</p>
       <p class="ov-copy">Me vi muchas veces frustrado por no ser capaz de terminar mis ideas, y por lo tanto, no poder soltarlas y compartirlas.</p>
       <p class="ov-copy">Espero que esta pandilla de <em>c&oacute;mplices</em> me pueda ayudar, y tal vez, te puedan ayudar a ti tambi&eacute;n.</p>
@@ -197,8 +197,6 @@ const destacadaParrafos = destacada
   }
   .navlinks > a{ white-space:nowrap; font-family:var(--sans); font-weight:600; font-size:clamp(13px,1.2vw,16px); text-transform:uppercase; letter-spacing:.03em; color:var(--paper); background:#000; padding:.42em .72em; text-decoration:none; cursor:pointer; transition:color .2s; will-change:transform; }
   .navlinks > a:hover{ color:var(--moon); }
-  .navlinks > a[data-panel="artefactos"]{ color:var(--bloom); }
-  .navlinks > a[data-panel="artefactos"]:hover{ color:var(--bloom); filter:brightness(1.2); }
   /* relevo: cada botón vibra por turno (artefactos -> blog -> escríbeme), en bucle infinito */
   .navlinks > a[data-panel="artefactos"]{ animation:nav-vibe 2.4s ease-in-out infinite; }
   .navlinks > a:hover{ animation-play-state:paused; }

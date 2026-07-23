@@ -1,5 +1,5 @@
 ---
-title: "Regardless — ¿qué es?"
+title: "Porqué regardless"
 fecha: 2026-06-26
 resumen: "No matter what. Pase lo que pase, lo vamos a hacer."
 draft: false
